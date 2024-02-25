@@ -1,4 +1,4 @@
-import React, { useRef, useContext, useCallback } from 'react';
+import React, { useRef, useContext, useCallback, useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, RefreshControl } from 'react-native';
 
 import { PostContext } from '../context/postContext';
@@ -12,7 +12,7 @@ const Home = () => {
 
     //global state
     const { posts, getAllPosts } = useContext(PostContext);
-    const [refreshing, setRefreshing] = useContext(false);
+    const [refreshing, setRefreshing] = useState(false);
 
     const bottomSheetRef = useRef(null);
     const onRefresh = useCallback(() => {
@@ -35,8 +35,6 @@ const Home = () => {
             {/* Top navigation */}
             <Navigation />
 
-            <MenuBtn handleOpen={() => bottomSheetRef.current?.snapToIndex(0)} />
-
             <ScrollView
                 className='h-full self-center -z-10'
                 style={{ width: '95%' }}
@@ -46,6 +44,8 @@ const Home = () => {
                 <PostCard posts={posts} />
 
             </ScrollView>
+
+            <MenuBtn handleOpen={() => bottomSheetRef.current?.snapToIndex(0)} />
 
             {/* Bottom Sheet navigation */}
             <BottomSheetNav bottomSheetRef={bottomSheetRef} />

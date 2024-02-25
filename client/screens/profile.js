@@ -1,5 +1,5 @@
-import React, { useRef, useContext, useState, useEffect } from 'react';
-import { SafeAreaView, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View, Image } from 'react-native';
+import React, { useRef, useContext, useState } from 'react';
+import { SafeAreaView, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View, Image, ToastAndroid } from 'react-native';
 import * as ImagePicker from 'expo-image-picker'
 
 import Navigation from '../components/Navigation';
@@ -67,21 +67,6 @@ const Profile = () => {
         }
     }
 
-    const [image, setImage] = useState();
-    const pickMedia = async () => {
-        try {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                aspect: [192, 192],
-                allowsEditing: true,
-                quality: 1,
-            });
-        }
-        catch (error) {
-            console.error('Error picking media:', error);
-        }
-    };
-
     return (
         <SafeAreaView className='w-screen h-full flex pt-10'>
 
@@ -94,8 +79,6 @@ const Profile = () => {
             {/* Top navigation */}
             <Navigation />
 
-            <MenuBtn handleOpen={() => bottomSheetRef.current?.snapToIndex(0)} />
-
             <ScrollView className='h-full self-center space-y-10 -z-10' style={{ width: '95%' }} showsVerticalScrollIndicator={false}>
 
                 <View className='w-48 h-48 items-center justify-center self-center my-2'>
@@ -104,10 +87,6 @@ const Profile = () => {
                         source={require("../assets/images/girl.png")}
                     />
                 </View>
-
-                <TouchableOpacity onPress={pickMedia}>
-                    <Text>Profile Picture</Text>
-                </TouchableOpacity>
 
                 <View className='space-y-8'>
                     <View className='flex-row w-3/5 justify-between'>
@@ -138,6 +117,8 @@ const Profile = () => {
 
 
             </ScrollView>
+
+            <MenuBtn handleOpen={() => bottomSheetRef.current?.snapToIndex(0)} />
 
             {/* Bottom Sheet navigation */}
             <BottomSheetNav bottomSheetRef={bottomSheetRef} />
