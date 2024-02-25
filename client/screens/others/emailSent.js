@@ -2,11 +2,12 @@ import { View, Text, SafeAreaView, TouchableOpacity, ScrollView, StatusBar, Imag
 import React, { useState, useEffect } from 'react'
 
 import { firebase } from '../../config/config'
+import { useNavigation } from '@react-navigation/native';
 
-
-const EmailSent = ({ navigation }) => {
+const EmailSent = () => {
 
     const [continueEnabled, setContinueEnabled] = useState(false);
+    const navigation = useNavigation();
 
     useEffect(() => {
         const checkEmailVerification = async () => {
@@ -53,7 +54,13 @@ const EmailSent = ({ navigation }) => {
                 handleCodeInApp: true,
                 url: 'https://educat-auth.firebaseapp.com'
             });
-            Alert.alert('Verification mail resent successfully')
+            ToastAndroid.showWithGravityAndOffset(
+                'Verification mail resent successfully',
+                3000,
+                ToastAndroid.BOTTOM,
+                25,
+                30,
+            );
         }
         catch (error) {
             console.error('Error resending verification email:', error.message);
@@ -66,13 +73,13 @@ const EmailSent = ({ navigation }) => {
 
             navigation.reset({
                 index: 0,
-                routes: [{ name: 'SignIn' }],
+                routes: [{ name: 'Home' }],
             });
         }
     };
 
     return (
-        <ScrollView className='mt-10 w-screen'>
+        <ScrollView className='mt-10 w-screen' showsVerticalScrollIndicator={false}>
 
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}

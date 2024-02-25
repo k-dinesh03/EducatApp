@@ -1,5 +1,6 @@
-import React, { useRef, useContext, useState } from 'react';
-import { SafeAreaView, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useRef, useContext, useState, useEffect } from 'react';
+import { SafeAreaView, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View, Image } from 'react-native';
+import * as ImagePicker from 'expo-image-picker'
 
 import Navigation from '../components/Navigation';
 import MenuBtn from '../components/menuBtn';
@@ -8,10 +9,12 @@ import BottomSheetNav from '../components/bottomSheetNav';
 import { AuthContext } from '../context/authContext';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
-const Profile = ({ navigation }) => {
+const Profile = () => {
 
-    const bottomSheetRef = useRef(null)
+    const bottomSheetRef = useRef(null);
+    const navigation = useNavigation();
 
     //global state
     const { state, setState } = useContext(AuthContext);
@@ -64,6 +67,21 @@ const Profile = ({ navigation }) => {
         }
     }
 
+    const [image, setImage] = useState();
+    const pickMedia = async () => {
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                aspect: [192, 192],
+                allowsEditing: true,
+                quality: 1,
+            });
+        }
+        catch (error) {
+            console.error('Error picking media:', error);
+        }
+    };
+
     return (
         <SafeAreaView className='w-screen h-full flex pt-10'>
 
@@ -74,11 +92,22 @@ const Profile = ({ navigation }) => {
             />
 
             {/* Top navigation */}
-            <Navigation navigation={navigation} />
+            <Navigation />
 
             <MenuBtn handleOpen={() => bottomSheetRef.current?.snapToIndex(0)} />
 
-            <ScrollView className='h-full self-center space-y-10 -z-10' style={{ width: '95%' }}>
+            <ScrollView className='h-full self-center space-y-10 -z-10' style={{ width: '95%' }} showsVerticalScrollIndicator={false}>
+
+                <View className='w-48 h-48 items-center justify-center self-center my-2'>
+                    <Image
+                        style={{ width: '100%', height: '100%', backgroundColor: 'orange', borderRadius: 100 }}
+                        source={require("../assets/images/girl.png")}
+                    />
+                </View>
+
+                <TouchableOpacity onPress={pickMedia}>
+                    <Text>Profile Picture</Text>
+                </TouchableOpacity>
 
                 <View className='space-y-8'>
                     <View className='flex-row w-3/5 justify-between'>
@@ -107,10 +136,11 @@ const Profile = ({ navigation }) => {
                     <Text className='font-medium'>Logout</Text>
                 </TouchableOpacity>
 
+
             </ScrollView>
 
             {/* Bottom Sheet navigation */}
-            <BottomSheetNav bottomSheetRef={bottomSheetRef} navigation={navigation} />
+            <BottomSheetNav bottomSheetRef={bottomSheetRef} />
 
         </SafeAreaView>
     );

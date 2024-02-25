@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthContext, AuthProvider } from './context/authContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { PostProvider } from './context/postContext';
 
 import ChatHome from './screens/chat/ChatHome';
 import ChatMain from './screens/chat/ChatMain';
@@ -14,9 +15,9 @@ import Register from './screens/signup/Register'
 import Launch from './screens/others/Launch'
 import SignIn from './screens/signIn/SignIn'
 import ForgotPassword from './screens/others/ForgotPassword'
-import OTP from './screens/others/otp'
 import Home from './screens/home';
 import Profile from './screens/profile';
+import PostTemp from './components/postTemp';
 
 const App = () => {
 
@@ -37,6 +38,7 @@ const App = () => {
 						<Stack.Screen name="ChatMain" component={ChatMain} />
 						<Stack.Screen name="Post" component={Post} />
 						<Stack.Screen name="Collections" component={Collections} />
+						<Stack.Screen name="PostTemp" component={PostTemp} />
 					</Stack.Navigator>
 				) : (
 					<Stack.Navigator initialRouteName="Launch" screenOptions={{ headerShown: false }}>
@@ -45,7 +47,6 @@ const App = () => {
 						<Stack.Screen name="SignIn" component={SignIn} />
 						<Stack.Screen name="Register" component={Register} />
 						<Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-						<Stack.Screen name="OTP" component={OTP} />
 					</Stack.Navigator>
 				)}
 			</NavigationContainer>
@@ -56,7 +57,9 @@ const App = () => {
 export default () => {
 	return (
 		<AuthProvider>
-			<App />
+			<PostProvider>
+				<App />
+			</PostProvider>
 		</AuthProvider>
 	)
 }

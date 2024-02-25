@@ -1,6 +1,8 @@
-import { SafeAreaView, Text, ScrollView, StyleSheet, StatusBar, View, TouchableOpacity, KeyboardAvoidingView, Image, Alert, Dimensions, TextInput, Platform } from 'react-native';
 import * as React from 'react'
-import { useRef, useState } from 'react'
+import { useRef, useState, useContext } from 'react'
+import { SafeAreaView, Text, ScrollView, StyleSheet, StatusBar, View, ToastAndroid, TouchableOpacity, Image, Dimensions, TextInput } from 'react-native';
+
+import { PostContext } from '../../context/postContext';
 
 import { Video } from 'expo-av';
 
@@ -13,32 +15,78 @@ import BottomSheetNav from '../../components/bottomSheetNav';
 
 import { AntDesign, Feather, MaterialIcons, SimpleLineIcons } from '@expo/vector-icons';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
-const windowWidth = Dimensions.get('window').width;
 
-const Post = ({ navigation }) => {
+const windowWidth = Dimensions.get('window').width;
+const carouselWidth = windowWidth - (windowWidth * 0.05);
+
+import { firebase } from '../../config/config';
+import { useNavigation } from '@react-navigation/native';
+
+const Post = () => {
 
     const bottomSheetRef = useRef(null);
+    const navigation = useNavigation();
+
+    //global state
+    const { posts, setPosts } = useContext(PostContext);
 
     //ImagePicker
     const [images, setImages] = useState([]);
+    const [maxHeight, setMaxHeight] = useState(0);
 
-    const pickMedia = async () => {
+    const pickMediaGallery = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
+                aspect: [403, 384],
                 allowsEditing: true,
+                orderedSelection: true,
                 quality: 1,
                 multiple: true,
             });
 
             if (!result.canceled) {
+                // Calculate the maximum height when new images are added
+                const newMaxHeight = Math.max(
+                    ...result.assets.map((asset) => (asset.height / asset.width) * windowWidth)
+                );
+                setMaxHeight(newMaxHeight);
+
                 setImages([...images, ...result.assets.map((asset) => asset.uri)]);
             }
         }
         catch (error) {
-            console.error('Error picking media:', error);
+            console.error('Error picking media from gallery : ', error);
         }
     };
+
+    const pickMediaCamera = async () => {
+        try {
+            await ImagePicker.requestCameraPermissionsAsync();
+            let result = await ImagePicker.launchCameraAsync({
+                cameraType: ImagePicker.CameraType.back,
+                aspect: [403, 384],
+                allowsEditing: true,
+                quality: 1,
+                orderedSelection: true,
+                multiple: true,
+            });
+
+            if (!result.canceled) {
+                // Calculate the maximum height when new images are added
+                const newMaxHeight = Math.max(
+                    ...result.assets.map((asset) => (asset.height / asset.width) * windowWidth)
+                );
+                setMaxHeight(newMaxHeight);
+
+                setImages([...images, ...result.assets.map((asset) => asset.uri)]);
+            }
+
+        }
+        catch (error) {
+            console.error('Error picking media from camera : ', error);
+        }
+    }
 
     const carouselRef = useRef(null);
 
@@ -46,22 +94,21 @@ const Post = ({ navigation }) => {
         const updatedImages = [...images];
         updatedImages.splice(index, 1);
         setImages(updatedImages);
-    };
-
-    const [resizeModes, setResizeModes] = useState(Array(images.length).fill('contain'));
-
-    const zoomMedia = (index) => {
-        setResizeModes((prevModes) => {
-            const newModes = [...prevModes];
-            newModes[index] = newModes[index] === 'contain' ? 'cover' : 'contain';
-            return newModes;
-        });
+        ToastAndroid.showWithGravityAndOffset(
+            'Image have been removed',
+            3000,
+            ToastAndroid.BOTTOM,
+            25,
+            30,
+        );
     };
 
     const videoRef = React.useRef(null);
 
-    const renderItem = ({ item, index }) => {
+    const renderItem = ({ item }) => {
+
         const isVideo = /\.(mp4|mov|avi|wmv|flv|mkv|gif)$/i.test(item);
+
         return (
             <View className='w-full h-full border-[1px] rounded-sm'>
                 {isVideo ? (
@@ -76,7 +123,7 @@ const Post = ({ navigation }) => {
                         isLooping
                     />
                 ) : (
-                    <Image source={{ uri: item }} style={{ width: '100%', height: '100%', resizeMode: resizeModes[index] }} />
+                    <Image source={{ uri: item }} style={{ width: '100%', height: '100%' }} />
                 )}
             </View>
         );
@@ -136,28 +183,58 @@ const Post = ({ navigation }) => {
         );
     };
 
+    const hasVideo = /\.(mp4|mov|avi|wmv|flv|mkv|gif)$/i.test(images[activeSlide]);
+
     const [isHeader, setIsHeader] = useState(false);
-    const [isSubHeader, setIsSubHeader] = useState(false);
     const [isDescription, setIsDescription] = useState(false);
 
     const [title, setTitle] = useState('');
-    const [subtitle, setSubtitle] = useState('');
     const [description, setDescription] = useState('');
     const [uploading, setUploading] = useState(false);
+
+    const [errors, setErrors] = useState({});
+
+    const storage = firebase.storage();
 
     const handleSubmit = async (e) => {
 
         e.preventDefault();
 
-        if (title && subtitle && description) {
+        const validationErrors = postValidate({ title, description, images });
+        setErrors(validationErrors);
 
+        if (Object.keys(validationErrors).length === 0) {
             try {
                 setUploading(true);
 
-                const { data } = await axios.post("/post/create-post", { title, subtitle, description });
+                // Upload images to Firebase Storage
+                const imageUrls = await Promise.all(images.map(async (image) => {
+                    const response = await fetch(image);
+                    const blob = await response.blob();
+
+                    // Get the filename from the URI
+                    let filename = image.split('/').pop();
+                    const extension = filename.split('.').pop();
+                    const name = filename.split('.').slice(0, -1).join('.');
+                    filename = name + Date.now() + extension;
+
+                    const storageRef = storage.ref().child(`images/${filename}`);
+                    await storageRef.put(blob);
+                    return storageRef.getDownloadURL();
+                }));
+
+                const { data } = await axios.post("/post/create-post", { title, description, images: imageUrls });
                 setUploading(false);
 
-                alert(data?.message);
+                setPosts([...posts, data?.post])
+
+                ToastAndroid.showWithGravityAndOffset(
+                    data?.message,
+                    3000,
+                    ToastAndroid.BOTTOM,
+                    25,
+                    30,
+                );
 
                 navigation.navigate("Home");
             }
@@ -167,10 +244,29 @@ const Post = ({ navigation }) => {
                 console.log(error);
             }
         }
-        else {
-            alert("Please fill all fields");
-        }
     }
+
+    const postValidate = (values) => {
+
+        const errors = {}
+
+        if (!values.images.length > 0) {
+            errors.images = "Required";
+        }
+        if (!values.title) {
+            errors.title = "Required";
+        }
+        if (!values.description) {
+            errors.description = "Required";
+        }
+
+        return errors;
+    }
+
+    const carouselContainerStyles = {
+        height: maxHeight,
+        width: '100%'
+    };
 
     return (
         <SafeAreaView className='w-screen h-full flex pt-10'>
@@ -181,158 +277,157 @@ const Post = ({ navigation }) => {
                 translucent={true}
             />
 
-            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+            {/* Top navigation */}
+            <Navigation />
 
-                {/* Top navigation */}
-                <Navigation navigation={navigation} />
+            <ScrollView className='w-full h-full flex space-y-8 -z-10'>
 
-                <MenuBtn handleOpen={() => bottomSheetRef.current?.snapToIndex(0)} />
+                <View className='self-center mt-5' style={{ width: '95%' }}>
 
-                <ScrollView className='w-full h-full flex space-y-8 -z-10'>
+                    <TouchableOpacity className='self-end bg-slate-200 flex flex-row items-center justify-end py-1 px-2 rounded-md z-20' onPress={pickMediaCamera}>
+                        <Text className='text-md mr-2'>Take a Snap</Text>
+                        <SimpleLineIcons name='camera' color='#000' size={25} />
+                    </TouchableOpacity>
 
-                    <View className='self-center mt-5' style={{ width: '95%' }}>
+                </View>
 
-                        <TouchableOpacity className='self-end bg-slate-300 flex flex-row items-center justify-end py-1 px-2 rounded-md z-20'>
-                            <Text className='text-md mr-2'>Take a Snap</Text>
-                            <SimpleLineIcons name='camera' color='#000' size={25} />
+                {hasVideo &&
+                    <View className='space-y-3 self-center' style={{ width: '95%' }}>
+
+                        <Text className='text-lg self-center'>Do you want to create a Quiz ?</Text>
+
+                        <TouchableOpacity
+                            className='w-1/3 bg-emerald-500 py-[7px] items-center rounded-md self-center'
+                            onPress={() =>
+                                navigation.navigate('PostTemp', {
+                                    videoUrl: images[activeSlide]
+                                })
+                            }
+                        >
+                            <Text className='text-white text-lg'>Create a Quiz</Text>
                         </TouchableOpacity>
-
                     </View>
+                }
 
-                    <View className='self-center' style={{ width: '95%' }}>
-                        {images.length > 0 ? (
+                <View className='self-center' style={{ width: '95%' }}>
 
-                            <View className='w-full h-72 flex justify-between items-center relative'>
+                    {images.length > 0 ? (
 
-                                <Carousel
-                                    layout={'default'}
-                                    ref={carouselRef}
-                                    data={images}
-                                    sliderWidth={styles.mediaContainer.width}
-                                    itemWidth={styles.mediaContainer.width}
-                                    renderItem={renderItem}
-                                    onSnapToItem={(index) => setActiveSlide(index)}
-                                />
+                        <View className='w-full flex justify-between items-end relative'>
 
-                                <View className='h-auto space-y-2 py-2 px-2 absolute z-40 self-end flex justify-center items-center' style={styles.videoBtnContainer}>
+                            <Carousel
+                                layout={'default'}
+                                ref={carouselRef}
+                                data={images}
+                                sliderWidth={carouselWidth}
+                                itemWidth={carouselWidth}
+                                renderItem={renderItem}
+                                onSnapToItem={(index) => setActiveSlide(index)}
+                                containerCustomStyle={carouselContainerStyles}
+                            />
 
-                                    <TouchableOpacity className='w-8 h-8 flex items-center justify-center rounded-full' style={styles.videoBtn} onPress={pickMedia}>
-                                        <AntDesign name='addfile' color='white' size={18} />
-                                    </TouchableOpacity>
+                            <View className='h-auto space-x-1 py-2 px-[6px] absolute z-40 self-end flex-row justify-center items-center' style={styles.videoBtnContainer}>
 
-                                    <TouchableOpacity className='w-8 h-8 flex items-center justify-center rounded-full' style={styles.videoBtn} onPress={() => zoomMedia(activeSlide)}>
-                                        <MaterialIcons name='fullscreen' color='white' size={26} />
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity className='w-8 h-8 flex items-center justify-center rounded-full' style={styles.videoBtn} onPress={() => removeMedia(activeSlide)}>
-                                        <Feather name='x' color='white' size={21} />
-                                    </TouchableOpacity>
-
-                                </View>
-
-                                {images.length < 8 ? pagination_one(activeSlide) : pagination_two(activeSlide)}
-
-                            </View>
-
-                        ) : (
-
-                            <View className='w-full h-72 flex items-center justify-between py-2 border-[1px] border-gray-400 rounded-md'>
-
-                                <Text className='font-semibold text-xl tracking-wider'>Share Your Ideas</Text>
-
-                                <Image
-                                    style={{ width: '50%', height: '50%', objectFit: 'contain' }}
-                                    source={require("../../assets/images/Educat-logo.png")}
-                                />
-
-                                <TouchableOpacity className='w-3/4 bg-emerald-500 py-2 items-center rounded-md' onPress={pickMedia}>
-                                    <Text className='text-white text-lg'>Choose from Gallery</Text>
+                                <TouchableOpacity className='w-8 h-8 flex items-center justify-center rounded-full' style={styles.videoBtn} onPress={pickMediaGallery}>
+                                    <AntDesign name='addfile' color='white' size={18} />
                                 </TouchableOpacity>
 
+                                <TouchableOpacity className='w-8 h-8 flex items-center justify-center rounded-full' style={styles.videoBtn} onPress={() => removeMedia(activeSlide)}>
+                                    <Feather name='x' color='white' size={21} />
+                                </TouchableOpacity>
 
                             </View>
-                        )}
-                    </View>
 
-                    <View className={`w-4/5 ${isHeader ? 'h-24 py-2' : ''} px-3 py-1 self-center border-y-[1px] border-slate-400 flex justify-between`}>
+                            {images.length < 4 ? pagination_one(activeSlide) : pagination_two(activeSlide)}
 
-                        <TouchableOpacity className='flex flex-row items-center py-1 justify-between transition-opacity duration-300' onPress={() => setIsHeader(!isHeader)} activeOpacity={0.8}>
-                            <View className='flex-row items-center'>
-                                <Text className='font-medium text-lg tracking-widest'>Title</Text>
-                            </View>
-                            <MaterialIcons name='keyboard-arrow-down' color='black' size={22} />
-                        </TouchableOpacity>
+                        </View>
 
-                        {isHeader &&
-                            <TextInput
-                                autoCapitalize='none'
-                                placeholder="Title/Topic"
-                                value={title}
-                                onChangeText={(text) => setTitle(text)}
-                                className='w-full text-md opacity-100 transition-opacity duration-300 py-1'
-                                autoCorrect={true}
-                                multiline={true}
-                                numberOfLines={2}
+                    ) : (
+
+                        <View className='w-full h-72 flex items-center justify-between py-2 border-[1px] border-gray-400 rounded-md'>
+
+                            <Text className='font-semibold text-xl tracking-wider'>Share Your Ideas</Text>
+
+                            <Image
+                                style={{ width: '50%', height: '50%', objectFit: 'contain' }}
+                                source={require("../../assets/images/Educat-logo.png")}
                             />
-                        }
 
+                            {errors.images && <Text className='text-xs text-red-500 ml-2'>({errors.images})</Text>}
+
+                            <TouchableOpacity className='w-3/4 bg-emerald-500 py-2 items-center rounded-md' onPress={pickMediaGallery}>
+                                <Text className='text-white text-lg'>Upload from Gallery</Text>
+                            </TouchableOpacity>
+
+                        </View>
+                    )}
+                </View>
+
+                <View className={`w-4/5 ${isHeader ? 'py-2' : ''} px-2 py-[6px] self-center border-y-[1px] border-slate-400 flex justify-between`}>
+
+                    <TouchableOpacity className='flex flex-row items-center py-1 justify-between transition-opacity duration-300' onPress={() => setIsHeader(!isHeader)} activeOpacity={0.8}>
+                        <View className='flex-row items-center'>
+                            <Text className='font-medium text-lg tracking-widest'>Title</Text>
+                            {errors.title && <Text className='text-xs text-red-500 ml-2'>({errors.title})</Text>}
+                        </View>
+                        <MaterialIcons name={isHeader ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} color='black' size={22} />
+                    </TouchableOpacity>
+
+                    {isHeader &&
+                        <TextInput
+                            autoCapitalize='none'
+                            placeholder="Title"
+                            value={title}
+                            onChangeText={(text) => setTitle(text)}
+                            className='w-full text-md py-1'
+                            autoCorrect={true}
+                            multiline={true}
+                            numberOfLines={2}
+                        />
+                    }
+
+                </View>
+
+                <View className={`w-11/12 ${isDescription ? 'py-2' : ''} px-2 py-[6px] self-center border-y-[1px] border-slate-400 flex justify-between`}>
+
+                    <TouchableOpacity className='flex flex-row py-1 items-center justify-between transition-opacity duration-300' onPress={() => setIsDescription(!isDescription)} activeOpacity={0.8}>
+                        <View className='flex-row items-center'>
+                            <Text className='font-medium text-lg tracking-widest'>Description</Text>
+                            {errors.description && <Text className='text-xs text-red-500 ml-2'>({errors.description})</Text>}
+                        </View>
+                        <MaterialIcons name={isDescription ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} color='black' size={22} />
+                    </TouchableOpacity>
+
+                    {isDescription &&
+                        <TextInput
+                            autoCapitalize='none'
+                            placeholder="Description"
+                            value={description}
+                            onChangeText={(text) => setDescription(text)}
+                            className='w-full text-md py-1'
+                            autoCorrect={true}
+                            multiline={true}
+                            numberOfLines={3}
+                        />
+                    }
+                </View>
+
+                {uploading ? (
+                    <View className='w-3/4 bg-slate-500 py-2 items-center rounded-md self-center mb-8'>
+                        <Text className='text-white text-lg'>Loading...</Text>
                     </View>
-
-                    <View className={`w-11/12 ${isSubHeader ? 'h-24 py-2' : ''} px-3 py-1 self-center border-y-[1px] border-slate-400 flex justify-between`}>
-
-                        <TouchableOpacity className='flex flex-row py-1 items-center justify-between transition-opacity duration-300' onPress={() => setIsSubHeader(!isSubHeader)} activeOpacity={0.8}>
-                            <View className='flex-row items-center'>
-                                <Text className='font-medium text-lg tracking-widest'>Subtitle</Text>
-                            </View>
-                            <MaterialIcons name='keyboard-arrow-down' color='black' size={22} />
-                        </TouchableOpacity>
-
-                        {isSubHeader &&
-                            <TextInput
-                                autoCapitalize='none'
-                                placeholder="Subtitle/Hashtags"
-                                value={subtitle}
-                                onChangeText={(text) => setSubtitle(text)}
-                                className='w-full py-1 text-md opacity-100 transition-opacity duration-300'
-                                autoCorrect={true}
-                                multiline={true}
-                                numberOfLines={3}
-                            />
-                        }
-                    </View>
-
-                    <View className={`w-4/5 ${isDescription ? 'h-24 py-2' : ''} px-3 py-1 self-center border-y-[1px] border-slate-400 flex justify-between`}>
-
-                        <TouchableOpacity className='flex flex-row py-1 items-center justify-between transition-opacity duration-300' onPress={() => setIsDescription(!isDescription)} activeOpacity={0.8}>
-                            <View className='flex-row items-center'>
-                                <Text className='font-medium text-lg tracking-widest'>Description</Text>
-                            </View>
-                            <MaterialIcons name='keyboard-arrow-down' color='black' size={22} />
-                        </TouchableOpacity>
-
-                        {isDescription &&
-                            <TextInput
-                                autoCapitalize='none'
-                                placeholder="Description"
-                                value={description}
-                                onChangeText={(text) => setDescription(text)}
-                                className='w-full py-1 text-md opacity-100 transition-opacity duration-300'
-                                autoCorrect={true}
-                                multiline={true}
-                            />
-                        }
-                    </View>
-
+                ) : (
                     <TouchableOpacity className='w-3/4 bg-emerald-500 py-2 items-center rounded-md self-center mb-8' onPress={handleSubmit}>
                         <Text className='text-white text-lg'>Share the Post</Text>
                     </TouchableOpacity>
+                )}
 
-                </ScrollView>
+            </ScrollView>
 
-                {/* BottomSheet Navigation */}
-                <BottomSheetNav bottomSheetRef={bottomSheetRef} navigation={navigation} />
+            <MenuBtn handleOpen={() => bottomSheetRef.current?.snapToIndex(0)} />
 
-            </KeyboardAvoidingView>
+            {/* BottomSheet Navigation */}
+            <BottomSheetNav bottomSheetRef={bottomSheetRef} />
 
         </SafeAreaView>
     )
@@ -344,7 +439,4 @@ const styles = StyleSheet.create({
     videoBtn: {
         backgroundColor: 'rgba(0, 0, 0, 0.5)'
     },
-    mediaContainer: {
-        width: windowWidth * (11 / 11.5)
-    }
 })

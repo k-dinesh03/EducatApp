@@ -41,12 +41,12 @@ const registerController = async (req, res) => {
             })
         }
 
-        //existing user
-        const existingUser = await userModel.findOne({ email: email });
-        if (existingUser) {
+        //existing user by email
+        const existingUserByEmail = await userModel.findOne({ email: email });
+        if (existingUserByEmail) {
             return res.status(400).send({
                 success: false,
-                message: "User already exists"
+                message: "Email already exists"
             })
         }
 

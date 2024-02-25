@@ -10,9 +10,11 @@ import Validate from './validate';
 import { firebase } from '../../config/config'
 import 'firebase/firestore';
 import axios from 'axios'
+import { useNavigation } from '@react-navigation/native';
 
+function Register() {
 
-function Register({ navigation }) {
+	const navigation = useNavigation();
 
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -63,54 +65,36 @@ function Register({ navigation }) {
 			try {
 
 				//for registering user
-				const { data } = await axios.post('/auth/register',
-					{ username, userType, email, password });
+				const { data } = await axios.post('/auth/register', { username, userType, email, password });
 				console.log(data);
 
 				// for verification mail and folder creation
 				await firebase.auth().createUserWithEmailAndPassword(email, password)
 
-					.then((userCredential) => {
-						const userUid = userCredential.user.uid;
+					.then(() => {
 
 						//send verification mail
 						firebase.auth().currentUser.sendEmailVerification({
 							handleCodeInApp: true,
 							url: 'https://educat-auth.firebaseapp.com'
 						})
-							.then(async () => {
 
-								// Determine the storage path based on user type
-								const storagePath = userType === 'creator' ? `usersDirectory/creators/${userUid}` : `usersDirectory/explorers/${userUid}`;
-
-								// Create a folder for each user in Firebase Storage using their UID
-								firebase.storage().ref().child(storagePath).putString('')
-									.then(() => {
-										console.log('Folder created');
-									})
-									.catch((error) => {
-										console.error('Error creating folder:', error);
-									});
-							})
-							.catch((error) => {
-								Alert.alert(error.message)
-							})
 							.then(() => {
 								navigation.navigate('EmailSent')
 							})
 							.catch((error) => {
-								Alert.alert(error.message)
+								console.log(error.message)
 							})
 					})
 					.catch((error) => {
-						Alert.alert(error.message)
+						console.log(error.message)
 					})
 
 				setLoading(false);
 
 			}
 			catch (error) {
-				Alert.alert(error.response.data.message);
+				console.log(error.response.data.message);
 				console.log("Error Type: ", error.message)
 				setLoading(false);
 			}
@@ -120,7 +104,7 @@ function Register({ navigation }) {
 		}
 	}
 	return (
-		<ScrollView className='mt-10'>
+		<ScrollView className='mt-10' showsVerticalScrollIndicator={false}>
 
 			<StatusBar
 				backgroundColor="transparent"

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Image, StatusBar, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Image, StatusBar, ToastAndroid } from 'react-native';
 
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,8 +8,10 @@ import { Ionicons } from '@expo/vector-icons'
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { AuthContext } from '../../context/authContext';
+import { useNavigation } from '@react-navigation/native';
 
-function SignIn({ navigation }) {
+function SignIn() {
+    const navigation = useNavigation();
 
     //global state
     const { state, setState } = useContext(AuthContext);
@@ -38,13 +40,20 @@ function SignIn({ navigation }) {
 
             setState(data);
             await AsyncStorage.setItem('@auth', JSON.stringify(data));
-            Alert.alert(data && data.message);
+
+            ToastAndroid.showWithGravityAndOffset(
+                data && data.message,
+                3000,
+                ToastAndroid.BOTTOM,
+                25,
+                30,
+            );
 
             // Navigate to the desired screen
             navigation.navigate('Home');
         }
         catch (error) {
-            Alert.alert(error.response.data.message);
+            console.log(error.response.data.message);
         }
     };
 
@@ -61,7 +70,7 @@ function SignIn({ navigation }) {
 
     return (
 
-        <ScrollView className='mt-10'>
+        <ScrollView className='mt-10' showsVerticalScrollIndicator={false}>
 
             <StatusBar
                 backgroundColor="transparent"

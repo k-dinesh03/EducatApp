@@ -6,14 +6,15 @@ const postSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please add a title']
     },
-    subtitle: {
-        type: String,
-        required: [true, 'Please add a subtitle']
-    },
     description: {
         type: String,
         required: [true, 'Please add a description']
     },
+    images: [
+        {
+            type: String,
+        },
+    ],
     postedBy: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',

@@ -1,14 +1,10 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Text, View, Image, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 
-export default function Launch({ navigation }) {
-    const SignInPress = () => {
-        navigation.navigate('SignIn');
-    };
+export default function Launch() {
 
-    const RegisterPress = () => {
-        navigation.navigate('Register');
-    };
+    const navigation = useNavigation();
 
     return (
         <View style={styles.container} className='h-screen flex justify-between mt-10'>
@@ -33,7 +29,7 @@ export default function Launch({ navigation }) {
 
                 <TouchableOpacity
                     style={styles.registerButton}
-                    onPress={RegisterPress}
+                    onPress={() => navigation.navigate('Register')}
                     className='flex justify-center items-center'
                 >
                     <Text style={styles.register} className='text-emerald-500'>Register</Text>
@@ -42,7 +38,7 @@ export default function Launch({ navigation }) {
 
                 <TouchableOpacity
                     style={styles.signInButton}
-                    onPress={SignInPress}
+                    onPress={() => navigation.navigate('SignIn')}
                     className='bg-emerald-500 flex justify-center items-center'
                 >
                     <Text style={styles.signin}>Sign in</Text>

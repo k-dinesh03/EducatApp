@@ -18,7 +18,7 @@ const OTP = () => {
 
     return (
 
-        <ScrollView className='mt-10 w-screen'>
+        <ScrollView className='mt-10 w-screen' showsVerticalScrollIndicator={false}>
 
             <View className='w-full h-screen flex justify-center'>
 

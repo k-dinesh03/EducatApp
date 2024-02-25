@@ -1,12 +1,14 @@
-import { View, Text, StatusBar, Image, TextInput, TouchableOpacity, ScrollView, SafeAreaView, Alert } from 'react-native'
+import { View, Text, StatusBar, Image, TextInput, TouchableOpacity, ScrollView, SafeAreaView, ToastAndroid } from 'react-native'
 import React, { useState } from 'react'
 
 import { Ionicons } from '@expo/vector-icons'
 import { firebase } from '../../config/config'
+import { useNavigation } from '@react-navigation/native'
 
-const ForgotPassword = ({ route, navigation }) => {
+const ForgotPassword = ({ route }) => {
     const [email, setEmail] = useState(route.params?.email || '');
     const [errors, setErrors] = useState(null);
+    const navigation = useNavigation();
 
     const handleInput = (value) => {
         setEmail(value);
@@ -29,18 +31,24 @@ const ForgotPassword = ({ route, navigation }) => {
         if (!errors) {
             firebase.auth().sendPasswordResetEmail(email)
                 .then(() => {
-                    Alert.alert("Password reset email sent");
+                    ToastAndroid.showWithGravityAndOffset(
+                        'Password reset email sent successfully',
+                        3000,
+                        ToastAndroid.BOTTOM,
+                        25,
+                        30,
+                    );
                     navigation.navigate('SignIn');
                 })
                 .catch((err) => {
                     console.error('Error sending password reset email:', err);
-                    Alert.alert("Error", "Failed to send password reset email. Please try again later.");
+                    alert("Error", "Failed to send password reset email. Please try again later.");
                 });
         }
     };
 
     return (
-        <ScrollView className='mt-10 w-screen'>
+        <ScrollView className='mt-10 w-screen' showsVerticalScrollIndicator={false}>
 
             <View className='w-full h-screen'>
 

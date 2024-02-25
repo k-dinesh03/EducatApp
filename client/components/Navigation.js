@@ -1,14 +1,17 @@
 import React from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { AntDesign, Ionicons } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native';
 
-const Navigation = ({ navigation }) => {
+const Navigation = () => {
+
+    const navigation = useNavigation();
 
     return (
 
         <View className='w-full h-16 flex items-center justify-center'>
 
-            <View className='h-[60px] rounded-md border-[1.5px] border-gray-400 flex flex-row justify-between items-center px-3' style={{ width: '95%' }}>
+            <View className='h-[60px] rounded-md border-[1px] border-gray-300 flex flex-row justify-between items-center px-3' style={{ width: '95%' }}>
 
                 <View className='flex flex-row items-start w-24 h-14'>
                     <Image source={require('../assets/images/Graduation_Cap.png')} style={styles.logo} />
