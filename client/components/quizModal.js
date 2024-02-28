@@ -9,8 +9,6 @@ import { useNavigation } from '@react-navigation/native';
 
 const QuizModal = ({ modalVisible, setModalVisible }) => {
 
-    const navigation = useNavigation();
-
     const [urlField, setUrlField] = useState(false);
     const [categories, setCategories] = useState(false);
 
@@ -35,7 +33,6 @@ const QuizModal = ({ modalVisible, setModalVisible }) => {
             setQuestions(data.results);
             console.log(data.results);
             setModalVisible(!modalVisible);
-            navigation.navigate('Quiz', { questions: data.results });
         }
         catch (error) {
             console.error('Error fetching data:', error);

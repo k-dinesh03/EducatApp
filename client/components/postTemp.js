@@ -12,8 +12,7 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 import { Video } from 'expo-av';
 
-import { AntDesign, Feather, FontAwesome, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
-import QuizModal from './quizModal';
+import { AntDesign, FontAwesome, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 
 const windowWidth = Dimensions.get('window').width;
 const carouselWidth = windowWidth - (windowWidth * 0.05);
@@ -25,20 +24,6 @@ const PostTemp = ({ route }) => {
     const videoUrl = route.params?.videoUrl || '';
     const videoRef = useRef(null);
     const navigation = useNavigation();
-    const [modalVisible, setModalVisible] = useState(false);
-
-    //to increase the "quiz set time" view
-    const [quizSetTime, setQuizSetTime] = useState(1);
-    const increaseQuizSetTime = () => {
-        if (quizSetTime < 3) setQuizSetTime(quizSetTime + 1);
-    }
-    const decreaseQuizSetTime = () => {
-        if (quizSetTime) setQuizSetTime(quizSetTime - 1);
-    }
-
-    const handleQuizSubmit = () => {
-        console.log("Quiz Submitted");
-    }
 
     // from postCard component
     const postId = route.params?.postId || '';
@@ -283,118 +268,6 @@ const PostTemp = ({ route }) => {
                                 <Text>{currentPost.description}</Text>
                             </View>
                         )}
-
-                    </View>
-
-                ) : videoUrl ? (
-
-                    /* From post screen form quiz */
-
-                    <View className='w-full h-full py-1 space-y-3'>
-
-                        <Text className='self-center text-lg font-semibold tracking-wider'>Make a Quiz</Text>
-
-                        <View className='w-full h-96 border-[1px] border-slate-400 rounded-sm mb-3'>
-
-                            <Video
-                                ref={videoRef}
-                                source={{ uri: videoUrl }}
-                                paused={false}
-                                repeat={true}
-                                style={{ width: '100%', height: '100%', borderRadius: 5 }}
-                                useNativeControls
-                                resizeMode='contain'
-                                isLooping={true}
-                                isMuted={isMuted}
-                            />
-
-                        </View>
-
-                        <View className='w-full space-y-6 px-[10px] pb-8'>
-
-                            <View className='flex-row items-center justify-between'>
-
-                                <View className='flex-row items-center'>
-                                    <Text className='font-medium tracking-widest' style={{ fontSize: 15 }}>Time Duration : </Text>
-                                    <Text style={{ fontSize: 15 }}>2 Mins</Text>
-                                </View>
-
-                                <View className='flex-row items-center space-x-2'>
-                                    {quizSetTime > 1 && <TouchableOpacity
-                                        className='flex-row items-center bg-red-500 w-6 h-6 justify-center rounded-sm'
-                                        onPress={decreaseQuizSetTime}
-                                    >
-                                        <AntDesign name='minus' color='white' size={18} />
-                                    </TouchableOpacity>}
-
-                                    {quizSetTime < 3 && <TouchableOpacity
-                                        className='flex-row items-center bg-green-500 w-6 h-6 justify-center rounded-sm'
-                                        onPress={increaseQuizSetTime}
-                                    >
-                                        <AntDesign name='plus' color='white' size={18} />
-                                    </TouchableOpacity>}
-                                </View>
-
-                            </View>
-
-                            <View className='space-y-3'>
-
-                                <Text className='font-medium tracking-wide' style={{ fontSize: 15 }}>Enter Time To Add Quiz : </Text>
-
-                                {Array.from({ length: quizSetTime }).map((_, index) => (
-
-                                    <View className='flex-row items-center justify-around' key={index}>
-
-                                        <View className='space-x-1 flex-row items-center'>
-                                            <TextInput
-                                                autoCapitalize='none'
-                                                maxLength={2}
-                                                keyboardType='numeric'
-                                                placeholder='HH'
-                                                className='w-12 h-12 rounded-lg py-2 border border-gray-400 text-center'
-                                                clearButtonMode="always"
-                                            />
-                                            <Text className='font-bold'> : </Text>
-                                            <TextInput
-                                                autoCapitalize='none'
-                                                maxLength={2}
-                                                keyboardType='numeric'
-                                                placeholder='MM'
-                                                className='w-12 h-12 rounded-lg py-2 border border-gray-400 text-center'
-                                                clearButtonMode="always"
-                                            />
-                                            <Text className='font-bold'> : </Text>
-                                            <TextInput
-                                                autoCapitalize='none'
-                                                maxLength={2}
-                                                keyboardType='numeric'
-                                                placeholder='SS'
-                                                className='w-12 h-12 rounded-lg py-2 border border-gray-400 text-center'
-                                                clearButtonMode="always"
-
-                                            />
-                                        </View>
-
-                                        <TouchableOpacity className='border-[1px] border-slate-400 px-3 py-[6px] rounded-md' onPress={() => setModalVisible(true)}>
-                                            <Text style={{ fontSize: 15 }}>Add Quiz</Text>
-                                        </TouchableOpacity>
-
-                                    </View>
-
-                                ))}
-
-                                <QuizModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
-
-                            </View>
-
-                        </View>
-
-                        <TouchableOpacity
-                            className='w-3/5 bg-emerald-500 py-2 items-center rounded-md self-center mb-8'
-                            onPress={handleQuizSubmit}
-                        >
-                            <Text className='text-white text-lg'>Submit</Text>
-                        </TouchableOpacity>
 
                     </View>
 
