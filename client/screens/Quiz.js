@@ -2,41 +2,53 @@ import React, { useRef, useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, Text, View, TouchableOpacity, TextInput } from 'react-native';
 
 import { Video } from 'expo-av';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import Navigation from '../components/Navigation';
 import MenuBtn from '../components/menuBtn';
 import BottomSheetNav from '../components/bottomSheetNav';
 import QuizModal from '../components/quizModal';
 
+import { useNavigation } from '@react-navigation/native';
+
 const Quiz = ({ route }) => {
+
+    const navigation = useNavigation();
 
     const bottomSheetRef = useRef(null);
     const videoRef = useRef(null);
     const videoUrl = route.params?.videoUrl || '';
     const [modalVisible, setModalVisible] = useState(false);
 
-    const handleQuizSubmit = () => {
-        console.log("Submitted Quiz");
+    const [questions, setQuestions] = useState([[], []]);
+    const [indexOfQuiz, setIndexOfQuiz] = useState(null);
+
+    const removeQuiz = (index) => {
+        //remove questions in the correct index
+        const updatedQuestions = [...questions];
+        updatedQuestions[index] = [];
+        setQuestions(updatedQuestions);
+
+        // Mark quiz as removed in quizTimes
+        const updatedQuizTimes = [...quizTimes];
+        updatedQuizTimes[index].added = false;
+        setQuizTimes(updatedQuizTimes);
+
+    }
+
+    const [quizTimes, setQuizTimes] = useState([
+        { hour: '', minute: '', second: '', added: false },
+        { hour: '', minute: '', second: '', added: false },
+    ]);
+
+    const handleTimeInputChange = (quizIndex, field, value) => {
+        const updatedQuizTimes = [...quizTimes];
+        updatedQuizTimes[quizIndex][field] = value;
+        setQuizTimes(updatedQuizTimes);
     };
 
-    const [hourInput, setHourInput] = useState('');
-    const [minuteInput, setMinuteInput] = useState('');
-    const [secondInput, setSecondInput] = useState('');
-
-    const handleTimeInputChange = (field, value) => {
-        switch (field) {
-            case 'hour':
-                setHourInput(value);
-                break;
-            case 'minute':
-                setMinuteInput(value);
-                break;
-            case 'second':
-                setSecondInput(value);
-                break;
-            default:
-                break;
-        }
+    const handleQuizSubmit = async () => {
+        navigation.navigate('Post');
     };
 
     return (
@@ -62,6 +74,11 @@ const Quiz = ({ route }) => {
 
                     <Text className='self-center text-lg font-semibold tracking-wider'>Make a Quiz</Text>
 
+                    <View className='flex-row items-center'>
+                        <Text className='font-medium tracking-widest' style={{ fontSize: 15 }}>Time Duration : </Text>
+                        <Text style={{ fontSize: 15 }}>2 Mins</Text>
+                    </View>
+
                     <View className='w-full h-96 border-[1px] border-slate-400 rounded-sm mb-3'>
 
                         <Video
@@ -79,65 +96,76 @@ const Quiz = ({ route }) => {
 
                     <View className='w-full space-y-6 px-[10px] pb-8'>
 
-
-                        <View className='flex-row items-center'>
-                            <Text className='font-medium tracking-widest' style={{ fontSize: 15 }}>Time Duration : </Text>
-                            <Text style={{ fontSize: 15 }}>2 Mins</Text>
-                        </View>
-
-                        <View className='space-y-3'>
+                        <View className='space-y-4'>
 
                             <Text className='font-medium tracking-wide' style={{ fontSize: 15 }}>Enter Time To Add Quiz : </Text>
 
-                            <View className='flex-row items-center justify-around'>
+                            {quizTimes.map((quizTime, index) => (
 
-                                <View className='space-x-1 flex-row items-center'>
-                                    <TextInput
-                                        autoCapitalize='none'
-                                        maxLength={2}
-                                        keyboardType='numeric'
-                                        placeholder='HH'
-                                        className='w-12 h-12 rounded-lg py-2 border border-gray-400 text-center'
-                                        clearButtonMode="always"
-                                        value={hourInput}
-                                        onChangeText={(value) => handleTimeInputChange('hour', value)}
-                                    />
-                                    <Text className='font-bold'> : </Text>
-                                    <TextInput
-                                        autoCapitalize='none'
-                                        maxLength={2}
-                                        keyboardType='numeric'
-                                        placeholder='MM'
-                                        className='w-12 h-12 rounded-lg py-2 border border-gray-400 text-center'
-                                        clearButtonMode="always"
-                                        value={minuteInput}
-                                        onChangeText={(value) => handleTimeInputChange('minute', value)}
-                                    />
-                                    <Text className='font-bold'> : </Text>
-                                    <TextInput
-                                        autoCapitalize='none'
-                                        maxLength={2}
-                                        keyboardType='numeric'
-                                        placeholder='SS'
-                                        className='w-12 h-12 rounded-lg py-2 border border-gray-400 text-center'
-                                        clearButtonMode="always"
-                                        value={secondInput}
-                                        onChangeText={(value) => handleTimeInputChange('second', value)}
-                                    />
+                                <View className='flex-row items-center justify-around' key={index}>
+
+                                    <View className='space-x-1 flex-row items-center'>
+                                        <TextInput
+                                            autoCapitalize='none'
+                                            maxLength={2}
+                                            keyboardType='numeric'
+                                            placeholder='HH'
+                                            className='w-12 h-12 rounded-lg py-2 border border-gray-400 text-center'
+                                            clearButtonMode="always"
+                                            value={quizTime.hour}
+                                            onChangeText={(value) => handleTimeInputChange(index, 'hour', value)}
+                                        />
+                                        <Text className='font-bold'> : </Text>
+                                        <TextInput
+                                            autoCapitalize='none'
+                                            maxLength={2}
+                                            keyboardType='numeric'
+                                            placeholder='MM'
+                                            className='w-12 h-12 rounded-lg py-2 border border-gray-400 text-center'
+                                            clearButtonMode="always"
+                                            value={quizTime.minute}
+                                            onChangeText={(value) => handleTimeInputChange(index, 'minute', value)}
+                                        />
+                                        <Text className='font-bold'> : </Text>
+                                        <TextInput
+                                            autoCapitalize='none'
+                                            maxLength={2}
+                                            keyboardType='numeric'
+                                            placeholder='SS'
+                                            className='w-12 h-12 rounded-lg py-2 border border-gray-400 text-center'
+                                            clearButtonMode="always"
+                                            value={quizTime.second}
+                                            onChangeText={(value) => handleTimeInputChange(index, 'second', value)}
+                                        />
+                                    </View>
+
+                                    {quizTime.added ? (
+                                        <View className='flex-row items-center space-x-2'>
+                                            <Text style={{ fontSize: 15 }} className='bg-emerald-500 text-white px-3 py-[6px] rounded-md'>Quiz Added</Text>
+                                            <TouchableOpacity className='bg-red-500 px-2 py-[6px] rounded-md' onPress={() => removeQuiz(index)}>
+                                                <MaterialCommunityIcons name='close' size={20} color='white' />
+                                            </TouchableOpacity>
+                                        </View>
+                                    ) : (
+                                        <TouchableOpacity
+                                            className='border-[1px] border-slate-400 px-3 py-[6px] rounded-md'
+                                            onPress={() => { setModalVisible(true), setIndexOfQuiz(index) }}
+                                        >
+                                            <Text style={{ fontSize: 15 }}>Add Quiz</Text>
+                                        </TouchableOpacity>
+                                    )}
+
                                 </View>
-
-                                <TouchableOpacity
-                                    className='border-[1px] border-slate-400 px-3 py-[6px] rounded-md'
-                                    onPress={() => setModalVisible(true)}
-                                >
-                                    <Text style={{ fontSize: 15 }}>Add Quiz</Text>
-                                </TouchableOpacity>
-
-                            </View>
+                            ))}
 
                             <QuizModal
                                 modalVisible={modalVisible}
                                 setModalVisible={setModalVisible}
+                                setQuestions={setQuestions}
+                                questions={questions}
+                                quizIndex={indexOfQuiz}
+                                quizTimes={quizTimes}
+                                setQuizTimes={setQuizTimes}
                             />
 
                         </View>
@@ -145,7 +173,7 @@ const Quiz = ({ route }) => {
                     </View>
 
                     <TouchableOpacity
-                        className='w-3/5 bg-emerald-500 py-2 items-center rounded-md self-center mb-8'
+                        className='w-1/2 bg-emerald-500 py-2 items-center rounded-md self-center mb-8'
                         onPress={handleQuizSubmit}
                     >
                         <Text className='text-white text-lg'>Submit</Text>

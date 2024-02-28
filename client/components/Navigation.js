@@ -11,7 +11,7 @@ const Navigation = () => {
 
         <View className='w-full h-16 flex items-center justify-center'>
 
-            <View className='h-[60px] rounded-md border-[1px] border-gray-300 flex flex-row justify-between items-center px-3' style={{ width: '95%' }}>
+            <View className='h-[58px] rounded-md border-[1px] border-gray-400 flex flex-row justify-between items-center px-[10px]' style={{ width: '95%' }}>
 
                 <View className='flex flex-row items-start w-24 h-14'>
                     <Image source={require('../assets/images/Graduation_Cap.png')} style={styles.logo} />

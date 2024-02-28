@@ -1,13 +1,10 @@
 import React, { useState } from 'react'
-import { Modal, Text, Pressable, View, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { Modal, Text, Pressable, View, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 
 import { Dropdown } from 'react-native-element-dropdown';
-import axios from 'axios';
-
 import { Feather, Ionicons, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
 
-const QuizModal = ({ modalVisible, setModalVisible }) => {
+const QuizModal = ({ modalVisible, setModalVisible, setQuestions, questions, quizIndex, quizTimes, setQuizTimes }) => {
 
     const [urlField, setUrlField] = useState(false);
     const [categories, setCategories] = useState(false);
@@ -24,18 +21,45 @@ const QuizModal = ({ modalVisible, setModalVisible }) => {
         setDifficulty(selectedValue.value);
     };
 
-    const [questions, setQuestions] = useState([]);
+    const generateQuesError = (amount, difficulty) => {
+        if (!amount) {
+            Alert.alert('Fill the fields', 'Please Enter a valid inputs');
+            return false;
+        }
+        if (amount < 3 || amount > 20) {
+            Alert.alert('Fill the fields', 'Please Enter a number of questions you want between 3 and 20');
+            return false;
+        }
+        if (!difficulty) {
+            Alert.alert('Fill the fields', 'Please Select a difficulty level');
+            return false;
+        }
+        return true;
+    }
 
     const generateQuestions = async () => {
-        try {
-            const response = await fetch(`https://opentdb.com/api.php?amount=${amount}&category=18&difficulty=${difficulty}&type=multiple`);
-            const data = await response.json();
-            setQuestions(data.results);
-            console.log(data.results);
-            setModalVisible(!modalVisible);
-        }
-        catch (error) {
-            console.error('Error fetching data:', error);
+
+        if (generateQuesError(amount, difficulty)) {
+            try {
+                const response = await fetch(`https://opentdb.com/api.php?amount=${amount}&category=18&difficulty=${difficulty}&type=multiple`);
+                const data = await response.json();
+
+                // Save questions in the correct index
+                const updatedQuestions = [...questions];
+                updatedQuestions[quizIndex] = data.results;
+                setQuestions(updatedQuestions);
+
+                // Mark quiz as added in quizTimes
+                const updatedQuizTimes = [...quizTimes];
+                updatedQuizTimes[quizIndex].added = true;
+                setQuizTimes(updatedQuizTimes);
+
+                setModalVisible(!modalVisible);
+                console.log(data.results);
+            }
+            catch (error) {
+                console.error('Error fetching data:', error);
+            }
         }
     }
 
@@ -90,7 +114,7 @@ const QuizModal = ({ modalVisible, setModalVisible }) => {
                         <View className='space-y-2'>
                             <TextInput
                                 style={styles.inputBox}
-                                placeholder='Enter Number of Questions (5 - 20)'
+                                placeholder='Enter Number of Questions (3 - 20)'
                                 value={amount}
                                 onChangeText={amount => setAmount(amount)}
                                 clearButtonMode="always"

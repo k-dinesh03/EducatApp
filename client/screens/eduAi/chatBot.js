@@ -1,9 +1,10 @@
-import { View, Text, Image, FlatList, TextInput, TouchableOpacity, ActivityIndicator, StyleSheet, StatusBar } from 'react-native';
+import { View, Text, Image, FlatList, TextInput, TouchableOpacity, ActivityIndicator, StyleSheet, StatusBar, SafeAreaView } from 'react-native';
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons'
 import axios from 'axios';
 
 import ChatBubble from './chatBubble';
+import Navigation from '../../components/Navigation';
 
 const ChatBot = () => {
     const [chat, setChat] = useState([]);
@@ -67,51 +68,49 @@ const ChatBot = () => {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView className='w-screen h-full flex pt-10 bg-slate-100'>
+
             <StatusBar backgroundColor='transparent' barStyle={'dark-content'} />
-            <View className='flex flex-row items-start w-24 h-14'>
-                <Image source={require('../../assets/images/Graduation_Cap.png')} style={styles.logo} />
-                <Text className='text-xl font-semibold tracking-widest absolute bottom-0 right-4'>Edu-Ai</Text>
-            </View>
-            <FlatList
-                data={chat}
-                renderItem={renderChatItem}
-                keyExtractor={(item, index) => index.toString()}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
-            />
 
-            <View className=' rounded-3xl shadow-md shadow-black'>
-                <View style={styles.inputContiner}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder='Type your message...'
-                        placeholderTextColor="#aaa"
-                        value={userInput}
-                        onChangeText={setUserInput}
-                    />
-                    <TouchableOpacity
-                        onPress={handelUserInput}
-                        style={buttonStyle}
-                        disabled={loading || userInput.trim() === ''}>
-                        <Ionicons name='send' color="green" size={21} />
-                    </TouchableOpacity>
+            <View className='h-full self-center py-2'>
+
+                <Navigation />
+
+                {loading && <ActivityIndicator style={{ marginTop: 10 }} color="rgb(16 185 129)" />}
+
+                <FlatList
+                    data={chat}
+                    renderItem={renderChatItem}
+                    keyExtractor={(item, index) => index.toString()}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
+                />
+
+                <View className='rounded-3xl shadow-md shadow-black'>
+                    <View style={styles.inputContiner}>
+                        <TextInput
+                            style={styles.input}
+                            placeholder='Type your message...'
+                            placeholderTextColor="#aaa"
+                            value={userInput}
+                            onChangeText={setUserInput}
+                        />
+                        <TouchableOpacity
+                            onPress={handelUserInput}
+                            style={buttonStyle}
+                            disabled={loading || userInput.trim() === ''}>
+                            <Ionicons name='send' color="green" size={21} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
+
             </View>
 
-            {loading && <ActivityIndicator style={{ marginTop: 10 }} color="rgb(16 185 129)" />}
-        </View>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        width: '100%',
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        backgroundColor: "#fff"
-    },
     inputContiner: {
         flexDirection: "row",
         alignItems: "center",
