@@ -51,7 +51,7 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
 
                     <View className='flex items-center w-1/3 py-2'>
                         <TouchableOpacity
-                            onPress={() => navigation.navigate("ChatHome")}
+                            onPress={() => navigation.navigate("ChatBot")}
                             className='rounded-full h-[50px] w-[50px] flex items-center pl-[2px] justify-center bg-white border-[1px] border-gray-400'
                         >
                             <Ionicons name='chatbox-ellipses-outline' size={26} color='gray' />

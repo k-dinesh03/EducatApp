@@ -6,8 +6,7 @@ import { AuthContext, AuthProvider } from './context/authContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PostProvider } from './context/postContext';
 
-import ChatHome from './screens/chat/ChatHome';
-import ChatMain from './screens/chat/ChatMain';
+import ChatBot from './screens/eduAi/chatBot';
 import Post from './screens/creator/post';
 import Collections from './screens/creator/collections';
 import EmailSent from './screens/others/emailSent';
@@ -18,6 +17,7 @@ import ForgotPassword from './screens/others/ForgotPassword'
 import Home from './screens/home';
 import Profile from './screens/profile';
 import PostTemp from './components/postTemp';
+import Quiz from './screens/Quiz'
 
 const App = () => {
 
@@ -32,13 +32,13 @@ const App = () => {
 			<NavigationContainer>
 				{authenticatedUser ? (
 					<Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+						<Stack.Screen name="Post" component={Post} />
 						<Stack.Screen name="Home" component={Home} />
 						<Stack.Screen name="Profile" component={Profile} />
-						<Stack.Screen name="ChatHome" component={ChatHome} />
-						<Stack.Screen name="ChatMain" component={ChatMain} />
-						<Stack.Screen name="Post" component={Post} />
+						<Stack.Screen name="ChatBot" component={ChatBot} />
 						<Stack.Screen name="Collections" component={Collections} />
 						<Stack.Screen name="PostTemp" component={PostTemp} />
+						<Stack.Screen name="Quiz" component={Quiz} />
 					</Stack.Navigator>
 				) : (
 					<Stack.Navigator initialRouteName="Launch" screenOptions={{ headerShown: false }}>

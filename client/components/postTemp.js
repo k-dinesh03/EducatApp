@@ -13,6 +13,7 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { Video } from 'expo-av';
 
 import { AntDesign, Feather, FontAwesome, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
+import QuizModal from './quizModal';
 
 const windowWidth = Dimensions.get('window').width;
 const carouselWidth = windowWidth - (windowWidth * 0.05);
@@ -24,6 +25,7 @@ const PostTemp = ({ route }) => {
     const videoUrl = route.params?.videoUrl || '';
     const videoRef = useRef(null);
     const navigation = useNavigation();
+    const [modalVisible, setModalVisible] = useState(false);
 
     //to increase the "quiz set time" view
     const [quizSetTime, setQuizSetTime] = useState(1);
@@ -373,13 +375,15 @@ const PostTemp = ({ route }) => {
                                             />
                                         </View>
 
-                                        <TouchableOpacity className='border-[1px] border-slate-400 px-3 py-[6px] rounded-md'>
+                                        <TouchableOpacity className='border-[1px] border-slate-400 px-3 py-[6px] rounded-md' onPress={() => setModalVisible(true)}>
                                             <Text style={{ fontSize: 15 }}>Add Quiz</Text>
                                         </TouchableOpacity>
 
                                     </View>
 
                                 ))}
+
+                                <QuizModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
 
                             </View>
 

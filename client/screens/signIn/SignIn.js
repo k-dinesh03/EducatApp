@@ -60,7 +60,6 @@ function SignIn() {
     //Temp function to check local storage data
     const getLocalStorageData = async () => {
         let data = await AsyncStorage.getItem('@auth');
-        console.log("Local Storage : ", data);
     }
     getLocalStorageData();
 
@@ -145,7 +144,7 @@ function SignIn() {
 
                     <Animated.View entering={FadeInUp.duration(3000).springify().delay(200)} className='w-full'>
                         <TouchableOpacity className='w-full border-[1px] border-gray-500 rounded-md px-2'>
-                            <View className='w-3/6 flex-row self-center justify-around items-center'>
+                            <View className='w-3/6 flex-row self-center items-center space-x-2'>
                                 <Image
                                     style={styles.auth_image}
                                     source={require("../../assets/images/google.png")}
@@ -157,7 +156,7 @@ function SignIn() {
 
                     <Animated.View entering={FadeInUp.duration(3000).springify().delay(200)} className='w-full'>
                         <TouchableOpacity className='w-full border-[1px] border-gray-500 rounded-md px-2 mt-2'>
-                            <View className='w-3/6 flex-row self-center justify-around items-center'>
+                            <View className='w-3/6 flex-row self-center items-center space-x-2'>
                                 <Image
                                     style={styles.auth_image}
                                     source={require("../../assets/images/LinkedIn_icon.png")}

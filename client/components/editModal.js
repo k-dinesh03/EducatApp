@@ -38,15 +38,14 @@ const EditModal = ({ modalVisible, setModalVisible, post }) => {
 
     return (
         <Modal
-            animationType="slide"
+            animationType="fade"
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => {
-                Alert.alert('Modal has been closed.');
-                setModalVisible(!modalVisible);
+                setModalVisible(!modalVisible)
             }}
         >
-            <View className='flex-1 items-center justify-center' style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}>
+            <View className='flex-1 items-center justify-center shadow-lg shadow-black'>
 
                 <View className='bg-white w-11/12 rounded-md px-4 pt-3 space-y-5 pb-6'>
 
@@ -82,6 +81,7 @@ const EditModal = ({ modalVisible, setModalVisible, post }) => {
                     <View className='w-11/12 flex-row items-center justify-evenly self-center'>
                         <Pressable
                             className='bg-red-400 px-3 py-[6px] rounded-md items-center'
+                            onPress={() => setModalVisible(!modalVisible)}
                         >
                             <Text className='text-white text-lg'>Cancel</Text>
                         </Pressable>
