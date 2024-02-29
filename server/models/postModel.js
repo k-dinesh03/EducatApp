@@ -15,6 +15,22 @@ const postSchema = new mongoose.Schema({
             type: String,
         },
     ],
+    quizzes: [
+        {
+            hour: String,
+            minute: String,
+            second: String,
+            added: Boolean,
+            questions: [
+                String, // type
+                String, // difficulty
+                String, // category
+                String, // question
+                String, // correct_answer
+                [String], // incorrect_answers
+            ],
+        },
+    ],
     postedBy: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
