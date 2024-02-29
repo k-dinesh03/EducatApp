@@ -32,13 +32,13 @@ const App = () => {
 			<NavigationContainer>
 				{authenticatedUser ? (
 					<Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-						<Stack.Screen name="Post" component={Post} />
 						<Stack.Screen name="Home" component={Home} />
 						<Stack.Screen name="Profile" component={Profile} />
 						<Stack.Screen name="ChatBot" component={ChatBot} />
 						<Stack.Screen name="Collections" component={Collections} />
 						<Stack.Screen name="PostTemp" component={PostTemp} />
 						<Stack.Screen name="Quiz" component={Quiz} />
+						<Stack.Screen name="Post" component={Post} />
 					</Stack.Navigator>
 				) : (
 					<Stack.Navigator initialRouteName="Launch" screenOptions={{ headerShown: false }}>
