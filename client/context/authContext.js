@@ -28,8 +28,7 @@ const AuthProvider = ({ children }) => {
 
     //default axios settings
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    // axios.defaults.baseURL = 'https://educatapp-server.onrender.com/api/v1'
-    axios.defaults.baseURL = 'http://192.168.229.128:8000/api/v1'
+    axios.defaults.baseURL = 'https://educatapp-server.onrender.com/api/v1'
 
     return (
         <AuthContext.Provider value={{ state, setState }}>
