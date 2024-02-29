@@ -89,8 +89,9 @@ const PostTemp = ({ route }) => {
                         resizeMode='contain'
                         isLooping={true}
                         isMuted={isMuted}
+
                     />
-                    <TouchableOpacity className='absolute top-1 right-12 bg-white w-9 h-9 rounded-full flex items-center justify-center' onPress={toggleMute}>
+                    <TouchableOpacity className='absolute top-1 right-1 bg-white w-9 h-9 rounded-full flex items-center justify-center' onPress={toggleMute}>
                         {isMuted ? (
                             <SimpleLineIcons name='volume-off' size={22} color='black' />
                         ) : (
@@ -177,8 +178,6 @@ const PostTemp = ({ route }) => {
             {/* Top navigation */}
             <Navigation navigation={navigation} />
 
-            <MenuBtn handleOpen={() => bottomSheetRef.current?.snapToIndex(0)} />
-
             <ScrollView className='h-full self-center -z-10 py-1' style={{ width: '95%' }} showsVerticalScrollIndicator={false}>
 
                 {/* From postCard Component */}
@@ -196,7 +195,7 @@ const PostTemp = ({ route }) => {
                             </TouchableOpacity>
                         </View>
 
-                        <View className='w-full h-96'>
+                        <View className='w-full h-96 border-[1px] border-slate-300 rounded-md'>
 
                             <Carousel
                                 layout={'default'}
@@ -276,6 +275,8 @@ const PostTemp = ({ route }) => {
                 )}
 
             </ScrollView>
+
+            <MenuBtn handleOpen={() => bottomSheetRef.current?.snapToIndex(0)} />
 
             {/* Bottom Sheet navigation */}
             <BottomSheetNav bottomSheetRef={bottomSheetRef} navigation={navigation} />
