@@ -20,25 +20,20 @@ const Quiz = ({ route }) => {
     const videoUrl = route.params?.videoUrl || '';
     const [modalVisible, setModalVisible] = useState(false);
 
-    const [questions, setQuestions] = useState([[], []]);
     const [indexOfQuiz, setIndexOfQuiz] = useState(null);
 
     const removeQuiz = (index) => {
-        //remove questions in the correct index
-        const updatedQuestions = [...questions];
-        updatedQuestions[index] = [];
-        setQuestions(updatedQuestions);
 
         // Mark quiz as removed in quizTimes
         const updatedQuizTimes = [...quizTimes];
         updatedQuizTimes[index].added = false;
+        updatedQuizTimes[index].questions = [];
         setQuizTimes(updatedQuizTimes);
-
     }
 
     const [quizTimes, setQuizTimes] = useState([
-        { hour: '', minute: '', second: '', added: false },
-        { hour: '', minute: '', second: '', added: false },
+        { hour: '', minute: '', second: '', added: false, questions: [] },
+        { hour: '', minute: '', second: '', added: false, questions: [] },
     ]);
 
     const handleTimeInputChange = (quizIndex, field, value) => {
@@ -47,8 +42,8 @@ const Quiz = ({ route }) => {
         setQuizTimes(updatedQuizTimes);
     };
 
-    const handleQuizSubmit = async () => {
-        navigation.navigate('Post');
+    const handleQuizSubmit = () => {
+        navigation.navigate('Post', { quizzes: quizTimes });
     };
 
     return (
@@ -156,13 +151,12 @@ const Quiz = ({ route }) => {
                                     )}
 
                                 </View>
+
                             ))}
 
                             <QuizModal
                                 modalVisible={modalVisible}
                                 setModalVisible={setModalVisible}
-                                setQuestions={setQuestions}
-                                questions={questions}
                                 quizIndex={indexOfQuiz}
                                 quizTimes={quizTimes}
                                 setQuizTimes={setQuizTimes}

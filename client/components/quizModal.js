@@ -3,9 +3,11 @@ import { Modal, Text, Pressable, View, TextInput, TouchableOpacity, StyleSheet, 
 
 import { Dropdown } from 'react-native-element-dropdown';
 import { Feather, Ionicons, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
-const QuizModal = ({ modalVisible, setModalVisible, setQuestions, questions, quizIndex, quizTimes, setQuizTimes }) => {
+const QuizModal = ({ modalVisible, setModalVisible, quizIndex, quizTimes, setQuizTimes }) => {
 
+    const navigation = useNavigation();
     const [urlField, setUrlField] = useState(false);
     const [categories, setCategories] = useState(false);
 
@@ -44,18 +46,14 @@ const QuizModal = ({ modalVisible, setModalVisible, setQuestions, questions, qui
                 const response = await fetch(`https://opentdb.com/api.php?amount=${amount}&category=18&difficulty=${difficulty}&type=multiple`);
                 const data = await response.json();
 
-                // Save questions in the correct index
-                const updatedQuestions = [...questions];
-                updatedQuestions[quizIndex] = data.results;
-                setQuestions(updatedQuestions);
+                setModalVisible(!modalVisible);
+                console.log("Data : ", data);
 
                 // Mark quiz as added in quizTimes
                 const updatedQuizTimes = [...quizTimes];
                 updatedQuizTimes[quizIndex].added = true;
+                updatedQuizTimes[quizIndex].questions = data.results;
                 setQuizTimes(updatedQuizTimes);
-
-                setModalVisible(!modalVisible);
-                console.log(data.results);
             }
             catch (error) {
                 console.error('Error fetching data:', error);
@@ -85,7 +83,10 @@ const QuizModal = ({ modalVisible, setModalVisible, setQuestions, questions, qui
 
                     <View className='flex-row space-x-4'>
 
-                        <TouchableOpacity className='h-[45px] w-[45px] items-center justify-start border-[1px] border-slate-400 rounded-md py-[3px]'>
+                        <TouchableOpacity
+                            className='h-[45px] w-[45px] items-center justify-start border-[1px] border-slate-400 rounded-md py-[3px]'
+                            onPress={() => navigation.navigate("ChatBot")}
+                        >
                             <Image source={require('../assets/images/Graduation_Cap.png')} style={styles.logo} />
                             <Text className='text-md font-medium tracking-widest absolute bottom-[3px]'>Ai</Text>
                         </TouchableOpacity>

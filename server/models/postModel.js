@@ -22,14 +22,13 @@ const postSchema = new mongoose.Schema({
             second: String,
             added: Boolean,
             questions: [
-                String, // type
-                String, // difficulty
-                String, // category
-                String, // question
-                String, // correct_answer
-                [String], // incorrect_answers
+                {
+                    question: String,
+                    correct_answer: String,
+                    incorrect_answers: [String],
+                },
             ],
-        },
+        }
     ],
     postedBy: {
         type: mongoose.Schema.ObjectId,

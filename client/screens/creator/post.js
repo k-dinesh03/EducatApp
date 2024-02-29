@@ -22,7 +22,10 @@ const carouselWidth = windowWidth - (windowWidth * 0.05);
 import { firebase } from '../../config/config';
 import { useNavigation } from '@react-navigation/native';
 
-const Post = () => {
+const Post = ({ route }) => {
+
+    //From Quiz screen
+    const quizzes = route.params?.quizzes || {};
 
     const bottomSheetRef = useRef(null);
     const navigation = useNavigation();
@@ -223,7 +226,7 @@ const Post = () => {
                     return storageRef.getDownloadURL();
                 }));
 
-                const { data } = await axios.post("/post/create-post", { title, description, images: imageUrls });
+                const { data } = await axios.post("/post/create-post", { title, description, images: imageUrls, quizzes });
                 setUploading(false);
 
                 setPosts([...posts, data?.post])
