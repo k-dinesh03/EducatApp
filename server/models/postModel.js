@@ -17,9 +17,9 @@ const postSchema = new mongoose.Schema({
     ],
     quizzes: [
         {
-            hour: String,
-            minute: String,
-            second: String,
+            hour: number,
+            minute: number,
+            second: number,
             added: Boolean,
             questions: [
                 {
