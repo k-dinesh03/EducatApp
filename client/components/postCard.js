@@ -1,17 +1,18 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, ToastAndroid, Alert } from 'react-native'
-import React, { useRef, useState, useCallback, createRef } from 'react'
+import React, { useRef, useState, useCallback, createRef, useContext } from 'react'
 import moment from 'moment';
 import axios from 'axios';
 
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { Video } from 'expo-av';
 
-import { MaterialCommunityIcons, FontAwesome, Ionicons, SimpleLineIcons, AntDesign, Feather, MaterialIcons, EvilIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, FontAwesome, Ionicons, SimpleLineIcons, AntDesign, Feather, MaterialIcons } from '@expo/vector-icons';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { TapGestureHandler, State } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import EditModal from './editModal';
+import { AuthContext } from '../context/authContext';
 
 const windowWidth = Dimensions.get('window').width;
 const carouselWidth = windowWidth - (windowWidth * 0.05);
@@ -19,6 +20,8 @@ const carouselWidth = windowWidth - (windowWidth * 0.05);
 const PostCard = ({ posts }) => {
 
     const navigation = useNavigation();
+    const { state } = useContext(AuthContext);
+    const userId = state?.user?._id;
 
     const carouselRef = useRef(null);
     const videoRef = React.useRef(null);
@@ -259,6 +262,7 @@ const PostCard = ({ posts }) => {
         }
     }
 
+
     return (
         <View className='h-full w-full my-[5px]'>
 
@@ -311,25 +315,35 @@ const PostCard = ({ posts }) => {
                         {selectPostMenu[postId] &&
                             <Animated.View entering={FadeInUp.duration(3000).springify().delay(200)} className='w-full h-auto flex-row items-center justify-between py-[2px] px-1 my-1'>
 
-                                <TouchableOpacity className='px-3 flex-row items-center h-9 space-x-2 rounded-full bg-slate-200' onPress={() => { setPost(post), setModalVisible(true) }}>
+                                {post?.postedBy?._id === userId && <TouchableOpacity className='px-3 flex-row items-center h-9 space-x-1 rounded-full bg-slate-200' onPress={() => { setPost(post), setModalVisible(true) }}>
                                     <Feather name='edit' color='black' size={18} />
                                     <Text>Edit</Text>
-                                </TouchableOpacity>
+                                </TouchableOpacity>}
 
-                                <TouchableOpacity className='px-3 flex-row items-center h-9 space-x-2 rounded-full bg-slate-200' onPress={() => handleDeleteAlert(postId)}>
+                                {post?.postedBy?._id === userId && <TouchableOpacity className='px-3 flex-row items-center h-9 space-x-1 rounded-full bg-slate-200' onPress={() => handleDeleteAlert(postId)}>
                                     <AntDesign name='delete' color='black' size={18} />
                                     <Text>Delete</Text>
+                                </TouchableOpacity>}
+
+                                {post?.postedBy?._id === userId ? null : <TouchableOpacity className='px-3 flex-row items-center h-9 space-x-1 rounded-full bg-slate-200'>
+                                    <AntDesign name='user' color='black' size={17} />
+                                    <Text>Connect</Text>
+                                </TouchableOpacity>}
+
+                                <TouchableOpacity className='px-3 flex-row items-center h-9 space-x-1 rounded-full bg-slate-200'>
+                                    <Feather name='link' color='black' size={17} />
+                                    <Text>Copy Link</Text>
                                 </TouchableOpacity>
 
-                                <TouchableOpacity className='px-3 flex-row items-center h-9 space-x-2 rounded-full bg-slate-200'>
+                                <TouchableOpacity className='px-3 flex-row items-center h-9 space-x-1 rounded-full bg-slate-200'>
                                     <AntDesign name='sharealt' color='black' size={18} />
                                     <Text>Share</Text>
                                 </TouchableOpacity>
 
-                                <TouchableOpacity className='px-3 flex-row items-center h-9 space-x-2 rounded-full bg-slate-200'>
+                                {post?.postedBy?._id === userId ? null : <TouchableOpacity className='px-3 flex-row items-center h-9 space-x-1 rounded-full bg-slate-200'>
                                     <MaterialIcons name='report-gmailerrorred' color='red' size={22} />
                                     <Text className='text-red-600'>Report</Text>
-                                </TouchableOpacity>
+                                </TouchableOpacity>}
 
                             </Animated.View>
                         }
@@ -407,7 +421,7 @@ const PostCard = ({ posts }) => {
 
             {(!posts || posts.length === 0) &&
                 <View>
-                    <Text className='self-center'>No posts available</Text>
+                    <Text className='self-center'>Fetching Posts</Text>
                 </View>
             }
 

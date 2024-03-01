@@ -12,7 +12,7 @@ const MenuBtn = ({ handleOpen }) => {
         <View>
 
             <TouchableOpacity
-                className='h-[45px] w-[45px] items-center justify-start border-[1px] border-slate-400 bg-white rounded-full py-[3px] absolute bottom-[75px] right-4'
+                className='h-[45px] w-[45px] items-center justify-start border-[1px] border-slate-400 bg-white rounded-full py-[3px] absolute bottom-[75px] right-[17px]'
                 onPress={() => navigation.navigate("ChatBot")}
             >
                 <Image source={require('../assets/images/Graduation_Cap.png')} style={styles.logo} />

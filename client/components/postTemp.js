@@ -13,6 +13,7 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { Video } from 'expo-av';
 
 import { AntDesign, FontAwesome, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
+import QuizModal from './quizModal';
 
 const windowWidth = Dimensions.get('window').width;
 const carouselWidth = windowWidth - (windowWidth * 0.05);
@@ -20,18 +21,16 @@ const carouselWidth = windowWidth - (windowWidth * 0.05);
 
 const PostTemp = ({ route }) => {
 
-    //from post screen
-    const videoUrl = route.params?.videoUrl || '';
-    const videoRef = useRef(null);
+    const bottomSheetRef = useRef(null);
     const navigation = useNavigation();
 
     // from postCard component
     const postId = route.params?.postId || '';
-
-    const bottomSheetRef = useRef(null);
+    const videoRef = React.useRef(null);
 
     const { posts } = useContext(PostContext);
     const [currentPost, setCurrentPost] = useState(null);
+    const [isCommentOpen, setIsCommentOpen] = useState(false);
 
     // Search for the post with the given postId
     useEffect(() => {
@@ -39,7 +38,7 @@ const PostTemp = ({ route }) => {
             const post = posts.find((post) => post._id === postId);
             setCurrentPost(post);
         }
-    }, [postId, videoUrl, posts]);
+    }, [postId, posts]);
 
     const carouselRef = useRef(null);
 
@@ -72,6 +71,57 @@ const PostTemp = ({ route }) => {
         }
     };
 
+    const [quizModal, setQuizModal] = useState(false);
+    const [isModalShown, setIsModalShown] = useState(false);
+
+    const [quizTimes, setQuizTimes] = useState([
+        { time: 0, questions: [] },
+        { time: 0, questions: [] },
+    ]);
+
+    const handleTimes = (quizIndex, field, value) => {
+        const updatedQuizTimes = [...quizTimes];
+        updatedQuizTimes[quizIndex][field] = value;
+        setQuizTimes(updatedQuizTimes);
+    };
+
+    const setTimeToQuiz = () => {
+        handleTimes(0, 'time',
+            (currentPost?.quizzes[0].hour * 60 * 60) + (currentPost?.quizzes[0].minute * 60) + (currentPost?.quizzes[0].second)
+        );
+        handleTimes(0, 'questions',
+            currentPost?.quizzes[0].questions
+        );
+        handleTimes(1, 'time',
+            (currentPost?.quizzes[1].hour * 60 * 60) + (currentPost?.quizzes[1].minute * 60) + (currentPost?.quizzes[1].second)
+        );
+        handleTimes(1, 'questions',
+            currentPost?.quizzes[1].questions
+        );
+    }
+
+    const onPlaybackStatusUpdate = async (status) => {
+
+        const positionInSeconds = status.positionMillis / 1000;
+
+        // Check if the video has reached the time and the modal hasn't been shown yet
+        if (positionInSeconds >= quizTimes[0].time && !isModalShown) {
+            await videoRef.current.pauseAsync();
+            setQuizModal(true);
+            setIsModalShown(true);
+        }
+    };
+
+    const handleAttendQuiz = () => {
+        closeModal();
+        navigation.navigate('Quizz', { quiz: quizTimes });
+    }
+
+    // Close the modal and resume video playback
+    const closeModal = () => {
+        setQuizModal(false);
+    };
+
     const renderItem = ({ item }) => {
 
         const isVideo = isVideoUrl(item);
@@ -89,9 +139,13 @@ const PostTemp = ({ route }) => {
                         resizeMode='contain'
                         isLooping={true}
                         isMuted={isMuted}
-
+                        onPlaybackStatusUpdate={onPlaybackStatusUpdate}
+                        onLoad={setTimeToQuiz}
                     />
-                    <TouchableOpacity className='absolute top-1 right-1 bg-white w-9 h-9 rounded-full flex items-center justify-center' onPress={toggleMute}>
+                    <TouchableOpacity
+                        className='absolute top-1 right-1 w-9 h-9 rounded-full flex items-center justify-center bg-slate-200'
+                        onPress={toggleMute}
+                    >
                         {isMuted ? (
                             <SimpleLineIcons name='volume-off' size={22} color='black' />
                         ) : (
@@ -164,7 +218,6 @@ const PostTemp = ({ route }) => {
         );
     };
 
-    const [isCommentOpen, setIsCommentOpen] = useState(false);
 
     return (
         <SafeAreaView className='w-screen h-full flex pt-10 bg-slate-50'>
@@ -174,6 +227,8 @@ const PostTemp = ({ route }) => {
                 barStyle="dark-content"
                 translucent={true}
             />
+
+            <QuizModal quizModal={quizModal} closeModal={closeModal} handleAttendQuiz={handleAttendQuiz} />
 
             {/* Top navigation */}
             <Navigation navigation={navigation} />

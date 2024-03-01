@@ -17,7 +17,8 @@ import ForgotPassword from './screens/others/ForgotPassword'
 import Home from './screens/home';
 import Profile from './screens/profile';
 import PostTemp from './components/postTemp';
-import Quiz from './screens/Quiz'
+import SetQuiz from './screens/quiz/setQuiz';
+import Quizz from './screens/quiz/quizz';
 
 const App = () => {
 
@@ -37,7 +38,8 @@ const App = () => {
 						<Stack.Screen name="ChatBot" component={ChatBot} />
 						<Stack.Screen name="Collections" component={Collections} />
 						<Stack.Screen name="PostTemp" component={PostTemp} />
-						<Stack.Screen name="Quiz" component={Quiz} />
+						<Stack.Screen name="SetQuiz" component={SetQuiz} />
+						<Stack.Screen name="Quizz" component={Quizz} />
 						<Stack.Screen name="Post" component={Post} />
 					</Stack.Navigator>
 				) : (

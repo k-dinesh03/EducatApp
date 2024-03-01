@@ -4,14 +4,14 @@ import { SafeAreaView, ScrollView, StatusBar, Text, View, TouchableOpacity, Text
 import { Video } from 'expo-av';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import Navigation from '../components/Navigation';
-import MenuBtn from '../components/menuBtn';
-import BottomSheetNav from '../components/bottomSheetNav';
-import QuizModal from '../components/quizModal';
+import Navigation from '../../components/Navigation';
+import MenuBtn from '../../components/menuBtn';
+import BottomSheetNav from '../../components/bottomSheetNav';
+import QuizMenu from '../../components/quizMenu';
 
 import { useNavigation } from '@react-navigation/native';
 
-const Quiz = ({ route }) => {
+const SetQuiz = ({ route }) => {
 
     const navigation = useNavigation();
 
@@ -32,8 +32,8 @@ const Quiz = ({ route }) => {
     }
 
     const [quizTimes, setQuizTimes] = useState([
-        { hour: '', minute: '', second: '', added: false, questions: [] },
-        { hour: '', minute: '', second: '', added: false, questions: [] },
+        { hour: 0, minute: 0, second: 0, added: false, questions: [] },
+        { hour: 0, minute: 0, second: 0, added: false, questions: [] },
     ]);
 
     const handleTimeInputChange = (quizIndex, field, value) => {
@@ -154,7 +154,7 @@ const Quiz = ({ route }) => {
 
                             ))}
 
-                            <QuizModal
+                            <QuizMenu
                                 modalVisible={modalVisible}
                                 setModalVisible={setModalVisible}
                                 quizIndex={indexOfQuiz}
@@ -186,5 +186,5 @@ const Quiz = ({ route }) => {
     );
 };
 
-export default Quiz;
+export default SetQuiz;
 

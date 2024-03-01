@@ -302,7 +302,7 @@ const Post = ({ route }) => {
                         <TouchableOpacity
                             className='w-1/3 bg-emerald-500 py-[7px] items-center rounded-md self-center'
                             onPress={() =>
-                                navigation.navigate('Quiz', {
+                                navigation.navigate('SetQuiz', {
                                     videoUrl: images[activeSlide]
                                 })
                             }
