@@ -79,7 +79,7 @@ const Profile = () => {
             {/* Top navigation */}
             <Navigation />
 
-            <ScrollView className='h-full self-center space-y-10 -z-10' style={{ width: '95%' }} showsVerticalScrollIndicator={false}>
+            <ScrollView className='h-full self-center space-y-10 -z-10' style={{ width: '97%' }} showsVerticalScrollIndicator={false}>
 
                 <View className='w-48 h-48 items-center justify-center self-center my-2'>
                     <Image

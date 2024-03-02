@@ -65,7 +65,7 @@ function Register() {
 			try {
 
 				//for registering user
-				const { data } = await axios.post('/auth/register', { username, userType, email, password });
+				const { data } = await axios.post('/auth/register', { username, userType, email, password, score: 0, profilePic: '' });
 				console.log(data);
 
 				// for verification mail and folder creation

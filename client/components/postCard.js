@@ -134,7 +134,7 @@ const PostCard = ({ posts }) => {
                         isLooping={true}
                         isMuted={isMuted}
                     />
-                    <TouchableOpacity className='absolute top-1 right-12 bg-white w-9 h-9 rounded-full flex items-center justify-center' onPress={toggleMute}>
+                    <TouchableOpacity className='absolute top-1 right-10 bg-white w-9 h-9 rounded-full flex items-center justify-center' onPress={toggleMute}>
                         {isMuted ? (
                             <SimpleLineIcons name='volume-off' size={22} color='black' />
                         ) : (

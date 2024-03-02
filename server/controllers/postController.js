@@ -3,17 +3,17 @@ const postModel = require("../models/postModel");
 //create new post
 const createPostController = async (req, res) => {
     try {
-        const { title, description, images, quizzes } = req.body;
+        const { title, description, images, quizzes, quizTitle } = req.body;
 
         //validate
-        if (!title || !description || !images || !images.length) {
+        if (!title || !description || !images || !images.length || !quizTitle) {
             return res.status(400).send({
                 success: false,
                 message: 'Please fill all fields and provide at least one Image or Video',
             });
         }
 
-        const post = await postModel({ title, description, images, quizzes, postedBy: req.auth._id }).save();
+        const post = await postModel({ title, description, images, quizzes, quizTitle, postedBy: req.auth._id }).save();
 
         res.status(201).send({
             success: true,

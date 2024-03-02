@@ -21,6 +21,12 @@ const userSchema = new mongoose.Schema({
         min: 8,
         max: 20
     },
+    score: {
+        type: Number,
+    },
+    profilePic: {
+        type: String,
+    }
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

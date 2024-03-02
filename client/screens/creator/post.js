@@ -6,7 +6,7 @@ import { PostContext } from '../../context/postContext';
 
 import { Video } from 'expo-av';
 
-import * as ImagePicker from 'expo-image-picker'
+import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 
 import Navigation from '../../components/Navigation';
@@ -26,6 +26,7 @@ const Post = ({ route }) => {
 
     //From Quiz screen
     const quizzes = route.params?.quizzes || {};
+    const quizTitle = route.params?.quizTitle || '';
 
     const bottomSheetRef = useRef(null);
     const navigation = useNavigation();
@@ -44,7 +45,7 @@ const Post = ({ route }) => {
                 aspect: [403, 384],
                 allowsEditing: true,
                 orderedSelection: true,
-                quality: 1,
+                quality: 0.75,
                 multiple: true,
             });
 
@@ -70,7 +71,7 @@ const Post = ({ route }) => {
                 cameraType: ImagePicker.CameraType.back,
                 aspect: [403, 384],
                 allowsEditing: true,
-                quality: 1,
+                quality: 0.75,
                 orderedSelection: true,
                 multiple: true,
             });
@@ -226,7 +227,7 @@ const Post = ({ route }) => {
                     return storageRef.getDownloadURL();
                 }));
 
-                const { data } = await axios.post("/post/create-post", { title, description, images: imageUrls, quizzes });
+                const { data } = await axios.post("/post/create-post", { title, description, images: imageUrls, quizzes, quizTitle });
                 setUploading(false);
 
                 setPosts([...posts, data?.post])
@@ -285,7 +286,7 @@ const Post = ({ route }) => {
 
             <ScrollView className='w-full h-full flex space-y-8 -z-10'>
 
-                <View className='self-center mt-5' style={{ width: '95%' }}>
+                <View className='self-center mt-5' style={{ width: '97%' }}>
 
                     <TouchableOpacity className='self-end bg-slate-200 flex flex-row items-center justify-end py-1 px-2 rounded-md z-20' onPress={pickMediaCamera}>
                         <Text className='text-md mr-2'>Take a Snap</Text>
@@ -295,7 +296,7 @@ const Post = ({ route }) => {
                 </View>
 
                 {hasVideo &&
-                    <View className='space-y-3 self-center' style={{ width: '95%' }}>
+                    <View className='space-y-3 self-center' style={{ width: '97%' }}>
 
                         <Text className='text-lg self-center'>Do you want to create a Quiz ?</Text>
 
@@ -312,7 +313,7 @@ const Post = ({ route }) => {
                     </View>
                 }
 
-                <View className='self-center' style={{ width: '95%' }}>
+                <View className='self-center' style={{ width: '97%' }}>
 
                     {images.length > 0 ? (
 

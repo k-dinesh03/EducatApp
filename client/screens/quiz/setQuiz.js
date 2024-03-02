@@ -31,6 +31,7 @@ const SetQuiz = ({ route }) => {
         setQuizTimes(updatedQuizTimes);
     }
 
+    const [quizTitle, setQuizTitle] = useState('');
     const [quizTimes, setQuizTimes] = useState([
         { hour: 0, minute: 0, second: 0, added: false, questions: [] },
         { hour: 0, minute: 0, second: 0, added: false, questions: [] },
@@ -42,8 +43,8 @@ const SetQuiz = ({ route }) => {
         setQuizTimes(updatedQuizTimes);
     };
 
-    const handleQuizSubmit = () => {
-        navigation.navigate('Post', { quizzes: quizTimes });
+    const handleQuizTimeSubmit = () => {
+        navigation.navigate('Post', { quizzes: quizTimes, quizTitle: quizTitle });
     };
 
     return (
@@ -61,7 +62,7 @@ const SetQuiz = ({ route }) => {
 
             <ScrollView
                 className='h-full self-center -z-10'
-                style={{ width: '95%' }}
+                style={{ width: '97%' }}
                 showsVerticalScrollIndicator={false}
             >
 
@@ -70,8 +71,15 @@ const SetQuiz = ({ route }) => {
                     <Text className='self-center text-lg font-semibold tracking-wider'>Make a Quiz</Text>
 
                     <View className='flex-row items-center'>
-                        <Text className='font-medium tracking-widest' style={{ fontSize: 15 }}>Time Duration : </Text>
-                        <Text style={{ fontSize: 15 }}>2 Mins</Text>
+                        <Text className='font-medium tracking-widest' style={{ fontSize: 15 }}>Title : </Text>
+                        <TextInput
+                            autoCapitalize='none'
+                            placeholder='Title of the Quiz'
+                            className='h-10 rounded-md py-2 border border-gray-400'
+                            clearButtonMode="always"
+                            value={quizTitle}
+                            onChangeText={(text) => setQuizTitle(text)}
+                        />
                     </View>
 
                     <View className='w-full h-96 border-[1px] border-slate-400 rounded-sm mb-3'>
@@ -168,7 +176,7 @@ const SetQuiz = ({ route }) => {
 
                     <TouchableOpacity
                         className='w-1/2 bg-emerald-500 py-2 items-center rounded-md self-center mb-8'
-                        onPress={handleQuizSubmit}
+                        onPress={handleQuizTimeSubmit}
                     >
                         <Text className='text-white text-lg'>Submit</Text>
                     </TouchableOpacity>

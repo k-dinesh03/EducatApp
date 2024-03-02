@@ -73,6 +73,7 @@ const PostTemp = ({ route }) => {
 
     const [quizModal, setQuizModal] = useState(false);
     const [isModalShown, setIsModalShown] = useState(false);
+    const [quizNumber, setQuizNumber] = useState(0);
 
     const [quizTimes, setQuizTimes] = useState([
         { time: 0, questions: [] },
@@ -105,7 +106,7 @@ const PostTemp = ({ route }) => {
         const positionInSeconds = status.positionMillis / 1000;
 
         // Check if the video has reached the time and the modal hasn't been shown yet
-        if (positionInSeconds >= quizTimes[0].time && !isModalShown) {
+        if (positionInSeconds >= quizTimes[quizNumber].time && !isModalShown) {
             await videoRef.current.pauseAsync();
             setQuizModal(true);
             setIsModalShown(true);
@@ -114,11 +115,13 @@ const PostTemp = ({ route }) => {
 
     const handleAttendQuiz = () => {
         closeModal();
-        navigation.navigate('Quizz', { quiz: quizTimes });
+        videoRef.current.pauseAsync();
+        navigation.navigate('Quizz', { quiz: quizTimes, quizNumber: quizNumber });
     }
 
     // Close the modal and resume video playback
     const closeModal = () => {
+        setQuizNumber(1);
         setQuizModal(false);
     };
 
@@ -143,7 +146,7 @@ const PostTemp = ({ route }) => {
                         onLoad={setTimeToQuiz}
                     />
                     <TouchableOpacity
-                        className='absolute top-1 right-1 w-9 h-9 rounded-full flex items-center justify-center bg-slate-200'
+                        className='absolute top-1 right-0 w-9 h-9 rounded-full flex items-center justify-center bg-slate-200'
                         onPress={toggleMute}
                     >
                         {isMuted ? (
@@ -233,7 +236,7 @@ const PostTemp = ({ route }) => {
             {/* Top navigation */}
             <Navigation navigation={navigation} />
 
-            <ScrollView className='h-full self-center -z-10 py-1' style={{ width: '95%' }} showsVerticalScrollIndicator={false}>
+            <ScrollView className='h-full self-center -z-10 py-1' style={{ width: '97%' }} showsVerticalScrollIndicator={false}>
 
                 {/* From postCard Component */}
 

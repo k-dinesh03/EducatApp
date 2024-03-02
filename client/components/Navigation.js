@@ -11,19 +11,19 @@ const Navigation = () => {
 
         <View className='w-full h-16 flex items-center justify-center'>
 
-            <View className='h-[58px] rounded-md border-[1px] border-gray-400 flex flex-row justify-between items-center px-[10px]' style={{ width: '95%' }}>
+            <View className='h-[58px] rounded-md border-[1px] border-gray-400 flex flex-row justify-between items-center px-[8px]' style={{ width: '97%' }}>
 
                 <View className='flex flex-row items-start w-24 h-14'>
                     <Image source={require('../assets/images/Graduation_Cap.png')} style={styles.logo} />
                     <Text className='text-xl font-semibold tracking-widest absolute bottom-0 right-0'>EDUCAT</Text>
                 </View>
 
-                <View className='flex flex-row h-full items-center w-[90px] justify-between'>
-                    <TouchableOpacity className='px-2 rounded-md h-3/4 flex justify-center'>
+                <View className='flex-row h-full items-center space-x-4'>
+                    <TouchableOpacity>
                         <Ionicons name='notifications-outline' size={27} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity className='px-2 rounded-md h-3/4 flex justify-center'>
+                    <TouchableOpacity>
                         <AntDesign name='search1' size={27} />
                     </TouchableOpacity>
                 </View>

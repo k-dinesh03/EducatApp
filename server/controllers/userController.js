@@ -13,7 +13,7 @@ const requireSignIn = jwt({
 // register controller
 const registerController = async (req, res) => {
     try {
-        const { username, email, userType, password } = req.body;
+        const { username, email, userType, password, score, profilePic } = req.body;
 
         //validation
         if (!username) {
@@ -54,7 +54,7 @@ const registerController = async (req, res) => {
         const hashedPassword = await hashPassword(password);
 
         //save user
-        const user = await userModel({ username, email, userType, password: hashedPassword }).save();
+        const user = await userModel({ username, email, userType, password: hashedPassword, score, profilePic }).save();
 
         return res.status(200).send({
             success: true,

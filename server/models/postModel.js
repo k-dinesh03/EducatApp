@@ -30,6 +30,10 @@ const postSchema = new mongoose.Schema({
             ],
         }
     ],
+    quizTitle: {
+        type: String,
+        required: [true, 'Please add a quiz title']
+    },
     postedBy: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',

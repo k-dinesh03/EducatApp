@@ -7,6 +7,7 @@ import Navigation from '../components/Navigation';
 import MenuBtn from '../components/menuBtn';
 import BottomSheetNav from '../components/bottomSheetNav';
 import PostCard from '../components/postCard';
+import Progress from '../components/progress';
 
 const Home = () => {
 
@@ -37,7 +38,7 @@ const Home = () => {
 
             <ScrollView
                 className='h-full self-center -z-10'
-                style={{ width: '95%' }}
+                style={{ width: '97%' }}
                 showsVerticalScrollIndicator={false}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
 

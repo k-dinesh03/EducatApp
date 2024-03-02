@@ -25,7 +25,7 @@ const Collections = () => {
 
             <MenuBtn handleOpen={() => bottomSheetRef.current?.snapToIndex(0)} />
 
-            <ScrollView className='bg-red-300 h-full flex space-y-8 -z-10 self-center' style={{ width: '95%' }} showsVerticalScrollIndicator={false}>
+            <ScrollView className='bg-red-300 h-full flex space-y-8 -z-10 self-center' style={{ width: '97%' }} showsVerticalScrollIndicator={false}>
                 <Text>Collections</Text>
             </ScrollView>
 
