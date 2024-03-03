@@ -25,7 +25,7 @@ const Home = () => {
     }, []);
 
     return (
-        <SafeAreaView className='w-screen h-full flex pt-10 bg-slate-100'>
+        <SafeAreaView className='w-screen h-full flex pt-10 bg-white'>
 
             <StatusBar
                 backgroundColor="transparent"
@@ -42,7 +42,7 @@ const Home = () => {
                 showsVerticalScrollIndicator={false}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
 
-                <PostCard posts={posts} />
+                {/* <PostCard posts={posts} /> */}
 
             </ScrollView>
 

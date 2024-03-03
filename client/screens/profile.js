@@ -2,7 +2,6 @@ import React, { useRef, useContext, useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View, Image, ToastAndroid } from 'react-native';
 import * as ImagePicker from 'expo-image-picker'
 
-import Navigation from '../components/Navigation';
 import MenuBtn from '../components/menuBtn';
 import BottomSheetNav from '../components/bottomSheetNav';
 
@@ -68,16 +67,13 @@ const Profile = () => {
     }
 
     return (
-        <SafeAreaView className='w-screen h-full flex pt-10'>
+        <SafeAreaView className='w-screen h-full flex bg-white'>
 
             <StatusBar
                 backgroundColor="transparent"
                 barStyle="dark-content"
                 translucent={true}
             />
-
-            {/* Top navigation */}
-            <Navigation />
 
             <ScrollView className='h-full self-center space-y-10 -z-10' style={{ width: '97%' }} showsVerticalScrollIndicator={false}>
 

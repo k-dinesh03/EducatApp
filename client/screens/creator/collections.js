@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, Text } from 'react-native';
 
-import Navigation from '../../components/Navigation';
 import MenuBtn from '../../components/menuBtn';
 import BottomSheetNav from '../../components/bottomSheetNav';
 import { useNavigation } from '@react-navigation/native';
@@ -12,7 +11,7 @@ const Collections = () => {
     const bottomSheetRef = useRef(null);
 
     return (
-        <SafeAreaView className='w-screen h-full flex pt-12'>
+        <SafeAreaView className='w-screen h-full flex bg-white'>
 
             <StatusBar
                 backgroundColor="transparent"
@@ -20,14 +19,11 @@ const Collections = () => {
                 translucent={true}
             />
 
-            {/* Top navigation */}
-            <Navigation />
-
-            <MenuBtn handleOpen={() => bottomSheetRef.current?.snapToIndex(0)} />
-
-            <ScrollView className='bg-red-300 h-full flex space-y-8 -z-10 self-center' style={{ width: '97%' }} showsVerticalScrollIndicator={false}>
+            <ScrollView className='h-full flex space-y-8 -z-10 self-center' style={{ width: '97%' }} showsVerticalScrollIndicator={false}>
                 <Text>Collections</Text>
             </ScrollView>
+
+            <MenuBtn handleOpen={() => bottomSheetRef.current?.snapToIndex(0)} />
 
             {/* Bottom Sheet navigation */}
             <BottomSheetNav bottomSheetRef={bottomSheetRef} />

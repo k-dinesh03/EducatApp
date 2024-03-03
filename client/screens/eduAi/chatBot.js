@@ -4,7 +4,6 @@ import { Ionicons } from '@expo/vector-icons'
 import axios from 'axios';
 
 import ChatBubble from './chatBubble';
-import Navigation from '../../components/Navigation';
 
 const ChatBot = () => {
     const [chat, setChat] = useState([]);
@@ -68,13 +67,11 @@ const ChatBot = () => {
     }
 
     return (
-        <SafeAreaView className='w-screen h-full flex pt-10 bg-slate-100'>
+        <SafeAreaView className='w-screen h-full flex self-center' style={{ width: '97%' }}>
 
             <StatusBar backgroundColor='transparent' barStyle={'dark-content'} />
 
-            <View className='h-full self-center py-2'>
-
-                <Navigation />
+            <View className='w-full h-full py-2'>
 
                 {loading && <ActivityIndicator style={{ marginTop: 10 }} color="rgb(16 185 129)" />}
 
@@ -86,22 +83,21 @@ const ChatBot = () => {
                     contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
                 />
 
-                <View className='rounded-3xl shadow-md shadow-black'>
-                    <View style={styles.inputContiner}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Type your message...'
-                            placeholderTextColor="#aaa"
-                            value={userInput}
-                            onChangeText={setUserInput}
-                        />
-                        <TouchableOpacity
-                            onPress={handelUserInput}
-                            style={buttonStyle}
-                            disabled={loading || userInput.trim() === ''}>
-                            <Ionicons name='send' color="green" size={21} />
-                        </TouchableOpacity>
-                    </View>
+                <View className='flex-row px-1 items-center justify-around h-10 w-full'>
+                    <TextInput
+                        style={styles.inputContainer}
+                        placeholder='Type your message...'
+                        placeholderTextColor="#aaa"
+                        value={userInput}
+                        onChangeText={setUserInput}
+                    />
+                    <TouchableOpacity
+                        onPress={handelUserInput}
+                        disabled={loading || userInput.trim() === ''}
+                        className='bg-white h-10 w-10 items-center justify-center rounded-full border-[0.6px]'
+                    >
+                        <Ionicons name='send' color="green" size={21} />
+                    </TouchableOpacity>
                 </View>
 
             </View>
@@ -111,21 +107,14 @@ const ChatBot = () => {
 };
 
 const styles = StyleSheet.create({
-    inputContiner: {
-        flexDirection: "row",
-        alignItems: "center",
-        marginTop: 3,
+    inputContainer: {
         borderColor: "#000",
         backgroundColor: "#fff",
-        borderWidth: 1,
+        borderWidth: 0.6,
         borderRadius: 25,
-        justifyContent: "space-evenly"
-    },
-    input: {
-        width: "85%",
-        height: 40,
-        color: "#333",
-        paddingLeft: 10
+        width: "87%",
+        height: "100%",
+        paddingHorizontal: 10
     },
     logo: {
         width: 45,

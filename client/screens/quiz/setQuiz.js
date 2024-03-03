@@ -4,7 +4,6 @@ import { SafeAreaView, ScrollView, StatusBar, Text, View, TouchableOpacity, Text
 import { Video } from 'expo-av';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import Navigation from '../../components/Navigation';
 import MenuBtn from '../../components/menuBtn';
 import BottomSheetNav from '../../components/bottomSheetNav';
 import QuizMenu from '../../components/quizMenu';
@@ -49,7 +48,7 @@ const SetQuiz = ({ route }) => {
 
     return (
 
-        <SafeAreaView className='w-screen h-full flex pt-10 bg-slate-100'>
+        <SafeAreaView className='w-screen h-full flex bg-white'>
 
             <StatusBar
                 backgroundColor="transparent"
@@ -57,25 +56,20 @@ const SetQuiz = ({ route }) => {
                 translucent={true}
             />
 
-            {/* Top navigation */}
-            <Navigation />
-
             <ScrollView
                 className='h-full self-center -z-10'
                 style={{ width: '97%' }}
                 showsVerticalScrollIndicator={false}
             >
 
-                <View className='w-full h-full py-1 space-y-3'>
+                <View className='w-full h-full py-1 space-y-5 mt-2'>
 
-                    <Text className='self-center text-lg font-semibold tracking-wider'>Make a Quiz</Text>
-
-                    <View className='flex-row items-center'>
+                    <View className='flex-row items-center space-x-3'>
                         <Text className='font-medium tracking-widest' style={{ fontSize: 15 }}>Title : </Text>
                         <TextInput
                             autoCapitalize='none'
                             placeholder='Title of the Quiz'
-                            className='h-10 rounded-md py-2 border border-gray-400'
+                            className='py-[2px] w-3/4 rounded-sm border-b-[1px] border-gray-400'
                             clearButtonMode="always"
                             value={quizTitle}
                             onChangeText={(text) => setQuizTitle(text)}

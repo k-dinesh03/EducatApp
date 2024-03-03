@@ -25,6 +25,7 @@ const App = () => {
 	//global state
 	const { state } = useContext(AuthContext);
 	const authenticatedUser = state?.user && state?.token;
+	const username = state?.user?.username;
 
 	const Stack = createNativeStackNavigator();
 
@@ -32,15 +33,15 @@ const App = () => {
 		<GestureHandlerRootView style={{ flex: 1 }}>
 			<NavigationContainer>
 				{authenticatedUser ? (
-					<Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-						<Stack.Screen name="Home" component={Home} />
-						<Stack.Screen name="Profile" component={Profile} />
-						<Stack.Screen name="ChatBot" component={ChatBot} />
-						<Stack.Screen name="Collections" component={Collections} />
-						<Stack.Screen name="PostTemp" component={PostTemp} />
-						<Stack.Screen name="SetQuiz" component={SetQuiz} />
-						<Stack.Screen name="Quizz" component={Quizz} />
-						<Stack.Screen name="Post" component={Post} />
+					<Stack.Navigator initialRouteName="Home" >
+						<Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+						<Stack.Screen name="Profile" component={Profile} options={{ title: username }} />
+						<Stack.Screen name="ChatBot" component={ChatBot} options={{ title: 'EduAi' }} />
+						<Stack.Screen name="Collections" component={Collections} options={{ title: 'Collections' }} />
+						<Stack.Screen name="PostTemp" component={PostTemp} options={{ title: '' }} />
+						<Stack.Screen name="SetQuiz" component={SetQuiz} options={{ title: 'Create a Quiz' }} />
+						<Stack.Screen name="Quizz" component={Quizz} options={{ title: 'Quiz' }} />
+						<Stack.Screen name="Post" component={Post} options={{ title: 'Create a Post' }} />
 					</Stack.Navigator>
 				) : (
 					<Stack.Navigator initialRouteName="Launch" screenOptions={{ headerShown: false }}>

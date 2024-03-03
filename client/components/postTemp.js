@@ -3,7 +3,6 @@ import React, { useRef, useContext, useEffect, useState } from 'react';
 import { PostContext } from '../context/postContext';
 import { useNavigation } from '@react-navigation/native';
 
-import Navigation from '../components/Navigation';
 import MenuBtn from '../components/menuBtn';
 import BottomSheetNav from '../components/bottomSheetNav';
 
@@ -16,7 +15,7 @@ import { AntDesign, FontAwesome, Ionicons, SimpleLineIcons } from '@expo/vector-
 import QuizModal from './quizModal';
 
 const windowWidth = Dimensions.get('window').width;
-const carouselWidth = windowWidth - (windowWidth * 0.05);
+const carouselWidth = windowWidth - (windowWidth * 0.03);
 
 
 const PostTemp = ({ route }) => {
@@ -137,7 +136,7 @@ const PostTemp = ({ route }) => {
                         source={{ uri: item }}
                         paused={false}
                         repeat={true}
-                        style={{ width: '100%', height: '100%', borderRadius: 5 }}
+                        style={{ width: '100%', height: '100%' }}
                         useNativeControls
                         resizeMode='contain'
                         isLooping={true}
@@ -223,7 +222,7 @@ const PostTemp = ({ route }) => {
 
 
     return (
-        <SafeAreaView className='w-screen h-full flex pt-10 bg-slate-50'>
+        <SafeAreaView className='w-screen h-full flex'>
 
             <StatusBar
                 backgroundColor="transparent"
@@ -232,9 +231,6 @@ const PostTemp = ({ route }) => {
             />
 
             <QuizModal quizModal={quizModal} closeModal={closeModal} handleAttendQuiz={handleAttendQuiz} />
-
-            {/* Top navigation */}
-            <Navigation navigation={navigation} />
 
             <ScrollView className='h-full self-center -z-10 py-1' style={{ width: '97%' }} showsVerticalScrollIndicator={false}>
 

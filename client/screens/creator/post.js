@@ -17,10 +17,11 @@ import { AntDesign, Feather, MaterialIcons, SimpleLineIcons } from '@expo/vector
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 const windowWidth = Dimensions.get('window').width;
-const carouselWidth = windowWidth - (windowWidth * 0.05);
+const carouselWidth = windowWidth - (windowWidth * 0.03);
 
 import { firebase } from '../../config/config';
 import { useNavigation } from '@react-navigation/native';
+import Uploading from '../../components/uploading';
 
 const Post = ({ route }) => {
 
@@ -36,6 +37,7 @@ const Post = ({ route }) => {
 
     //ImagePicker
     const [images, setImages] = useState([]);
+    const [progress, setProgress] = useState(0);
     const [maxHeight, setMaxHeight] = useState(0);
 
     const pickMediaGallery = async () => {
@@ -224,6 +226,21 @@ const Post = ({ route }) => {
 
                     const storageRef = storage.ref().child(`images/${filename}`);
                     await storageRef.put(blob);
+
+                    const uploadTask = uploadBytesResumable(storageRef, blob);
+                    uploadTask.on("state_changed",
+                        (snapshot) => {
+                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            setProgress(progress.toFixed());
+                            console.log(progress.toFixed());
+                        },
+                        () => {
+                            getDownloadURL(uploadTask.snapshot.ref).then(() => {
+                                setImages([]);
+                            })
+                        }
+                    )
+
                     return storageRef.getDownloadURL();
                 }));
 
@@ -273,16 +290,13 @@ const Post = ({ route }) => {
     };
 
     return (
-        <SafeAreaView className='w-screen h-full flex pt-10'>
+        <SafeAreaView className='flex-1 bg-white'>
 
             <StatusBar
                 backgroundColor="transparent"
                 barStyle="dark-content"
                 translucent={true}
             />
-
-            {/* Top navigation */}
-            <Navigation />
 
             <ScrollView className='w-full h-full flex space-y-8 -z-10'>
 
@@ -416,17 +430,14 @@ const Post = ({ route }) => {
                     }
                 </View>
 
-                {uploading ? (
-                    <View className='w-3/4 bg-slate-500 py-2 items-center rounded-md self-center mb-8'>
-                        <Text className='text-white text-lg'>Loading...</Text>
-                    </View>
-                ) : (
-                    <TouchableOpacity className='w-3/4 bg-emerald-500 py-2 items-center rounded-md self-center mb-8' onPress={handleSubmit}>
-                        <Text className='text-white text-lg'>Share the Post</Text>
-                    </TouchableOpacity>
-                )}
+
+                <TouchableOpacity className='w-3/5 bg-emerald-500 py-2 items-center rounded-md self-center mb-8' onPress={handleSubmit}>
+                    <Text className='text-white text-lg'>Share the Post</Text>
+                </TouchableOpacity>
 
             </ScrollView>
+
+            {uploading && <Uploading progress={progress} image={images[0]} video={images[0]} />}
 
             <MenuBtn handleOpen={() => bottomSheetRef.current?.snapToIndex(0)} />
 

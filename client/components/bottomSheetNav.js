@@ -10,7 +10,9 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
     const route = useRoute();
     const navigation = useNavigation();
 
-    const snapPoints = useMemo(() => ['13%', '23%', '33%'], []);
+    const snapPointsOthers = useMemo(() => ['14%', '25%', '36%'], []);
+    const snapPointsHome = useMemo(() => ['12%', '22%', '32%'], []);
+
     const renderBackdrop = useCallback((props) => {
         return <BottomSheetBackdrop appearsOnIndex={4} disappearsOnIndex={-1} {...props} />;
     }, []);
@@ -18,7 +20,7 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
     return (
 
         <BottomSheet
-            snapPoints={snapPoints}
+            snapPoints={route.name === 'Home' ? snapPointsHome : snapPointsOthers}
             ref={bottomSheetRef}
             index={-1}
             enablePanDownToClose={true}

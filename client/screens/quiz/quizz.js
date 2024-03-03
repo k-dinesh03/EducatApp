@@ -7,19 +7,11 @@ const Quizz = ({ route }) => {
 
     const quizSet = route.params?.quiz || {};
     const quizNumber = route.params?.quizNumber;
+    console.log("Quizz set: " + JSON.stringify(quizSet));
+    console.log("quizNumber :", quizNumber)
 
-    const [options, setOptions] = useState({});
+    const [options, setOptions] = useState([]);
 
-    useEffect(() => {
-        const shuffledOptions = {};
-        quizSet[quizNumber].questions.forEach((question, index) => {
-            const allOptions = shuffleArray([...question.incorrect_answers, question.correct_answer]);
-            shuffledOptions[index] = allOptions;
-        });
-        setOptions(shuffledOptions);
-    }, [quizNumber]);
-
-    // Shuffle function to randomize the order of options
     const shuffleArray = (array) => {
         const shuffledArray = array.slice();
 
@@ -62,10 +54,11 @@ const Quizz = ({ route }) => {
             }
         })
         setScore(correctAnswers);
+        console.log("Score: ", score);
     }
 
     return (
-        <SafeAreaView className='w-screen h-full flex pt-10 bg-slate-100'>
+        <SafeAreaView className='w-screen h-full flex'>
 
             <StatusBar
                 backgroundColor="transparent"
@@ -109,11 +102,11 @@ const Quizz = ({ route }) => {
 
                                     <Text className='tracking-wide'>{i + 1}. {question.question}</Text>
 
-                                    {options[i].map((option, j) => (
+                                    {question.incorrect_answers.map((option, j) => (
                                         <TouchableOpacity
                                             key={j}
                                             onPress={() => handleOptionSelected(i, option)}
-                                            className='flex-row justify-between items-center py-2 px-2 border-[1px] border-slate-500 rounded-sm'
+                                            className={`flex-row justify-between items-center py-2 px-2 border-[1px] rounded-sm`}
                                         >
                                             <Text>{String.fromCharCode('a'.charCodeAt(0) + j)}{')'} {option}</Text>
                                         </TouchableOpacity>

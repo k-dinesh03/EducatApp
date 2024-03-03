@@ -1,11 +1,9 @@
 import { View, Text, SafeAreaView } from 'react-native'
 import React from 'react'
-import Navigation from '../../components/Navigation'
 
 const ChatHome = () => {
     return (
-        <SafeAreaView className='mt-10 w-screen h-screen flex py-2'>
-            <Navigation />
+        <SafeAreaView className='bg-white w-screen h-screen flex'>
 
             <View className='w-11/12 self-center'>
                 <Text className='text-xl font-semibold tracking-wide'>Recent</Text>
@@ -22,7 +20,7 @@ const ChatHome = () => {
                 </View>
 
                 <View>
-                    <View className='w-full h-12 bg-slate-400 border border-black rounded-lg'/>
+                    <View className='w-full h-12 bg-slate-400 border border-black rounded-lg' />
                 </View>
             </View>
         </SafeAreaView>

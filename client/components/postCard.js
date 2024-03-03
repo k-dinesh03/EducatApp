@@ -15,7 +15,7 @@ import EditModal from './editModal';
 import { AuthContext } from '../context/authContext';
 
 const windowWidth = Dimensions.get('window').width;
-const carouselWidth = windowWidth - (windowWidth * 0.05);
+const carouselWidth = windowWidth - (windowWidth * 0.03);
 
 const PostCard = ({ posts }) => {
 
