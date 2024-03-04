@@ -30,6 +30,7 @@ const PostTemp = ({ route }) => {
     const { posts } = useContext(PostContext);
     const [currentPost, setCurrentPost] = useState(null);
     const [isCommentOpen, setIsCommentOpen] = useState(false);
+    const [isDescriptionOpen, setIsDescriptionOpen] = useState(true);
 
     // Search for the post with the given postId
     useEffect(() => {
@@ -240,10 +241,8 @@ const PostTemp = ({ route }) => {
 
                     <View className='w-full h-full space-y-3 mb-2'>
 
-                        <Text className='font-semibold tracking-wider text-3xl'>{currentPost.title}</Text>
-
-                        <View className='flex-row items-center justify-end space-x-1'>
-                            <Text className='text-sm'>Posted by</Text>
+                        <View className='flex-row items-center justify-end space-x-1 mt-3'>
+                            <Text className='text-sm underline'>Posted by</Text>
                             <TouchableOpacity>
                                 <Text className='text-sm font-medium tracking-wider'>{currentPost?.postedBy?.username}</Text>
                             </TouchableOpacity>
@@ -269,58 +268,89 @@ const PostTemp = ({ route }) => {
 
                         {currentPost?.images.length < 4 ? pagination_one(activeSlide, currentPost?.images.length) : pagination_two(activeSlide, currentPost?.images.length)}
 
-                        <View className='flex-row items-center justify-between px-2'>
+                        <Text className='font-semibold tracking-wider text-3xl'>{currentPost.title}</Text>
 
-                            <View className='flex-row space-x-4 items-center'>
+                        <View className='flex-row items-center space-x-3 px-1 my-2'>
 
+                            <View className='flex-row items-center space-x-1'>
                                 <TouchableOpacity className='items-center'>
-                                    <Ionicons name='heart-outline' size={26.5} color='black' />
+                                    <AntDesign name='staro' color='black' size={21} />
                                 </TouchableOpacity>
-
-                                <TouchableOpacity className='items-center' onPress={() => setIsCommentOpen(!isCommentOpen)}>
-                                    <Ionicons name='chatbubble-outline' size={25} color='black' style={{ transform: [{ rotate: '270deg' }] }} />
-                                </TouchableOpacity>
-
-                                <TouchableOpacity className='items-center'>
-                                    <AntDesign name='sharealt' color='black' size={23.5} />
-                                </TouchableOpacity>
-
+                                <Text className='font-medium'>4.5</Text>
                             </View>
 
-                            <TouchableOpacity className='items-center'>
-                                <View className='items-center'>
-                                    <FontAwesome name='bookmark-o' size={23.5} color='black' />
-                                </View>
-                            </TouchableOpacity>
+                            <View className='flex-row items-center space-x-1'>
+                                <TouchableOpacity className='items-center'>
+                                    <Ionicons name='heart-outline' size={22} color='black' />
+                                </TouchableOpacity>
+                                <Text className='font-medium'>100 Likes</Text>
+                            </View>
 
                         </View>
 
-                        {isCommentOpen ? (
-                            <View className='space-y-1 border-[1px] border-slate-300 rounded-md py-[2px] px-1 mb-2'>
+                        <View className='w-full flex-row self-center items-center justify-between border-[1px] border-slate-400 p-[3px] rounded-md'>
 
-                                <Text className='font-medium tracking-wider text-lg'>Comments</Text>
+                            {isDescriptionOpen ? (
+                                <TouchableOpacity
+                                    className='h-14 bg-violet-400 items-center justify-center rounded-md'
+                                    style={{ width: '49%' }}
+                                    onPress={() => { setIsDescriptionOpen(true) }}
+                                >
+                                    <Text className='text-lg font-medium tracking-wider text-white'>Description</Text>
+                                </TouchableOpacity>
+                            ) : (
+                                <TouchableOpacity
+                                    className='h-14 bg-violet-300 items-center justify-center rounded-md'
+                                    style={{ width: '49%' }}
+                                    onPress={() => { setIsDescriptionOpen(!isDescriptionOpen), setIsCommentOpen(!isCommentOpen) }}
+                                >
+                                    <Text className='text-lg font-medium tracking-wider text-white'>Description</Text>
+                                </TouchableOpacity>
+                            )}
 
-                                <View className='flex-row space-x-2 items-center'>
+                            {isCommentOpen ? (
+                                <TouchableOpacity
+                                    className='h-14 bg-violet-400 items-center justify-center rounded-md'
+                                    style={{ width: '49%' }}
+                                    onPress={() => { setIsCommentOpen(true), setIsDescriptionOpen(false) }}
+                                >
+                                    <Text className='text-lg font-medium tracking-wider text-white'>Comments</Text>
+                                </TouchableOpacity>
+                            ) : (
+                                <TouchableOpacity
+                                    className='h-14 bg-violet-300 items-center justify-center rounded-md'
+                                    style={{ width: '49%' }}
+                                    onPress={() => { setIsCommentOpen(!isCommentOpen), setIsDescriptionOpen(!isDescriptionOpen) }}
+                                >
+                                    <Text className='text-lg font-medium tracking-wider text-white'>Comments</Text>
+                                </TouchableOpacity>
+                            )}
 
-                                    <View className='h-[30px] w-[30px] rounded-full'>
-                                        <Image source={require("../assets/images/girl.png")} style={styles.profilePic} />
-                                    </View>
+                        </View>
 
-                                    <TextInput
-                                        placeholder="Share your thoughts"
-                                        className='py-1'
-                                        clearButtonMode="always"
-                                        multiline
-                                    />
+                        {isCommentOpen && <View className='space-y-1 py-[2px] px-1 mb-2'>
+
+                            <Text className='font-medium tracking-wider text-lg'>Comments</Text>
+
+                            <View className='flex-row space-x-2 items-center'>
+
+                                <View className='h-[30px] w-[30px] rounded-full'>
+                                    <Image source={require("../assets/images/girl.png")} style={styles.profilePic} />
                                 </View>
 
+                                <TextInput
+                                    placeholder="Share your thoughts"
+                                    className='w-3/4 py-1 border-b-[1px] border-slate-400'
+                                    clearButtonMode="always"
+                                />
                             </View>
-                        ) : (
-                            <View className='space-y-1 border-[1px] border-slate-300 rounded-md py-1 px-1 mb-2'>
-                                <Text className='font-medium tracking-wider text-lg'>Description</Text>
-                                <Text>{currentPost.description}</Text>
-                            </View>
-                        )}
+
+                        </View>}
+
+                        {isDescriptionOpen && <View className='space-y-1 py-1 px-1 mb-2'>
+                            <Text className='font-medium tracking-wider text-lg'>Description</Text>
+                            <Text>{currentPost.description}</Text>
+                        </View>}
 
                     </View>
 
