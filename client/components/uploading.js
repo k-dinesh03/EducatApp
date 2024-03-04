@@ -3,9 +3,8 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { Video } from 'expo-av';
 
 import { BlurView } from 'expo-blur';
-import Progress from './progress';
 
-const Uploading = ({ progress, image, video }) => {
+const Uploading = ({ image, video }) => {
 
     const isVideoUrl = (url) => {
         if (url) {
@@ -30,7 +29,7 @@ const Uploading = ({ progress, image, video }) => {
 
                 <Text className='font-medium tracking-wider mb-1 text-white'>Uploading...</Text>
 
-                <Progress progress={progress} />
+
 
                 <View className='w-full space-y-1'>
 

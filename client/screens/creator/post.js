@@ -9,7 +9,6 @@ import { Video } from 'expo-av';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 
-import Navigation from '../../components/Navigation';
 import MenuBtn from '../../components/menuBtn';
 import BottomSheetNav from '../../components/bottomSheetNav';
 
@@ -37,7 +36,6 @@ const Post = ({ route }) => {
 
     //ImagePicker
     const [images, setImages] = useState([]);
-    const [progress, setProgress] = useState(0);
     const [maxHeight, setMaxHeight] = useState(0);
 
     const pickMediaGallery = async () => {
@@ -226,21 +224,6 @@ const Post = ({ route }) => {
 
                     const storageRef = storage.ref().child(`images/${filename}`);
                     await storageRef.put(blob);
-
-                    const uploadTask = uploadBytesResumable(storageRef, blob);
-                    uploadTask.on("state_changed",
-                        (snapshot) => {
-                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                            setProgress(progress.toFixed());
-                            console.log(progress.toFixed());
-                        },
-                        () => {
-                            getDownloadURL(uploadTask.snapshot.ref).then(() => {
-                                setImages([]);
-                            })
-                        }
-                    )
-
                     return storageRef.getDownloadURL();
                 }));
 
@@ -294,7 +277,7 @@ const Post = ({ route }) => {
 
             <StatusBar
                 backgroundColor="transparent"
-                barStyle="dark-content"
+                barStyle="light-content"
                 translucent={true}
             />
 
@@ -302,9 +285,9 @@ const Post = ({ route }) => {
 
                 <View className='self-center mt-5' style={{ width: '97%' }}>
 
-                    <TouchableOpacity className='self-end bg-slate-200 flex flex-row items-center justify-end py-1 px-2 rounded-md z-20' onPress={pickMediaCamera}>
-                        <Text className='text-md mr-2'>Take a Snap</Text>
-                        <SimpleLineIcons name='camera' color='#000' size={25} />
+                    <TouchableOpacity className='self-end bg-slate-200 flex flex-row items-center space-x-2 justify-end py-1 px-2 rounded-md z-20' onPress={pickMediaCamera}>
+                        <Text className='text-md'>Take a Snap</Text>
+                        <SimpleLineIcons name='camera' color='#000000' size={25} />
                     </TouchableOpacity>
 
                 </View>
@@ -373,7 +356,7 @@ const Post = ({ route }) => {
 
                             {errors.images && <Text className='text-xs text-red-500 ml-2'>({errors.images})</Text>}
 
-                            <TouchableOpacity className='w-3/4 bg-emerald-500 py-2 items-center rounded-md' onPress={pickMediaGallery}>
+                            <TouchableOpacity className='w-3/5 bg-emerald-500 py-2 items-center rounded-md' onPress={pickMediaGallery}>
                                 <Text className='text-white text-lg'>Upload from Gallery</Text>
                             </TouchableOpacity>
 
@@ -431,13 +414,13 @@ const Post = ({ route }) => {
                 </View>
 
 
-                <TouchableOpacity className='w-3/5 bg-emerald-500 py-2 items-center rounded-md self-center mb-8' onPress={handleSubmit}>
+                <TouchableOpacity className='bg-emerald-500 py-2 px-6 items-center rounded-md self-center mb-8' onPress={handleSubmit}>
                     <Text className='text-white text-lg'>Share the Post</Text>
                 </TouchableOpacity>
 
             </ScrollView>
 
-            {uploading && <Uploading progress={progress} image={images[0]} video={images[0]} />}
+            {uploading && <Uploading image={images[0]} video={images[0]} />}
 
             <MenuBtn handleOpen={() => bottomSheetRef.current?.snapToIndex(0)} />
 

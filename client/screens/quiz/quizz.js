@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 
-import Navigation from '../../components/Navigation';
 
 const Quizz = ({ route }) => {
 
@@ -62,12 +61,9 @@ const Quizz = ({ route }) => {
 
             <StatusBar
                 backgroundColor="transparent"
-                barStyle="dark-content"
+                barStyle="light-content"
                 translucent={true}
             />
-
-            {/* Top navigation */}
-            <Navigation />
 
             <ScrollView
                 className='h-full self-center -z-10'

@@ -11,7 +11,7 @@ export default function Launch() {
 
             <StatusBar
                 backgroundColor="transparent"
-                barStyle="dark-content"
+                barStyle="light-content"
                 translucent={true}
             />
 

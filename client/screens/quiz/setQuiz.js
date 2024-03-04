@@ -52,7 +52,7 @@ const SetQuiz = ({ route }) => {
 
             <StatusBar
                 backgroundColor="transparent"
-                barStyle="dark-content"
+                barStyle="light-content"
                 translucent={true}
             />
 
@@ -64,7 +64,7 @@ const SetQuiz = ({ route }) => {
 
                 <View className='w-full h-full py-1 space-y-5 mt-2'>
 
-                    <View className='flex-row items-center space-x-3'>
+                    <View className='flex-row items-center space-x-3 my-2'>
                         <Text className='font-medium tracking-widest' style={{ fontSize: 15 }}>Title : </Text>
                         <TextInput
                             autoCapitalize='none'
@@ -169,7 +169,7 @@ const SetQuiz = ({ route }) => {
                     </View>
 
                     <TouchableOpacity
-                        className='w-1/2 bg-emerald-500 py-2 items-center rounded-md self-center mb-8'
+                        className='w-1/3 bg-emerald-500 py-2 items-center rounded-md self-center mb-8'
                         onPress={handleQuizTimeSubmit}
                     >
                         <Text className='text-white text-lg'>Submit</Text>

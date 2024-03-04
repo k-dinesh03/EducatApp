@@ -11,7 +11,7 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
     const navigation = useNavigation();
 
     const snapPointsOthers = useMemo(() => ['14%', '25%', '36%'], []);
-    const snapPointsHome = useMemo(() => ['12%', '22%', '32%'], []);
+    const snapPointsHome = useMemo(() => ['13%', '22%', '32%'], []);
 
     const renderBackdrop = useCallback((props) => {
         return <BottomSheetBackdrop appearsOnIndex={4} disappearsOnIndex={-1} {...props} />;
@@ -42,6 +42,16 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
                     </View>
 
                     <View className='flex items-center w-1/3 py-2'>
+                        <TouchableOpacity onPress={() => navigation.navigate("Explore")}
+                            className='rounded-full h-[50px] w-[50px] flex items-center pl-[3px] justify-center bg-white border-[1px] border-gray-400'
+                        >
+                            <Ionicons name='folder-outline' size={25} color='gray' />
+                        </TouchableOpacity>
+
+                        <Text className='font-medium tracking-wider'>Explore</Text>
+                    </View>
+
+                    <View className='flex items-center w-1/3 py-2'>
                         <TouchableOpacity onPress={() => navigation.navigate("Post")}
                             className='rounded-full h-[50px] w-[50px] flex items-center justify-center bg-white border-[1px] border-gray-400'
                         >
@@ -53,7 +63,7 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
 
                     <View className='flex items-center w-1/3 py-2'>
                         <TouchableOpacity
-                            onPress={() => navigation.navigate("ChatBot")}
+                            onPress={() => navigation.navigate("ChatHome")}
                             className='rounded-full h-[50px] w-[50px] flex items-center pl-[2px] justify-center bg-white border-[1px] border-gray-400'
                         >
                             <Ionicons name='chatbox-ellipses-outline' size={26} color='gray' />
@@ -70,16 +80,6 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
                         </TouchableOpacity>
 
                         <Text className='font-medium tracking-wider'>Saved</Text>
-                    </View>
-
-                    <View className='flex items-center w-1/3 py-2'>
-                        <TouchableOpacity onPress={() => navigation.navigate("Collections")}
-                            className='rounded-full h-[50px] w-[50px] flex items-center pl-[3px] justify-center bg-white border-[1px] border-gray-400'
-                        >
-                            <Ionicons name='folder-outline' size={25} color='gray' />
-                        </TouchableOpacity>
-
-                        <Text className='font-medium tracking-wider'>Collections</Text>
                     </View>
 
                     <View className='flex items-center w-1/3 py-2'>
