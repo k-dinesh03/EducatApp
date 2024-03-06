@@ -21,6 +21,7 @@ const carouselWidth = windowWidth - (windowWidth * 0.03);
 import { firebase } from '../../config/config';
 import { useNavigation } from '@react-navigation/native';
 import Uploading from '../../components/uploading';
+import PostModal from '../../components/postModal';
 
 const Post = ({ route }) => {
 
@@ -277,9 +278,11 @@ const Post = ({ route }) => {
 
             <StatusBar
                 backgroundColor="transparent"
-                barStyle="light-content"
+                barStyle="dark-content"
                 translucent={true}
             />
+
+            {/* <PostModal /> */}
 
             <ScrollView className='w-full h-full flex space-y-8 -z-10'>
 

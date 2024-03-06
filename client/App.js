@@ -36,103 +36,14 @@ const App = () => {
 				{authenticatedUser ? (
 					<Stack.Navigator initialRouteName="Home" >
 						<Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-						<Stack.Screen name="Explore" component={Explore}
-							options={{
-								title: 'Explore', headerStyle: {
-									backgroundColor: '#42A5F5',
-
-								},
-								headerTintColor: '#fff',
-								headerTitleStyle: {
-									color: 'white',
-								}
-							}}
-						/>
-						<Stack.Screen name="Profile" component={Profile}
-							options={{
-								title: username, headerStyle: {
-									backgroundColor: '#42A5F5',
-
-								},
-								headerTintColor: '#fff',
-								headerTitleStyle: {
-									color: 'white',
-								}
-							}}
-						/>
-						<Stack.Screen name="ChatBot" component={ChatBot}
-							options={{
-								title: 'EduAi', headerStyle: {
-									backgroundColor: '#42A5F5',
-
-								},
-								headerTintColor: '#fff',
-								headerTitleStyle: {
-									color: 'white',
-								}
-							}}
-						/>
-						<Stack.Screen name="ChatHome" component={ChatHome}
-							options={{
-								title: username, headerStyle: {
-									backgroundColor: '#42A5F5',
-
-								},
-								headerTintColor: '#fff',
-								headerTitleStyle: {
-									color: 'white',
-								}
-							}}
-						/>
-						<Stack.Screen name="PostTemp" component={PostTemp}
-							options={{
-								title: 'Explore', headerStyle: {
-									backgroundColor: '#42A5F5',
-
-								},
-								headerTintColor: '#fff',
-								headerTitleStyle: {
-									color: 'white',
-								}
-							}}
-						/>
-						<Stack.Screen name="SetQuiz" component={SetQuiz}
-							options={{
-								title: 'Create a Quiz', headerStyle: {
-									backgroundColor: '#42A5F5',
-
-								},
-								headerTintColor: '#fff',
-								headerTitleStyle: {
-									color: 'white',
-								}
-							}}
-						/>
-						<Stack.Screen name="Quizz" component={Quizz}
-							options={{
-								title: 'Quiz', headerStyle: {
-									backgroundColor: '#42A5F5',
-
-								},
-								headerTintColor: '#fff',
-								headerTitleStyle: {
-									color: 'white',
-								}
-							}}
-						/>
-						<Stack.Screen name="Post" component={Post}
-							options={{
-								title: 'Create a Post',
-								headerStyle: {
-									backgroundColor: '#42A5F5',
-
-								},
-								headerTintColor: '#fff',
-								headerTitleStyle: {
-									color: 'white',
-								}
-							}}
-						/>
+						<Stack.Screen name="Explore" component={Explore} options={{ title: 'Explore' }} />
+						<Stack.Screen name="Profile" component={Profile} options={{ title: username }} />
+						<Stack.Screen name="ChatBot" component={ChatBot} options={{ title: 'EduAi' }} />
+						<Stack.Screen name="ChatHome" component={ChatHome} options={{ title: username }} />
+						<Stack.Screen name="PostTemp" component={PostTemp} options={{ title: 'Explore' }} />
+						<Stack.Screen name="SetQuiz" component={SetQuiz} options={{ title: 'Create a Quiz' }} />
+						<Stack.Screen name="Quizz" component={Quizz} options={{ title: 'Quiz' }} />
+						<Stack.Screen name="Post" component={Post} options={{ title: 'Create a Post' }} />
 					</Stack.Navigator>
 				) : (
 					<Stack.Navigator initialRouteName="Launch" screenOptions={{ headerShown: false }}>

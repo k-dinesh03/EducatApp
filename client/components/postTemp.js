@@ -223,11 +223,11 @@ const PostTemp = ({ route }) => {
 
 
     return (
-        <SafeAreaView className='w-screen h-full flex'>
+        <SafeAreaView className='w-screen h-full flex bg-white'>
 
             <StatusBar
                 backgroundColor="transparent"
-                barStyle="light-content"
+                barStyle="dark-content"
                 translucent={true}
             />
 
@@ -242,7 +242,7 @@ const PostTemp = ({ route }) => {
                     <View className='w-full h-full space-y-3 mb-2'>
 
                         <View className='flex-row items-center justify-end space-x-1 mt-3'>
-                            <Text className='text-sm underline'>Posted by</Text>
+                            <Text className='text-sm'>Posted by</Text>
                             <TouchableOpacity>
                                 <Text className='text-sm font-medium tracking-wider'>{currentPost?.postedBy?.username}</Text>
                             </TouchableOpacity>

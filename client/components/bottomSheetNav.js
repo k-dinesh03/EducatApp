@@ -1,7 +1,8 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useContext } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { Ionicons, Feather, SimpleLineIcons, AntDesign } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import { AuthContext } from '../context/authContext';
 
 import { useNavigation, useRoute } from '@react-navigation/native'
 
@@ -9,6 +10,9 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
 
     const route = useRoute();
     const navigation = useNavigation();
+
+    const { state } = useContext(AuthContext);
+    const userType = state?.user?.userType === 'creator';
 
     const snapPointsOthers = useMemo(() => ['14%', '25%', '36%'], []);
     const snapPointsHome = useMemo(() => ['13%', '22%', '32%'], []);
