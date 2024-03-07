@@ -11,7 +11,7 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 import { Video } from 'expo-av';
 
-import { AntDesign, FontAwesome, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
+import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import QuizModal from './quizModal';
 
 const windowWidth = Dimensions.get('window').width;
@@ -116,7 +116,7 @@ const PostTemp = ({ route }) => {
     const handleAttendQuiz = () => {
         closeModal();
         videoRef.current.pauseAsync();
-        navigation.navigate('Quizz', { quiz: quizTimes, quizNumber: quizNumber });
+        navigation.navigate('Quizz', { quiz: quizTimes, quizNumber: quizNumber, quizTitle: currentPost.quizTitle });
     }
 
     // Close the modal and resume video playback

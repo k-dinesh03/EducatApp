@@ -262,7 +262,6 @@ const PostCard = ({ posts }) => {
         }
     }
 
-
     return (
         <View className='h-full w-full my-[5px]'>
 

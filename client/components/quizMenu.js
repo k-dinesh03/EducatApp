@@ -4,6 +4,7 @@ import { Modal, Text, Pressable, View, TextInput, TouchableOpacity, StyleSheet, 
 import { Dropdown } from 'react-native-element-dropdown';
 import { Feather, Ionicons, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 const QuizModal = ({ modalVisible, setModalVisible, quizIndex, quizTimes, setQuizTimes }) => {
 
@@ -43,16 +44,14 @@ const QuizModal = ({ modalVisible, setModalVisible, quizIndex, quizTimes, setQui
 
         if (generateQuesError(amount, difficulty)) {
             try {
-                const response = await fetch(`https://opentdb.com/api.php?amount=${amount}&category=18&difficulty=${difficulty}&type=multiple`);
-                const data = await response.json();
+                const response = await axios.get(`https://opentdb.com/api.php?amount=${amount}&category=18&difficulty=${difficulty}&type=multiple`);
 
                 setModalVisible(!modalVisible);
-                console.log("Data : ", data);
 
                 // Mark quiz as added in quizTimes
                 const updatedQuizTimes = [...quizTimes];
                 updatedQuizTimes[quizIndex].added = true;
-                updatedQuizTimes[quizIndex].questions = data.results;
+                updatedQuizTimes[quizIndex].questions = response.data.results;
                 setQuizTimes(updatedQuizTimes);
             }
             catch (error) {

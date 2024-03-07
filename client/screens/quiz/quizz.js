@@ -6,8 +6,8 @@ const Quizz = ({ route }) => {
 
     const quizSet = route.params?.quiz || {};
     const quizNumber = route.params?.quizNumber;
+    const quizTitle = route.params?.quizTitle || '';
     console.log("Quizz set: " + JSON.stringify(quizSet));
-    console.log("quizNumber :", quizNumber)
 
     const [options, setOptions] = useState([]);
 
@@ -75,7 +75,7 @@ const Quizz = ({ route }) => {
 
                     <View className='space-y-3'>
 
-                        <Text className='text-lg self-center font-semibold tracking-wider'>Quiz - Title</Text>
+                        <Text className='text-lg self-center font-semibold tracking-wider'>Quiz - {quizTitle}</Text>
 
                         <View className='flex-row justify-between items-center h-[42px] px-2 border-[1px] border-emerald-700 rounded-md'>
                             <Text className='font-semibold tracking-wider text-emerald-700' style={{ fontSize: 16 }}>Answered</Text>

@@ -11,6 +11,7 @@ import axios from 'axios';
 
 import MenuBtn from '../../components/menuBtn';
 import BottomSheetNav from '../../components/bottomSheetNav';
+import PostModal from '../../components/postModal';
 
 import { AntDesign, Feather, MaterialIcons, SimpleLineIcons } from '@expo/vector-icons';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
@@ -20,8 +21,6 @@ const carouselWidth = windowWidth - (windowWidth * 0.03);
 
 import { firebase } from '../../config/config';
 import { useNavigation } from '@react-navigation/native';
-import Uploading from '../../components/uploading';
-import PostModal from '../../components/postModal';
 
 const Post = ({ route }) => {
 
@@ -188,8 +187,6 @@ const Post = ({ route }) => {
         );
     };
 
-    const hasVideo = /\.(mp4|mov|avi|wmv|flv|mkv|gif)$/i.test(images[activeSlide]);
-
     const [isHeader, setIsHeader] = useState(false);
     const [isDescription, setIsDescription] = useState(false);
 
@@ -209,8 +206,10 @@ const Post = ({ route }) => {
         setErrors(validationErrors);
 
         if (Object.keys(validationErrors).length === 0) {
+
             try {
                 setUploading(true);
+
 
                 // Upload images to Firebase Storage
                 const imageUrls = await Promise.all(images.map(async (image) => {
@@ -228,10 +227,15 @@ const Post = ({ route }) => {
                     return storageRef.getDownloadURL();
                 }));
 
-                const { data } = await axios.post("/post/create-post", { title, description, images: imageUrls, quizzes, quizTitle });
+                const { data } = await axios.post('/post/create-post', { title, description, images: imageUrls, quizzes: quizzes, quizTitle: quizTitle, likes: 0, rating: 0 }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
                 setUploading(false);
 
-                setPosts([...posts, data?.post])
+                setPosts([...posts, data?.post]);
 
                 ToastAndroid.showWithGravityAndOffset(
                     data?.message,
@@ -273,6 +277,9 @@ const Post = ({ route }) => {
         width: '100%'
     };
 
+    const [selectedOption, setSelectedOption] = useState(null);
+    console.log(selectedOption)
+
     return (
         <SafeAreaView className='flex-1 bg-white'>
 
@@ -282,38 +289,36 @@ const Post = ({ route }) => {
                 translucent={true}
             />
 
-            {/* <PostModal /> */}
+            <PostModal setSelectedOption={setSelectedOption} />
 
-            <ScrollView className='w-full h-full flex space-y-8 -z-10'>
+            <ScrollView className='w-full h-full flex space-y-8 -z-10 pt-5'>
 
-                <View className='self-center mt-5' style={{ width: '97%' }}>
+                {selectedOption === 'images' && <View className='self-center' style={{ width: '97%' }}>
 
                     <TouchableOpacity className='self-end bg-slate-200 flex flex-row items-center space-x-2 justify-end py-1 px-2 rounded-md z-20' onPress={pickMediaCamera}>
                         <Text className='text-md'>Take a Snap</Text>
                         <SimpleLineIcons name='camera' color='#000000' size={25} />
                     </TouchableOpacity>
 
-                </View>
+                </View>}
 
-                {hasVideo &&
-                    <View className='space-y-3 self-center' style={{ width: '97%' }}>
+                {selectedOption === 'quiz' || selectedOption === 'videowithquiz' ? (<View className='space-y-3 self-center' style={{ width: '97%' }}>
 
-                        <Text className='text-lg self-center'>Do you want to create a Quiz ?</Text>
+                    <Text className='text-lg self-center'>Do you want to create a Quiz ?</Text>
 
-                        <TouchableOpacity
-                            className='w-1/3 bg-emerald-500 py-[7px] items-center rounded-md self-center'
-                            onPress={() =>
-                                navigation.navigate('SetQuiz', {
-                                    videoUrl: images[activeSlide]
-                                })
-                            }
-                        >
-                            <Text className='text-white text-lg'>Create a Quiz</Text>
-                        </TouchableOpacity>
-                    </View>
-                }
+                    <TouchableOpacity
+                        className='w-1/3 bg-emerald-500 py-[7px] items-center rounded-md self-center'
+                        onPress={() =>
+                            navigation.navigate('SetQuiz', {
+                                videoUrl: images[activeSlide]
+                            })
+                        }
+                    >
+                        <Text className='text-white text-lg'>Create a Quiz</Text>
+                    </TouchableOpacity>
+                </View>) : null}
 
-                <View className='self-center' style={{ width: '97%' }}>
+                {selectedOption === 'images' || selectedOption === 'videos' || selectedOption === 'videowithquiz' ? (<View className='self-center' style={{ width: '97%' }}>
 
                     {images.length > 0 ? (
 
@@ -365,7 +370,7 @@ const Post = ({ route }) => {
 
                         </View>
                     )}
-                </View>
+                </View>) : null}
 
                 <View className={`w-4/5 ${isHeader ? 'py-2' : ''} px-2 py-[6px] self-center border-y-[1px] border-slate-400 flex justify-between`}>
 
@@ -416,14 +421,11 @@ const Post = ({ route }) => {
                     }
                 </View>
 
-
                 <TouchableOpacity className='bg-emerald-500 py-2 px-6 items-center rounded-md self-center mb-8' onPress={handleSubmit}>
                     <Text className='text-white text-lg'>Share the Post</Text>
                 </TouchableOpacity>
 
             </ScrollView>
-
-            {uploading && <Uploading image={images[0]} video={images[0]} />}
 
             <MenuBtn handleOpen={() => bottomSheetRef.current?.snapToIndex(0)} />
 

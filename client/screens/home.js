@@ -17,7 +17,7 @@ const Home = () => {
 
             <StatusBar
                 backgroundColor="transparent"
-                barStyle="dark-content"
+                barStyle="light-content"
                 translucent={true}
             />
 

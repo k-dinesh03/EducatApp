@@ -5,7 +5,7 @@ import { Ionicons, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons'
 import { BlurView } from 'expo-blur';
 import { useNavigation } from '@react-navigation/native';
 
-const PostModal = () => {
+const PostModal = ({ setSelectedOption }) => {
 
     const [modalVisible, setModalVisible] = useState(true);
     const navigation = useNavigation();
@@ -19,9 +19,9 @@ const PostModal = () => {
                 setModalVisible(!modalVisible)
             }}
         >
-            <BlurView tint='systemThickMaterialDark' className='flex-1 items-center justify-center'>
+            <BlurView tint='systemThickMaterialLight' className='flex-1 items-center justify-center'>
 
-                <View className='bg-white w-5/6 rounded-md px-4 pt-3 pb-5 space-y-5 shadow-lg shadow-black'>
+                <View className='bg-white w-5/6 rounded-md px-4 pt-3 pb-5 space-y-5 shadow-xl shadow-black'>
 
                     <View className='flex-row justify-between items-center'>
                         <Text className='text-lg font-medium tracking-wide'>Share Your Ideas as :</Text>
@@ -35,6 +35,7 @@ const PostModal = () => {
                         <View className='items-center w-1/3 mb-4 space-y-1'>
                             <TouchableOpacity
                                 className='h-[45px] w-[45px] items-center justify-center border-[1px] border-slate-400 rounded-md'
+                                onPress={() => { setSelectedOption('videos'), setModalVisible(false) }}
                             >
                                 <Ionicons name='play-circle-outline' color='black' size={30} />
                             </TouchableOpacity>
@@ -43,6 +44,7 @@ const PostModal = () => {
 
                         <View className='items-center w-1/3 mb-4 space-y-1'>
                             <TouchableOpacity
+                                onPress={() => { setSelectedOption('images'), setModalVisible(false) }}
                                 className='h-[45px] w-[45px] items-center justify-center border-[1px] border-slate-400 rounded-md'
                             >
                                 <AntDesign name='picture' size={26} color='black' />
@@ -52,6 +54,7 @@ const PostModal = () => {
 
                         <View className='items-center w-1/3 mb-4 space-y-1'>
                             <TouchableOpacity
+                                onPress={() => { setSelectedOption('videowithquiz'), setModalVisible(false) }}
                                 className='h-[45px] w-[45px] justify-end border-[1px] border-slate-400 rounded-md'
                             >
                                 <AntDesign name='bulb1' size={19} color='black' style={{ position: 'absolute', top: 2 }} />
@@ -62,6 +65,7 @@ const PostModal = () => {
 
                         <View className='items-center w-1/3 space-y-1'>
                             <TouchableOpacity
+                                onPress={() => { setSelectedOption('poll'), setModalVisible(false) }}
                                 className='h-[45px] w-[45px] items-center justify-center border-[1px] border-slate-400 rounded-md'
                             >
                                 <MaterialCommunityIcons name='ballot-outline' size={30} color='black' />
@@ -71,6 +75,7 @@ const PostModal = () => {
 
                         <View className='items-center w-1/3 space-y-1'>
                             <TouchableOpacity
+                                onPress={() => { setSelectedOption('documents'), setModalVisible(false) }}
                                 className='h-[45px] w-[45px] items-center justify-center border-[1px] border-slate-400 rounded-md'
                             >
                                 <Ionicons name='document-text-outline' size={26} />
@@ -80,6 +85,7 @@ const PostModal = () => {
 
                         <View className='items-center w-1/3 space-y-1'>
                             <TouchableOpacity
+                                onPress={() => { setSelectedOption('quiz'), setModalVisible(false) }}
                                 className='h-[45px] w-[45px] items-center justify-center border-[1px] border-slate-400 rounded-md'
                             >
                                 <AntDesign name='bulb1' size={22} />

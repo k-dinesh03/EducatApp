@@ -10,9 +10,8 @@ const ChatBot = () => {
     const [userInput, setUserInput] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const buttonStyle = loading || userInput.trim() === '' ?
-        [styles.button, { backgroundColor: '#fff' }] :
-        styles.button;
+
+    const key = 'AIzaSyDykZUu7HZbYHw916aRpnFEqQXJUerypR0';
 
     const handelUserInput = async () => {
         let updatedChat = [
@@ -25,8 +24,13 @@ const ChatBot = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyAHBC17AmhxsSAopbWbL6w4wRrTL9Wq9d0',
-                { contents: updatedChat }
+            const response = await axios.post(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${key}`,
+                { contents: updatedChat },
+                {
+                    headers: {
+                        Authorization: `Bearer ${key}`,
+                    },
+                }
             );
 
             console.log("Gemini pro API Response: ", response.data);

@@ -51,6 +51,7 @@ function Register() {
 	}
 
 	const handleSubmit = async (e) => {
+
 		e.preventDefault();
 
 		const validationErrors = Validate(values.current);
@@ -65,7 +66,11 @@ function Register() {
 			try {
 
 				//for registering user
-				const { data } = await axios.post('/auth/register', { username, userType, email, password, score: 0, profilePic: '' });
+				const { data } = await axios.post('/auth/register', { username, userType, email, password, score: 0, profilePic: '' }, {
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				});
 				console.log(data);
 
 				// for verification mail and folder creation
