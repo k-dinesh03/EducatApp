@@ -1,19 +1,20 @@
 const postModel = require("../models/postModel");
+const quizModel = require("../models/quizModel");
 
-//create new post
+//create new post for images, videos, videos with quiz
 const createPostController = async (req, res) => {
     try {
-        const { title, description, images, quizzes, quizTitle } = req.body;
+        const { title, description, images, quizzes, quizTitle, likes, rating, postType } = req.body;
 
         //validate
-        if (!title || !description || !images || !images.length || !quizTitle) {
+        if (!title || !description || !images || !images.length) {
             return res.status(400).send({
                 success: false,
                 message: 'Please fill all fields and provide at least one Image or Video',
             });
         }
 
-        const post = await postModel({ title, description, images, quizzes, quizTitle, postedBy: req.auth._id }).save();
+        const post = await postModel({ title, description, images, quizzes, quizTitle, likes, rating, postType, postedBy: req.auth._id }).save();
 
         res.status(201).send({
             success: true,
@@ -30,6 +31,61 @@ const createPostController = async (req, res) => {
         })
     }
 };
+
+//create new post for quiz only
+const createQuizPostController = async (req, res) => {
+    try {
+        const { title, description, quizQuest, postType, likes, rating } = req.body;
+
+        //validate
+        if (!title || !description) {
+            return res.status(400).send({
+                success: false,
+                message: 'Please fill all fields',
+            });
+        }
+
+        const quiz = await quizModel({ title, description, quizQuest, postType, likes, rating, postedBy: req.auth._id }).save();
+
+        res.status(201).send({
+            success: true,
+            message: "Quiz created successfully",
+            quiz
+        })
+    }
+    catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success: false,
+            message: "Error creating quiz",
+            error
+        })
+    }
+}
+
+//get all quizzes
+const getAllQuizController = async (req, res) => {
+    try {
+        const quizzes = await quizModel
+            .find()
+            .populate('postedBy', "_id username")
+            .sort({ createdAt: -1 });
+
+        res.status(200).send({
+            success: true,
+            message: "All Quiz data",
+            quizzes,
+        })
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: "Error getting Quiz api",
+            error
+        })
+    }
+}
 
 //get all posts
 const getAllPostsController = async (req, res) => {
@@ -130,4 +186,12 @@ const updatePostController = async (req, res) => {
     }
 }
 
-module.exports = { createPostController, getAllPostsController, getUsersPostsController, deletePostController, updatePostController };
+module.exports = {
+    createPostController,
+    createQuizPostController,
+    getAllQuizController,
+    getAllPostsController,
+    getUsersPostsController,
+    deletePostController,
+    updatePostController
+};

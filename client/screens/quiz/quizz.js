@@ -57,7 +57,7 @@ const Quizz = ({ route }) => {
     }
 
     return (
-        <SafeAreaView className='w-screen h-full flex'>
+        <SafeAreaView className='w-screen h-full flex bg-white'>
 
             <StatusBar
                 backgroundColor="transparent"

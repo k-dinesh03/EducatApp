@@ -32,7 +32,16 @@ const postSchema = new mongoose.Schema({
     ],
     quizTitle: {
         type: String,
-        required: [true, 'Please add a quiz title']
+    },
+    likes: {
+        type: Number,
+    },
+    rating: {
+        type: Number,
+    },
+    postType: {
+        type: String,
+        required: [true, 'Please add a post type']
     },
     postedBy: {
         type: mongoose.Schema.ObjectId,

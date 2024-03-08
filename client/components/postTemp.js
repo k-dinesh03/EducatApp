@@ -27,18 +27,22 @@ const PostTemp = ({ route }) => {
     const postId = route.params?.postId || '';
     const videoRef = React.useRef(null);
 
-    const { posts } = useContext(PostContext);
+    const { allData } = useContext(PostContext);
     const [currentPost, setCurrentPost] = useState(null);
+    const [currentPostType, setCurrentPostType] = useState('');
+
+
     const [isCommentOpen, setIsCommentOpen] = useState(false);
     const [isDescriptionOpen, setIsDescriptionOpen] = useState(true);
 
     // Search for the post with the given postId
     useEffect(() => {
         if (postId) {
-            const post = posts.find((post) => post._id === postId);
+            const post = allData.find((post) => post._id === postId);
             setCurrentPost(post);
+            setCurrentPostType(post.postType);
         }
-    }, [postId, posts]);
+    }, [postId, allData]);
 
     const carouselRef = useRef(null);
 
@@ -160,9 +164,7 @@ const PostTemp = ({ route }) => {
         }
         else {
             return (
-                <View className='w-full h-full'>
-                    <Image source={{ uri: item }} style={{ width: '100%', height: '100%', borderRadius: 5 }} />
-                </View>
+                <Image source={{ uri: item }} style={{ width: '100%', height: '100%', borderRadius: 5, resizeMode: 'contain' }} />
             );
         }
     };
@@ -248,25 +250,29 @@ const PostTemp = ({ route }) => {
                             </TouchableOpacity>
                         </View>
 
-                        <View className='w-full h-96 border-[1px] border-slate-300 rounded-md'>
+                        {(currentPostType === 'videos' || currentPostType === 'images' || currentPostType === 'videowithquiz') &&
+                            <View className='w-full h-96 border-[1px] border-slate-300 rounded-md'>
 
-                            <Carousel
-                                layout={'default'}
-                                ref={carouselRef}
-                                data={currentPost?.images}
-                                sliderWidth={carouselWidth}
-                                itemWidth={carouselWidth}
-                                renderItem={renderItem}
-                                onSnapToItem={(index) => setActiveSlide(index)}
-                            />
+                                <Carousel
+                                    layout={'default'}
+                                    ref={carouselRef}
+                                    data={currentPost?.images}
+                                    sliderWidth={carouselWidth}
+                                    itemWidth={carouselWidth}
+                                    renderItem={renderItem}
+                                    onSnapToItem={(index) => setActiveSlide(index)}
+                                />
 
-                            {currentPost?.images.length > 1 && <View className='absolute top-1 right-1 bg-white w-[42px] h-[26px] rounded-full flex items-center justify-center'>
-                                <Text className='tracking-widest mb-[1px]'>{activeSlide + 1}/{currentPost?.images.length}</Text>
-                            </View>}
+                                {currentPost?.images.length > 1 && <View className='absolute top-1 right-1 bg-white w-[42px] h-[26px] rounded-full flex items-center justify-center'>
+                                    <Text className='tracking-widest mb-[1px]'>{activeSlide + 1}/{currentPost?.images.length}</Text>
+                                </View>}
 
-                        </View>
+                            </View>
+                        }
 
-                        {currentPost?.images.length < 4 ? pagination_one(activeSlide, currentPost?.images.length) : pagination_two(activeSlide, currentPost?.images.length)}
+                        {(currentPostType === 'videos' || currentPostType === 'images' || currentPostType === 'videowithquiz') &&
+                            (currentPost?.images.length < 4 ? pagination_one(activeSlide, currentPost?.images.length) : pagination_two(activeSlide, currentPost?.images.length))
+                        }
 
                         <Text className='font-semibold tracking-wider text-3xl'>{currentPost.title}</Text>
 
@@ -276,81 +282,89 @@ const PostTemp = ({ route }) => {
                                 <TouchableOpacity className='items-center'>
                                     <AntDesign name='staro' color='black' size={21} />
                                 </TouchableOpacity>
-                                <Text className='font-medium'>4.5</Text>
+                                <Text className='font-medium'>{currentPost?.rating}</Text>
                             </View>
 
                             <View className='flex-row items-center space-x-1'>
                                 <TouchableOpacity className='items-center'>
                                     <Ionicons name='heart-outline' size={22} color='black' />
                                 </TouchableOpacity>
-                                <Text className='font-medium'>100 Likes</Text>
+                                <Text className='font-medium'>{currentPost?.likes} Likes</Text>
                             </View>
 
                         </View>
 
-                        <View className='w-full flex-row self-center items-center justify-between border-[1px] border-slate-400 p-[3px] rounded-md'>
+                        {(currentPostType === 'videos' || currentPostType === 'images' || currentPostType === 'videowithquiz') &&
+                            <View className='w-full flex-row self-center items-center justify-between border-[1px] border-slate-400 p-[3px] rounded-md'>
 
-                            {isDescriptionOpen ? (
-                                <TouchableOpacity
-                                    className='h-14 bg-violet-400 items-center justify-center rounded-md'
-                                    style={{ width: '49%' }}
-                                    onPress={() => { setIsDescriptionOpen(true) }}
-                                >
-                                    <Text className='text-lg font-medium tracking-wider text-white'>Description</Text>
-                                </TouchableOpacity>
-                            ) : (
-                                <TouchableOpacity
-                                    className='h-14 bg-violet-300 items-center justify-center rounded-md'
-                                    style={{ width: '49%' }}
-                                    onPress={() => { setIsDescriptionOpen(!isDescriptionOpen), setIsCommentOpen(!isCommentOpen) }}
-                                >
-                                    <Text className='text-lg font-medium tracking-wider text-white'>Description</Text>
-                                </TouchableOpacity>
-                            )}
+                                {isDescriptionOpen ? (
+                                    <TouchableOpacity
+                                        className='h-14 bg-violet-400 items-center justify-center rounded-md'
+                                        style={{ width: '49%' }}
+                                        onPress={() => { setIsDescriptionOpen(true) }}
+                                    >
+                                        <Text className='text-lg font-medium tracking-wider text-white'>Description</Text>
+                                    </TouchableOpacity>
+                                ) : (
+                                    <TouchableOpacity
+                                        className='h-14 bg-violet-300 items-center justify-center rounded-md'
+                                        style={{ width: '49%' }}
+                                        onPress={() => { setIsDescriptionOpen(!isDescriptionOpen), setIsCommentOpen(!isCommentOpen) }}
+                                    >
+                                        <Text className='text-lg font-medium tracking-wider text-white'>Description</Text>
+                                    </TouchableOpacity>
+                                )}
 
-                            {isCommentOpen ? (
-                                <TouchableOpacity
-                                    className='h-14 bg-violet-400 items-center justify-center rounded-md'
-                                    style={{ width: '49%' }}
-                                    onPress={() => { setIsCommentOpen(true), setIsDescriptionOpen(false) }}
-                                >
-                                    <Text className='text-lg font-medium tracking-wider text-white'>Comments</Text>
-                                </TouchableOpacity>
-                            ) : (
-                                <TouchableOpacity
-                                    className='h-14 bg-violet-300 items-center justify-center rounded-md'
-                                    style={{ width: '49%' }}
-                                    onPress={() => { setIsCommentOpen(!isCommentOpen), setIsDescriptionOpen(!isDescriptionOpen) }}
-                                >
-                                    <Text className='text-lg font-medium tracking-wider text-white'>Comments</Text>
-                                </TouchableOpacity>
-                            )}
+                                {isCommentOpen ? (
+                                    <TouchableOpacity
+                                        className='h-14 bg-violet-400 items-center justify-center rounded-md'
+                                        style={{ width: '49%' }}
+                                        onPress={() => { setIsCommentOpen(true), setIsDescriptionOpen(false) }}
+                                    >
+                                        <Text className='text-lg font-medium tracking-wider text-white'>Comments</Text>
+                                    </TouchableOpacity>
+                                ) : (
+                                    <TouchableOpacity
+                                        className='h-14 bg-violet-300 items-center justify-center rounded-md'
+                                        style={{ width: '49%' }}
+                                        onPress={() => { setIsCommentOpen(!isCommentOpen), setIsDescriptionOpen(!isDescriptionOpen) }}
+                                    >
+                                        <Text className='text-lg font-medium tracking-wider text-white'>Comments</Text>
+                                    </TouchableOpacity>
+                                )}
 
-                        </View>
+                            </View>
+                        }
 
-                        {isCommentOpen && <View className='space-y-1 py-[2px] px-1 mb-2'>
+                        {(currentPostType === 'videos' || currentPostType === 'images' || currentPostType === 'videowithquiz') &&
+                            isCommentOpen &&
+                            <View className='space-y-1 py-[2px] px-1 mb-2'>
 
-                            <Text className='font-medium tracking-wider text-lg'>Comments</Text>
+                                <Text className='font-medium tracking-wider text-lg'>Comments</Text>
 
-                            <View className='flex-row space-x-2 items-center'>
+                                <View className='flex-row space-x-2 items-center'>
 
-                                <View className='h-[30px] w-[30px] rounded-full'>
-                                    <Image source={require("../assets/images/girl.png")} style={styles.profilePic} />
+                                    <View className='h-[30px] w-[30px] rounded-full'>
+                                        <Image source={require("../assets/images/girl.png")} style={styles.profilePic} />
+                                    </View>
+
+                                    <TextInput
+                                        placeholder="Share your thoughts"
+                                        className='w-3/4 py-1 border-b-[1px] border-slate-400'
+                                        clearButtonMode="always"
+                                    />
                                 </View>
 
-                                <TextInput
-                                    placeholder="Share your thoughts"
-                                    className='w-3/4 py-1 border-b-[1px] border-slate-400'
-                                    clearButtonMode="always"
-                                />
                             </View>
+                        }
 
-                        </View>}
-
-                        {isDescriptionOpen && <View className='space-y-1 py-1 px-1 mb-2'>
-                            <Text className='font-medium tracking-wider text-lg'>Description</Text>
-                            <Text>{currentPost.description}</Text>
-                        </View>}
+                        {(currentPostType === 'videos' || currentPostType === 'images' || currentPostType === 'videowithquiz') &&
+                            isDescriptionOpen &&
+                            <View className='space-y-1 py-1 px-1 mb-2'>
+                                <Text className='font-medium tracking-wider text-lg'>Description</Text>
+                                <Text>{currentPost.description}</Text>
+                            </View>
+                        }
 
                     </View>
 

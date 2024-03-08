@@ -9,13 +9,13 @@ import PostCard from '../components/postCard';
 const Explore = () => {
 
     //global state
-    const { posts, getAllPosts } = useContext(PostContext);
+    const { allData, getAllData } = useContext(PostContext);
     const [refreshing, setRefreshing] = useState(false);
 
     const bottomSheetRef = useRef(null);
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        getAllPosts();
+        getAllData();
         setTimeout(() => {
             setRefreshing(false);
         }, 2000);
@@ -36,7 +36,7 @@ const Explore = () => {
                 showsVerticalScrollIndicator={false}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
 
-                <PostCard posts={posts} />
+                <PostCard posts={allData} />
 
             </ScrollView>
 

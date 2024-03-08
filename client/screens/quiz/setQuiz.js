@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { SafeAreaView, ScrollView, StatusBar, Text, View, TouchableOpacity, TextInput } from 'react-native';
+import { SafeAreaView, ScrollView, StatusBar, Text, View, TouchableOpacity, TextInput, Image } from 'react-native';
 
 import { Video } from 'expo-av';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -17,6 +17,7 @@ const SetQuiz = ({ route }) => {
     const bottomSheetRef = useRef(null);
     const videoRef = useRef(null);
     const videoUrl = route.params?.videoUrl || '';
+    const selectedOptionQuiz = route.params?.selectedOption || null;
     const [modalVisible, setModalVisible] = useState(false);
 
     const [indexOfQuiz, setIndexOfQuiz] = useState(null);
@@ -62,7 +63,7 @@ const SetQuiz = ({ route }) => {
                 showsVerticalScrollIndicator={false}
             >
 
-                <View className='w-full h-full py-1 space-y-5 mt-2'>
+                {selectedOptionQuiz === 'videowithquiz' && <View className='w-full h-full py-1 space-y-5 mt-2'>
 
                     <View className='flex-row items-center space-x-3 my-2'>
                         <Text className='font-medium tracking-widest' style={{ fontSize: 15 }}>Title : </Text>
@@ -162,6 +163,7 @@ const SetQuiz = ({ route }) => {
                                 quizIndex={indexOfQuiz}
                                 quizTimes={quizTimes}
                                 setQuizTimes={setQuizTimes}
+                                selectedOptionQuiz={selectedOptionQuiz}
                             />
 
                         </View>
@@ -175,7 +177,25 @@ const SetQuiz = ({ route }) => {
                         <Text className='text-white text-lg'>Submit</Text>
                     </TouchableOpacity>
 
-                </View>
+                </View>}
+
+                {selectedOptionQuiz === 'quiz' &&
+
+                    <View className='w-11/12 h-full self-center py-3'>
+
+                        <View className='w-full h-60 flex items-center justify-center border-[1px] border-gray-400 rounded-md mb-5 mt-2'>
+                            <Image
+                                style={{ width: '70%', height: '70%', objectFit: 'cover' }}
+                                source={require("../../assets/images/Educat-logo.png")}
+                            />
+                        </View>
+
+                        <Text className='text-lg font-medium tracking-wide mb-5'>Add Quiz From</Text>
+
+                        <QuizMenu selectedOptionQuiz={selectedOptionQuiz} />
+
+                    </View>
+                }
 
             </ScrollView>
 

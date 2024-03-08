@@ -38,10 +38,36 @@ const Post = ({ route }) => {
     const [images, setImages] = useState([]);
     const [maxHeight, setMaxHeight] = useState(0);
 
-    const pickMediaGallery = async () => {
+    const pickMediaGalleryImages = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                aspect: [403, 384],
+                allowsEditing: true,
+                orderedSelection: true,
+                quality: 0.75,
+                multiple: true,
+            });
+
+            if (!result.canceled) {
+                // Calculate the maximum height when new images are added
+                const newMaxHeight = Math.max(
+                    ...result.assets.map((asset) => (asset.height / asset.width) * windowWidth)
+                );
+                setMaxHeight(newMaxHeight);
+
+                setImages([...images, ...result.assets.map((asset) => asset.uri)]);
+            }
+        }
+        catch (error) {
+            console.error('Error picking media from gallery : ', error);
+        }
+    };
+
+    const pickMediaGalleryVideos = async () => {
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Videos,
                 aspect: [403, 384],
                 allowsEditing: true,
                 orderedSelection: true,
@@ -197,6 +223,7 @@ const Post = ({ route }) => {
     const [errors, setErrors] = useState({});
 
     const storage = firebase.storage();
+    const [selectedOption, setSelectedOption] = useState(null);
 
     const handleSubmit = async (e) => {
 
@@ -227,23 +254,51 @@ const Post = ({ route }) => {
                     return storageRef.getDownloadURL();
                 }));
 
-                const { data } = await axios.post('/post/create-post', { title, description, images: imageUrls, quizzes: quizzes, quizTitle: quizTitle, likes: 0, rating: 0 }, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
+                if (selectedOption === 'images') {
+                    const { data } = await axios.post('/post/create-post', { title, description, images: imageUrls, quizzes: {}, quizTitle: null, likes: 0, rating: 0, postType: selectedOption });
+                    setUploading(false);
 
-                setUploading(false);
+                    setPosts([...posts, data?.post]);
 
-                setPosts([...posts, data?.post]);
+                    ToastAndroid.showWithGravityAndOffset(
+                        data?.message,
+                        3000,
+                        ToastAndroid.BOTTOM,
+                        25,
+                        30,
+                    );
 
-                ToastAndroid.showWithGravityAndOffset(
-                    data?.message,
-                    3000,
-                    ToastAndroid.BOTTOM,
-                    25,
-                    30,
-                );
+                }
+                else if (selectedOption === 'videos') {
+                    const { data } = await axios.post('/post/create-post', { title, description, images: imageUrls, quizzes: {}, quizTitle: null, likes: 0, rating: 0, postType: selectedOption });
+                    setUploading(false);
+
+                    setPosts([...posts, data?.post]);
+
+                    ToastAndroid.showWithGravityAndOffset(
+                        data?.message,
+                        3000,
+                        ToastAndroid.BOTTOM,
+                        25,
+                        30,
+                    );
+
+                }
+                else if (selectedOption === 'videowithquiz') {
+                    const { data } = await axios.post('/post/create-post', { title, description, images: imageUrls, quizzes: quizzes, quizzes: quizzes, likes: 0, rating: 0, postType: selectedOption });
+                    setUploading(false);
+
+                    setPosts([...posts, data?.post]);
+
+                    ToastAndroid.showWithGravityAndOffset(
+                        data?.message,
+                        3000,
+                        ToastAndroid.BOTTOM,
+                        25,
+                        30,
+                    );
+
+                }
 
                 navigation.navigate("Home");
             }
@@ -277,8 +332,6 @@ const Post = ({ route }) => {
         width: '100%'
     };
 
-    const [selectedOption, setSelectedOption] = useState(null);
-    console.log(selectedOption)
 
     return (
         <SafeAreaView className='flex-1 bg-white'>
@@ -289,88 +342,116 @@ const Post = ({ route }) => {
                 translucent={true}
             />
 
-            <PostModal setSelectedOption={setSelectedOption} />
+            <ScrollView className='w-full h-full flex space-y-7 -z-10 pt-5'>
 
-            <ScrollView className='w-full h-full flex space-y-8 -z-10 pt-5'>
+                <Text className='font-medium self-center text-lg tracking-wider'>Share Your Ideas</Text>
 
-                {selectedOption === 'images' && <View className='self-center' style={{ width: '97%' }}>
+                {selectedOption === null && (
+                    <View>
 
-                    <TouchableOpacity className='self-end bg-slate-200 flex flex-row items-center space-x-2 justify-end py-1 px-2 rounded-md z-20' onPress={pickMediaCamera}>
-                        <Text className='text-md'>Take a Snap</Text>
-                        <SimpleLineIcons name='camera' color='#000000' size={25} />
-                    </TouchableOpacity>
-
-                </View>}
-
-                {selectedOption === 'quiz' || selectedOption === 'videowithquiz' ? (<View className='space-y-3 self-center' style={{ width: '97%' }}>
-
-                    <Text className='text-lg self-center'>Do you want to create a Quiz ?</Text>
-
-                    <TouchableOpacity
-                        className='w-1/3 bg-emerald-500 py-[7px] items-center rounded-md self-center'
-                        onPress={() =>
-                            navigation.navigate('SetQuiz', {
-                                videoUrl: images[activeSlide]
-                            })
-                        }
-                    >
-                        <Text className='text-white text-lg'>Create a Quiz</Text>
-                    </TouchableOpacity>
-                </View>) : null}
-
-                {selectedOption === 'images' || selectedOption === 'videos' || selectedOption === 'videowithquiz' ? (<View className='self-center' style={{ width: '97%' }}>
-
-                    {images.length > 0 ? (
-
-                        <View className='w-full flex justify-between items-end relative'>
-
-                            <Carousel
-                                layout={'default'}
-                                ref={carouselRef}
-                                data={images}
-                                sliderWidth={carouselWidth}
-                                itemWidth={carouselWidth}
-                                renderItem={renderItem}
-                                onSnapToItem={(index) => setActiveSlide(index)}
-                                containerCustomStyle={carouselContainerStyles}
-                            />
-
-                            <View className='h-auto space-x-1 py-2 px-[6px] absolute z-40 self-end flex-row justify-center items-center' style={styles.videoBtnContainer}>
-
-                                <TouchableOpacity className='w-8 h-8 flex items-center justify-center rounded-full' style={styles.videoBtn} onPress={pickMediaGallery}>
-                                    <AntDesign name='addfile' color='white' size={18} />
-                                </TouchableOpacity>
-
-                                <TouchableOpacity className='w-8 h-8 flex items-center justify-center rounded-full' style={styles.videoBtn} onPress={() => removeMedia(activeSlide)}>
-                                    <Feather name='x' color='white' size={21} />
-                                </TouchableOpacity>
-
-                            </View>
-
-                            {images.length < 4 ? pagination_one(activeSlide) : pagination_two(activeSlide)}
-
-                        </View>
-
-                    ) : (
-
-                        <View className='w-full h-72 flex items-center justify-between py-2 border-[1px] border-gray-400 rounded-md'>
-
-                            <Text className='font-semibold text-xl tracking-wider'>Share Your Ideas</Text>
+                        <View className='w-11/12 self-center h-60 flex items-center justify-center border-[1px] border-gray-400 rounded-md'>
 
                             <Image
-                                style={{ width: '50%', height: '50%', objectFit: 'contain' }}
+                                style={{ width: '70%', height: '70%', objectFit: 'cover' }}
                                 source={require("../../assets/images/Educat-logo.png")}
                             />
 
-                            {errors.images && <Text className='text-xs text-red-500 ml-2'>({errors.images})</Text>}
-
-                            <TouchableOpacity className='w-3/5 bg-emerald-500 py-2 items-center rounded-md' onPress={pickMediaGallery}>
-                                <Text className='text-white text-lg'>Upload from Gallery</Text>
-                            </TouchableOpacity>
-
                         </View>
-                    )}
-                </View>) : null}
+                        <PostModal setSelectedOption={setSelectedOption} />
+
+                    </View>
+                )}
+
+                {selectedOption === 'images' &&
+                    <View className='self-center' style={{ width: '97%' }}>
+
+                        <TouchableOpacity className='self-end bg-slate-200 flex flex-row items-center space-x-2 justify-end py-1 px-2 rounded-md z-20' onPress={pickMediaCamera}>
+                            <Text className='text-md'>Take a Snap</Text>
+                            <SimpleLineIcons name='camera' color='#000000' size={25} />
+                        </TouchableOpacity>
+
+                    </View>
+                }
+
+                {selectedOption === 'videowithquiz' &&
+                    <View className='space-y-3 self-center' style={{ width: '97%' }}>
+
+                        <TouchableOpacity
+                            className='self-center'
+                            onPress={() =>
+                                navigation.navigate('SetQuiz', {
+                                    videoUrl: images[activeSlide],
+                                    selectedOption: 'videowithquiz'
+                                })
+                            }
+                        >
+                            <Text className='text-lg underline'>Add a Quiz</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
+
+                {selectedOption === 'images' || selectedOption === 'videos' || selectedOption === 'videowithquiz' ? (
+
+                    <View className='self-center' style={{ width: '97%' }}>
+
+                        {images.length > 0 ? (
+
+                            <View className='w-full flex justify-between items-end relative'>
+
+                                <Carousel
+                                    layout={'default'}
+                                    ref={carouselRef}
+                                    data={images}
+                                    sliderWidth={carouselWidth}
+                                    itemWidth={carouselWidth}
+                                    renderItem={renderItem}
+                                    onSnapToItem={(index) => setActiveSlide(index)}
+                                    containerCustomStyle={carouselContainerStyles}
+                                />
+
+                                <View className='h-auto space-x-1 py-2 px-[6px] absolute z-40 self-end flex-row justify-center items-center' style={styles.videoBtnContainer}>
+
+                                    <TouchableOpacity
+                                        className='w-8 h-8 flex items-center justify-center rounded-full'
+                                        style={styles.videoBtn}
+                                        onPress={selectedOption === 'images' ? pickMediaGalleryImages : pickMediaGalleryVideos}
+                                    >
+                                        <AntDesign name='addfile' color='white' size={18} />
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity className='w-8 h-8 flex items-center justify-center rounded-full' style={styles.videoBtn} onPress={() => removeMedia(activeSlide)}>
+                                        <Feather name='x' color='white' size={21} />
+                                    </TouchableOpacity>
+
+                                </View>
+
+                                {images.length < 4 ? pagination_one(activeSlide) : pagination_two(activeSlide)}
+
+                            </View>
+
+                        ) : (
+
+                            <View className='w-full h-72 flex items-center justify-between py-2 border-[1px] border-gray-400 rounded-md'>
+
+                                <Image
+                                    style={{ width: '70%', height: '70%', objectFit: 'cover' }}
+                                    source={require("../../assets/images/Educat-logo.png")}
+                                />
+
+                                {errors.images && <Text className='text-xs text-red-500 ml-2'>({errors.images})</Text>}
+
+                                <TouchableOpacity
+                                    className='w-3/6 bg-emerald-500 py-2 items-center rounded-md'
+                                    onPress={selectedOption === 'images' ? pickMediaGalleryImages : pickMediaGalleryVideos}
+                                >
+                                    <Text className='text-white text-lg'>Upload from Gallery</Text>
+                                </TouchableOpacity>
+
+                            </View>
+                        )}
+                    </View>
+
+                ) : null}
 
                 <View className={`w-4/5 ${isHeader ? 'py-2' : ''} px-2 py-[6px] self-center border-y-[1px] border-slate-400 flex justify-between`}>
 

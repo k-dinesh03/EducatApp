@@ -288,7 +288,7 @@ const PostCard = ({ posts }) => {
                                     </TouchableOpacity>
 
                                     <View className='flex flex-row items-center space-x-2'>
-                                        <Text>100 Likes</Text>
+                                        <Text>{post?.likes} Likes</Text>
                                         <View className='w-[1px] h-4 bg-black self-end'></View>
                                         <Text>
                                             {moment(post?.createdAt).isBefore(moment().subtract(7, 'days'))
@@ -347,39 +347,60 @@ const PostCard = ({ posts }) => {
                             </Animated.View>
                         }
 
-                        <View className='w-full h-96 my-1'>
+                        {(post?.postType === 'videos' || post?.postType === 'images' || post?.postType === 'videowithquiz') &&
+                            <View className='w-full h-96 my-1'>
 
-                            <TapGestureHandler
-                                ref={likeItRefs.current[i]}
-                                onHandlerStateChange={handleLikes(i)}
-                                numberOfTaps={2}
-                            >
-                                <Carousel
-                                    layout={'default'}
-                                    ref={carouselRef}
-                                    data={post?.images}
-                                    sliderWidth={carouselWidth}
-                                    itemWidth={carouselWidth}
-                                    renderItem={renderItem}
-                                    onSnapToItem={(index) => setActiveSlide(index)}
-                                />
-                            </TapGestureHandler>
+                                <TapGestureHandler
+                                    ref={likeItRefs.current[i]}
+                                    onHandlerStateChange={handleLikes(i)}
+                                    numberOfTaps={2}
+                                >
+                                    <Carousel
+                                        layout={'default'}
+                                        ref={carouselRef}
+                                        data={post?.images}
+                                        sliderWidth={carouselWidth}
+                                        itemWidth={carouselWidth}
+                                        renderItem={renderItem}
+                                        onSnapToItem={(index) => setActiveSlide(index)}
+                                    />
+                                </TapGestureHandler>
 
-                            <TouchableOpacity className='absolute top-1 right-1 bg-white w-9 h-9 rounded-full flex items-center justify-center' onPress={() => toggleLike(postId)}>
-                                {isPostLiked(postId) ? (
-                                    <Ionicons name='heart-sharp' size={24} color='black' />
-                                ) : (
-                                    <Ionicons name='heart-outline' size={24} color='black' />
-                                )}
-                            </TouchableOpacity>
+                                <TouchableOpacity className='absolute top-1 right-1 bg-white w-9 h-9 rounded-full flex items-center justify-center' onPress={() => toggleLike(postId)}>
+                                    {isPostLiked(postId) ? (
+                                        <Ionicons name='heart-sharp' size={24} color='black' />
+                                    ) : (
+                                        <Ionicons name='heart-outline' size={24} color='black' />
+                                    )}
+                                </TouchableOpacity>
 
-                            {post?.images.length > 1 && <View className='absolute top-1 left-1 bg-white w-[42px] h-[26px] rounded-full flex items-center justify-center'>
-                                <Text className='tracking-widest mb-[1px]'>{activeSlide + 1}/{post?.images.length}</Text>
-                            </View>}
+                                {post?.images.length > 1 && <View className='absolute top-1 left-1 bg-white w-[42px] h-[26px] rounded-full flex items-center justify-center'>
+                                    <Text className='tracking-widest mb-[1px]'>{activeSlide + 1}/{post?.images.length}</Text>
+                                </View>}
 
-                        </View>
+                            </View>
+                        }
 
-                        {post?.images.length < 4 ? pagination_one(activeSlide, post?.images.length) : pagination_two(activeSlide, post?.images.length)}
+                        {post?.postType === 'quiz' &&
+                            <View className='w-full h-10 my-1 items-center justify-center'>
+                                <Text
+                                    className='font-medium tracking-wider text-md'
+                                    numberOfLines={2}
+                                    ellipsizeMode="tail"
+                                    onPress={() =>
+                                        navigation.navigate('PostTemp', {
+                                            postId,
+                                        })
+                                    }
+                                >
+                                    Attend the Quiz
+                                </Text>
+                            </View>
+                        }
+
+                        {(post?.postType === 'videos' || post?.postType === 'images' || post?.postType === 'videowithquiz') &&
+                            (post?.images.length < 4 ? pagination_one(activeSlide, post?.images.length) : pagination_two(activeSlide, post?.images.length))
+                        }
 
                         <View className='space-x-4 flex flex-row items-center px-[5px] my-2'>
 
@@ -417,12 +438,6 @@ const PostCard = ({ posts }) => {
                     </View>
                 )
             })}
-
-            {(!posts || posts.length === 0) &&
-                <View>
-                    <Text className='self-center'>Fetching Posts</Text>
-                </View>
-            }
 
         </View >
     )

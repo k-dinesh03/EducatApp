@@ -9,6 +9,8 @@ const PostProvider = ({ children }) => {
     //state
     const [loading, setLoading] = useState(false);
     const [posts, setPosts] = useState([]);
+    const [quizzes, setQuizzes] = useState([]);
+    const [allData, setAllData] = useState([]);
 
     //get posts
     const getAllPosts = async () => {
@@ -17,7 +19,6 @@ const PostProvider = ({ children }) => {
         try {
             const { data } = await axios.get('/post/get-posts');
             setLoading(false);
-
             setPosts(data?.posts);
         }
         catch (error) {
@@ -26,13 +27,37 @@ const PostProvider = ({ children }) => {
         }
     };
 
-    //initial posts
+    //get quizzez
+    const getAllQuizzes = async () => {
+        setLoading(true);
+        try {
+            const { data } = await axios.get('/post/get-quizzes');
+            setQuizzes(data?.quizzes);
+            setLoading(false);
+        }
+        catch (error) {
+            console.log(error);
+            setLoading(false);
+        }
+    };
+
+    // get all data (posts and quizzes)
+    const getAllData = async () => {
+        await Promise.all([getAllPosts(), getAllQuizzes()]);
+    };
+
+    // initial data
     useEffect(() => {
-        getAllPosts();
+        getAllData();
     }, []);
 
+    // update allData when posts or quizzes change
+    useEffect(() => {
+        setAllData([...posts, ...quizzes]);
+    }, [posts, quizzes]);
+
     return (
-        <PostContext.Provider value={{ posts, setPosts, getAllPosts }}>
+        <PostContext.Provider value={{ allData, setAllData, getAllData }}>
             {children}
         </PostContext.Provider>
     )
