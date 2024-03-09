@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, Image, StatusBar, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, Image, StatusBar, Alert, ActivityIndicator } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
 import { AntDesign, Ionicons } from '@expo/vector-icons';
@@ -19,7 +19,7 @@ function Register() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-	const [loading, setLoading] = useState(false)
+	const [loading, setLoading] = useState(false);
 
 	const data = [
 		{ label: 'Explorer', value: 'explorer' },
@@ -108,6 +108,7 @@ function Register() {
 			}
 		}
 	}
+
 	return (
 		<ScrollView className='mt-10' showsVerticalScrollIndicator={false}>
 
@@ -227,15 +228,10 @@ function Register() {
 					{errors.confirmPassword && <Text className='self-start text-red-500 text-xs '>{errors.confirmPassword}</Text>}
 				</View>
 
-				{loading ? (
-					<View style={styles.registerBtnTouch}>
-						<Text className='w-full h-full py-[10px] text-center rounded-md text-lg text-white tracking-wider bg-slate-400'>Linking you with us...</Text>
-					</View>
-				) : (
-					<TouchableOpacity style={styles.registerBtnTouch} onPress={handleSubmit}>
-						<Text className='w-full h-full py-[10px] text-center rounded-md text-lg text-white tracking-wider bg-emerald-500'>Register</Text>
-					</TouchableOpacity>
-				)}
+
+				<TouchableOpacity style={styles.registerBtnTouch} onPress={handleSubmit} className='w-full bg-emerald-500 my-5 rounded-md py-2'>
+					<Text className='text-lg text-white tracking-wider'>{loading ? <ActivityIndicator size={25} color='white' /> : 'Register'}</Text>
+				</TouchableOpacity>
 
 
 				<View className='w-[90%] items-center flex-row justify-center mb-5'>
@@ -285,13 +281,9 @@ const styles = StyleSheet.create({
 	},
 	registerBtnTouch: {
 		display: 'flex',
-		flexDirection: 'row',
-		borderRadius: 5,
 		alignItems: 'center',
 		justifyContent: 'center',
-		marginVertical: 5,
 		width: '90%',
-		marginVertical: 25
 	},
 	tinyLogo: {
 		width: 200,

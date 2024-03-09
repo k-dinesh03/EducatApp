@@ -23,7 +23,6 @@ const SetQuiz = ({ route }) => {
     const [indexOfQuiz, setIndexOfQuiz] = useState(null);
 
     const removeQuiz = (index) => {
-
         // Mark quiz as removed in quizTimes
         const updatedQuizTimes = [...quizTimes];
         updatedQuizTimes[index].added = false;

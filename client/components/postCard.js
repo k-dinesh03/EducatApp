@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, ToastAndroid, Alert } from 'react-native'
+import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, ToastAndroid, Alert, ActivityIndicator } from 'react-native'
 import React, { useRef, useState, useCallback, createRef, useContext } from 'react'
 import moment from 'moment';
 import axios from 'axios';
@@ -467,7 +467,12 @@ const PostCard = ({ allData }) => {
                 )
             })}
 
-            {(allData.length === 0 || !allData) && <Text className='self-center'>Fetching Posts</Text>}
+            {(allData.length === 0 || !allData) &&
+                <View className='space-y-2'>
+                    <Text className='self-center'>Fetching Posts</Text>
+                    <ActivityIndicator size={30} color='black' />
+                </View>
+            }
 
         </View >
     )

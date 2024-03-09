@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, ScrollView, StatusBar, Image, Alert, KeyboardAvoidingView } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, ScrollView, StatusBar, Image, Platform, KeyboardAvoidingView, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
 
 import { firebase } from '../../config/config'
@@ -111,11 +111,10 @@ const EmailSent = () => {
 
                             <View>
                                 <TouchableOpacity
-                                    className={`w-11/12 self-center py-[10px] items-center rounded-md ${continueEnabled ? 'bg-emerald-500' : 'bg-gray-400'}`}
+                                    className={`w-11/12 self-center py-[10px] items-center rounded-md bg-emerald-500`}
                                     onPress={handleContinue}
-                                    disabled={!continueEnabled}
                                 >
-                                    <Text className='text-white text-lg font-semibold tracking-wider'>Continue</Text>
+                                    <Text className='text-white text-lg font-semibold tracking-wider'>{continueEnabled ? 'Continue' : <ActivityIndicator size={25} color='white' />}</Text>
                                 </TouchableOpacity>
 
                                 <View className='w-11/12 self-center py-[10px] flex flex-row items-center justify-center'>

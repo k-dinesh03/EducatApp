@@ -21,6 +21,7 @@ const carouselWidth = windowWidth - (windowWidth * 0.03);
 
 import { firebase } from '../../config/config';
 import { useNavigation } from '@react-navigation/native';
+import Uploading from '../../components/uploading';
 
 const Post = ({ route }) => {
 
@@ -315,6 +316,9 @@ const Post = ({ route }) => {
                 barStyle="dark-content"
                 translucent={true}
             />
+
+            {uploading && selectedOption === 'images' && <Uploading image={images[0]} video={null} uploading={uploading} />}
+            {uploading && (selectedOption === 'videos' || selectedOption === 'videowithquiz') && <Uploading video={images[0]} image={null} uploading={uploading} />}
 
             <ScrollView className='w-full h-full flex space-y-7 -z-10 pt-5'>
 

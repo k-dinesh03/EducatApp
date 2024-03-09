@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Image, StatusBar, ToastAndroid } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Image, StatusBar, ToastAndroid, ActivityIndicator } from 'react-native';
 
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -21,11 +21,14 @@ function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
+            setLoading(true);
+
             if (!email || !password) {
                 setError('Please Enter a valid Email or Password');
                 return;
@@ -37,6 +40,7 @@ function SignIn() {
                     'Content-Type': 'application/json',
                 },
             });
+            setLoading(false);
 
             setState(data);
             await AsyncStorage.setItem('@auth', JSON.stringify(data));
@@ -59,7 +63,7 @@ function SignIn() {
 
     //Temp function to check local storage data
     const getLocalStorageData = async () => {
-        let data = await AsyncStorage.getItem('@auth');
+        await AsyncStorage.getItem('@auth');
     }
     getLocalStorageData();
 
@@ -134,7 +138,7 @@ function SignIn() {
 
                 <TouchableOpacity style={styles.buttonContainer} onPress={handleSubmit}>
                     <Animated.View entering={FadeInUp.duration(3000).springify().delay(200)} style={styles.button} className='bg-emerald-500'>
-                        <Text style={styles.buttonText}>Sign In</Text>
+                        <Text style={styles.buttonText}>{loading ? <ActivityIndicator size={25} color='white' /> : 'Sign In'}</Text>
                     </Animated.View>
                 </TouchableOpacity>
 

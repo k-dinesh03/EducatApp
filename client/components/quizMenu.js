@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Modal, Text, Pressable, View, TextInput, TouchableOpacity, StyleSheet, Image, Alert, ToastAndroid } from 'react-native';
+import { Modal, Text, Pressable, View, TextInput, TouchableOpacity, StyleSheet, Image, Alert, ToastAndroid, ActivityIndicator } from 'react-native';
 
 import { Dropdown } from 'react-native-element-dropdown';
 import { Feather, Ionicons, MaterialCommunityIcons, AntDesign, MaterialIcons } from '@expo/vector-icons';
@@ -75,14 +75,17 @@ const QuizModal = ({ modalVisible, setModalVisible, quizIndex, quizTimes, setQui
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [quizLoading, setQuizLoading] = useState(false);
+    const [submitLoading, setSubmitLoading] = useState(false);
 
     const generateQuestionsForQuiz = async () => {
 
         if (generateQuesError(amount, difficulty)) {
             try {
+                setQuizLoading(true);
                 const response = await axios.get(`https://opentdb.com/api.php?amount=${amount}&category=18&difficulty=${difficulty}&type=multiple`);
                 // console.log(response.data.results);
+                setQuizLoading(false);
                 setQuestions(response.data.results);
                 setCategoriesQuiz(false);
                 setIsQuizAdded(true);
@@ -97,6 +100,7 @@ const QuizModal = ({ modalVisible, setModalVisible, quizIndex, quizTimes, setQui
             }
             catch (error) {
                 console.error('Error fetching data:', error);
+                setQuizLoading(false);
             }
         }
     }
@@ -109,10 +113,9 @@ const QuizModal = ({ modalVisible, setModalVisible, quizIndex, quizTimes, setQui
 
         if (Object.keys(validationErrors).length === 0) {
             try {
-                setLoading(true);
+                setSubmitLoading(true);
                 const { data } = await axios.post('/post/create-quiz', { title, description, quizQuest: questions, likes: 0, rating: 0, postType: selectedOptionQuiz });
-                console.log('Data : ', data);
-                setLoading(false);
+                setSubmitLoading(false);
 
                 ToastAndroid.showWithGravityAndOffset(
                     data?.message,
@@ -121,12 +124,11 @@ const QuizModal = ({ modalVisible, setModalVisible, quizIndex, quizTimes, setQui
                     25,
                     30,
                 );
-
-                navigation.navigate("Home");
+                navigation.navigate("Explore");
             }
             catch (error) {
                 alert(error.response.data.message || error.message);
-                setLoading(false);
+                setSubmitLoading(false);
                 console.log(error);
             }
         }
@@ -370,10 +372,15 @@ const QuizModal = ({ modalVisible, setModalVisible, quizIndex, quizTimes, setQui
                     }
 
                     <TouchableOpacity
-                        className='w-11/12 h-10 self-center items-center justify-center bg-emerald-500 rounded-sm'
+                        className='w-full h-10 self-center items-center justify-center bg-emerald-500 rounded-sm'
                         onPress={questions.length ? handleQuizSubmit : generateQuestionsForQuiz}
                     >
-                        <Text className='text-white text-lg'>{questions.length ? 'Submit' : 'Generate'}</Text>
+                        <Text className='text-white text-lg'>
+                            {questions.length ?
+                                (submitLoading ? <ActivityIndicator size={25} color='white' /> : 'Submit') :
+                                (quizLoading ? <ActivityIndicator size={25} color='white' /> : 'Generate')
+                            }
+                        </Text>
                     </TouchableOpacity>
 
                 </View>
