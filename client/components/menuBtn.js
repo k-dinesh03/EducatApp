@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 
 import { AntDesign } from '@expo/vector-icons'
 
@@ -16,11 +16,5 @@ const MenuBtn = ({ handleOpen }) => {
     )
 }
 
-const styles = StyleSheet.create({
-    logo: {
-        width: 32,
-        height: 32,
-    }
-});
 
 export default MenuBtn;

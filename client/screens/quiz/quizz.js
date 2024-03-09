@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { MaterialIcons } from '@expo/vector-icons';
+import React, { useRef } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 
 
@@ -7,53 +8,43 @@ const Quizz = ({ route }) => {
     const quizSet = route.params?.quiz || {};
     const quizNumber = route.params?.quizNumber;
     const quizTitle = route.params?.quizTitle || '';
-    console.log("Quizz set: " + JSON.stringify(quizSet));
 
-    const [options, setOptions] = useState([]);
-
-    const shuffleArray = (array) => {
-        const shuffledArray = array.slice();
-
-        for (let pass = 0; pass < 4; pass++) {
-            for (let i = shuffledArray.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
-            }
+    const shuffleAnswers = (question) => {
+        if (!question) {
+            return [];
         }
 
-        return shuffledArray;
-    }
+        const allAnswers = [
+            question.correct_answer,
+            ...question.incorrect_answers.filter(Boolean),
+        ];
 
-    const [selectedOption, setSelectedOption] = useState({});
-    const [validateSelectedOption, setValidateSelectedOption] = useState({});
-    const [score, setScore] = useState(0);
+        for (let i = allAnswers.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [allAnswers[i], allAnswers[j]] = [allAnswers[j], allAnswers[i]];
+        }
 
-    const handleOptionSelected = (questionIndex, option) => {
-        setSelectedOption({
-            ...selectedOption,
-            [questionIndex]: option
-        });
+        return allAnswers.map((answer, index) => (
+            answer && (
+                <TouchableOpacity
+                    key={index}
+                    className={`flex-row justify-between items-center py-2 px-2 border-[1px] rounded-sm`}
+                >
+                    <Text>{String.fromCharCode('a'.charCodeAt(0) + index)}{')'} {answer}</Text>
+                </TouchableOpacity>
+            )
+        ));
+    };
+
+    const scrollViewRef = useRef();
+    const goToTop = () => {
+        if (scrollViewRef.current) {
+            scrollViewRef.current.scrollTo({ y: 0, animated: true });
+        }
     }
 
     const handleQuizSubmit = () => {
-        let correctAnswers = 0;
-        quizSet[quizNumber].questions.forEach((question, index) => {
-            if (selectedOption[index] === question.correct_answer) {
-                correctAnswers++;
-                setValidateSelectedOption({
-                    ...validateSelectedOption,
-                    [index]: true
-                });
-            }
-            else {
-                setValidateSelectedOption({
-                    ...validateSelectedOption,
-                    [index]: false
-                });
-            }
-        })
-        setScore(correctAnswers);
-        console.log("Score: ", score);
+        console.log("Submitted quiz");
     }
 
     return (
@@ -69,6 +60,7 @@ const Quizz = ({ route }) => {
                 className='h-full self-center -z-10'
                 style={{ width: '97%' }}
                 showsVerticalScrollIndicator={false}
+                ref={scrollViewRef}
             >
 
                 <View className='w-full p-1 space-y-10'>
@@ -98,15 +90,7 @@ const Quizz = ({ route }) => {
 
                                     <Text className='tracking-wide'>{i + 1}. {question.question}</Text>
 
-                                    {question.incorrect_answers.map((option, j) => (
-                                        <TouchableOpacity
-                                            key={j}
-                                            onPress={() => handleOptionSelected(i, option)}
-                                            className={`flex-row justify-between items-center py-2 px-2 border-[1px] rounded-sm`}
-                                        >
-                                            <Text>{String.fromCharCode('a'.charCodeAt(0) + j)}{')'} {option}</Text>
-                                        </TouchableOpacity>
-                                    ))}
+                                    {shuffleAnswers(question)}
 
                                     <TouchableOpacity>
                                         <Text className='underline'>Explanation</Text>
@@ -124,6 +108,13 @@ const Quizz = ({ route }) => {
                 </TouchableOpacity>
 
             </ScrollView>
+
+            <TouchableOpacity
+                className='rounded-full h-12 w-12 flex items-center justify-center bg-white border-[1px] border-gray-400 absolute bottom-3 right-3'
+                onPress={goToTop}
+            >
+                <MaterialIcons name='keyboard-arrow-up' size={26} color='black' />
+            </TouchableOpacity>
 
         </SafeAreaView>
     );

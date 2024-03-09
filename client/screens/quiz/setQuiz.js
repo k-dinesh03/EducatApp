@@ -33,8 +33,8 @@ const SetQuiz = ({ route }) => {
 
     const [quizTitle, setQuizTitle] = useState('');
     const [quizTimes, setQuizTimes] = useState([
-        { hour: 0, minute: 0, second: 0, added: false, questions: [] },
-        { hour: 0, minute: 0, second: 0, added: false, questions: [] },
+        { hour: null, minute: null, second: null, added: false, questions: [] },
+        { hour: null, minute: null, second: null, added: false, questions: [] },
     ]);
 
     const handleTimeInputChange = (quizIndex, field, value) => {
@@ -79,16 +79,26 @@ const SetQuiz = ({ route }) => {
 
                     <View className='w-full h-96 border-[1px] border-slate-400 rounded-sm mb-3'>
 
-                        <Video
-                            ref={videoRef}
-                            source={{ uri: videoUrl }}
-                            paused={false}
-                            repeat={true}
-                            style={{ width: '100%', height: '100%', borderRadius: 5 }}
-                            useNativeControls
-                            resizeMode='contain'
-                            isLooping={true}
-                        />
+                        {videoUrl ? (
+                            <Video
+                                ref={videoRef}
+                                source={{ uri: videoUrl }}
+                                paused={false}
+                                repeat={true}
+                                style={{ width: '100%', height: '100%', borderRadius: 5 }}
+                                useNativeControls
+                                resizeMode='contain'
+                                isLooping={true}
+                            />
+                        ) : (
+                            <View className='w-full h-full items-center justify-center'>
+                                <Image
+                                    style={{ width: '70%', height: '70%', objectFit: 'cover' }}
+                                    source={require("../../assets/images/Educat-logo.png")}
+                                />
+                                <Text className='text-red-400'>(Add a Video for the Quiz)</Text>
+                            </View>
+                        )}
 
                     </View>
 

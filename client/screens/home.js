@@ -40,7 +40,7 @@ const Home = () => {
                         <TouchableOpacity className='h-12 w-12 rounded-full items-center justify-center bg-purple-400'>
                             <Ionicons name='storefront-outline' color='#fff' size={28} />
                         </TouchableOpacity>
-                        <Text>Book Store</Text>
+                        <Text>Subcriptions</Text>
                     </View>
 
                     <View className='w-24 justify-center items-center space-y-1'>

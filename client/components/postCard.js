@@ -11,13 +11,15 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { TapGestureHandler, State } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+
 import EditModal from './editModal';
 import { AuthContext } from '../context/authContext';
+import { firebase } from '../config/config';
 
 const windowWidth = Dimensions.get('window').width;
 const carouselWidth = windowWidth - (windowWidth * 0.03);
 
-const PostCard = ({ posts }) => {
+const PostCard = ({ allData }) => {
 
     const navigation = useNavigation();
     const { state } = useContext(AuthContext);
@@ -25,13 +27,13 @@ const PostCard = ({ posts }) => {
 
     const carouselRef = useRef(null);
     const videoRef = React.useRef(null);
-    const likeItRefs = useRef(posts.map(() => createRef(null)));
+    const likeItRefs = useRef(allData.map(() => createRef(null)));
 
     const handleLikes = useCallback((index) => ({ nativeEvent }) => {
         if (nativeEvent.state === State.ACTIVE) {
-            toggleLike(posts[index]?._id);
+            toggleLike(allData[index]?._id);
         }
-    }, [posts, toggleLike]);
+    }, [allData, toggleLike]);
 
     // Function to check if the URL has a video extension
     const isVideoUrl = (url) => {
@@ -219,7 +221,16 @@ const PostCard = ({ posts }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [post, setPost] = useState({});
 
+    const [currentPost, setCurrentPost] = useState(null);
+    const storage = firebase.storage();
+
     const handleDeleteAlert = (id) => {
+
+        if (id) {
+            const post = allData.find((post) => post._id === id);
+            setCurrentPost(post);
+        }
+
         Alert.alert('Attention!', 'Are you sure you want to delete ?',
             [{
                 text: 'Cancel',
@@ -245,6 +256,24 @@ const PostCard = ({ posts }) => {
     const handleDeletePost = async (id) => {
         try {
             setLoading(true);
+
+            // Delete associated images or videos from firebase
+            if (currentPost.images) {
+                for (const imageUrl of currentPost.images) {
+                    const storageRef = storage.refFromURL(imageUrl);
+                    const imageRef = storage.ref(storageRef.fullPath);
+
+                    imageRef.delete()
+                        .then(() => {
+                            console.log(`Post Deleted`);
+                        })
+                        .catch(() => {
+                            console.log("Error in deleting post");
+                        });
+                }
+            }
+
+            //delete from mongodb
             const { data } = await axios.delete(`/post/delete-post/${id}`);
             setLoading(false);
 
@@ -267,10 +296,9 @@ const PostCard = ({ posts }) => {
 
             <EditModal modalVisible={modalVisible} setModalVisible={setModalVisible} post={post} />
 
-            {posts.map((post, i) => {
+            {allData.sort((a, b) => new Date(b?.createdAt) - new Date(a?.createdAt)).map((post, i) => {
 
                 const postId = post?._id;
-
                 return (
                     <View className='w-full mb-1 border-[1px] border-slate-300 rounded-md' key={i} >
 
@@ -438,6 +466,8 @@ const PostCard = ({ posts }) => {
                     </View>
                 )
             })}
+
+            {(allData.length === 0 || !allData) && <Text className='self-center'>Fetching Posts</Text>}
 
         </View >
     )

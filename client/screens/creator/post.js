@@ -26,13 +26,13 @@ const Post = ({ route }) => {
 
     //From Quiz screen
     const quizzes = route.params?.quizzes || {};
-    const quizTitle = route.params?.quizTitle || '';
+    const quizTitle = route.params?.quizTitle || null;
 
     const bottomSheetRef = useRef(null);
     const navigation = useNavigation();
 
     //global state
-    const { posts, setPosts } = useContext(PostContext);
+    const { allData, setAllData } = useContext(PostContext);
 
     //ImagePicker
     const [images, setImages] = useState([]);
@@ -71,7 +71,7 @@ const Post = ({ route }) => {
                 aspect: [403, 384],
                 allowsEditing: true,
                 orderedSelection: true,
-                quality: 0.75,
+                quality: 0.6,
                 multiple: true,
             });
 
@@ -237,7 +237,6 @@ const Post = ({ route }) => {
             try {
                 setUploading(true);
 
-
                 // Upload images to Firebase Storage
                 const imageUrls = await Promise.all(images.map(async (image) => {
                     const response = await fetch(image);
@@ -254,53 +253,28 @@ const Post = ({ route }) => {
                     return storageRef.getDownloadURL();
                 }));
 
-                if (selectedOption === 'images') {
-                    const { data } = await axios.post('/post/create-post', { title, description, images: imageUrls, quizzes: {}, quizTitle: null, likes: 0, rating: 0, postType: selectedOption });
-                    setUploading(false);
+                const { data } = await axios.post('/post/create-post', {
+                    title,
+                    description,
+                    images: imageUrls,
+                    quizzes: quizzes,
+                    quizTitle: quizTitle,
+                    likes: 0,
+                    rating: 0,
+                    postType: selectedOption
+                });
+                setUploading(false);
 
-                    setPosts([...posts, data?.post]);
+                setAllData([...allData, data?.post]);
 
-                    ToastAndroid.showWithGravityAndOffset(
-                        data?.message,
-                        3000,
-                        ToastAndroid.BOTTOM,
-                        25,
-                        30,
-                    );
-
-                }
-                else if (selectedOption === 'videos') {
-                    const { data } = await axios.post('/post/create-post', { title, description, images: imageUrls, quizzes: {}, quizTitle: null, likes: 0, rating: 0, postType: selectedOption });
-                    setUploading(false);
-
-                    setPosts([...posts, data?.post]);
-
-                    ToastAndroid.showWithGravityAndOffset(
-                        data?.message,
-                        3000,
-                        ToastAndroid.BOTTOM,
-                        25,
-                        30,
-                    );
-
-                }
-                else if (selectedOption === 'videowithquiz') {
-                    const { data } = await axios.post('/post/create-post', { title, description, images: imageUrls, quizzes: quizzes, quizzes: quizzes, likes: 0, rating: 0, postType: selectedOption });
-                    setUploading(false);
-
-                    setPosts([...posts, data?.post]);
-
-                    ToastAndroid.showWithGravityAndOffset(
-                        data?.message,
-                        3000,
-                        ToastAndroid.BOTTOM,
-                        25,
-                        30,
-                    );
-
-                }
-
-                navigation.navigate("Home");
+                ToastAndroid.showWithGravityAndOffset(
+                    data?.message,
+                    3000,
+                    ToastAndroid.BOTTOM,
+                    25,
+                    30,
+                );
+                navigation.navigate("Explore");
             }
             catch (error) {
                 alert(error.response.data.message || error.message);
@@ -411,13 +385,13 @@ const Post = ({ route }) => {
 
                                 <View className='h-auto space-x-1 py-2 px-[6px] absolute z-40 self-end flex-row justify-center items-center' style={styles.videoBtnContainer}>
 
-                                    <TouchableOpacity
+                                    {selectedOption === 'images' && <TouchableOpacity
                                         className='w-8 h-8 flex items-center justify-center rounded-full'
                                         style={styles.videoBtn}
-                                        onPress={selectedOption === 'images' ? pickMediaGalleryImages : pickMediaGalleryVideos}
+                                        onPress={pickMediaGalleryImages}
                                     >
                                         <AntDesign name='addfile' color='white' size={18} />
-                                    </TouchableOpacity>
+                                    </TouchableOpacity>}
 
                                     <TouchableOpacity className='w-8 h-8 flex items-center justify-center rounded-full' style={styles.videoBtn} onPress={() => removeMedia(activeSlide)}>
                                         <Feather name='x' color='white' size={21} />

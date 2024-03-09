@@ -36,7 +36,7 @@ const Explore = () => {
                 showsVerticalScrollIndicator={false}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
 
-                <PostCard posts={allData} />
+                <PostCard allData={allData} />
 
             </ScrollView>
 
