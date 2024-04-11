@@ -263,7 +263,8 @@ const PostCard = ({ allData }) => {
                     const storageRef = storage.refFromURL(imageUrl);
                     const imageRef = storage.ref(storageRef.fullPath);
 
-                    imageRef.delete()
+                    imageRef
+                        .delete()
                         .then(() => {
                             console.log(`Post Deleted`);
                         })
@@ -469,8 +470,7 @@ const PostCard = ({ allData }) => {
 
             {(allData.length === 0 || !allData) &&
                 <View className='space-y-2'>
-                    <Text className='self-center'>Fetching Posts</Text>
-                    <ActivityIndicator size={30} color='black' />
+                    <Text className='self-center'>No Posts</Text>
                 </View>
             }
 

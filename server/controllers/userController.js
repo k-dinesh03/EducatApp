@@ -191,4 +191,40 @@ const updateController = async (req, res) => {
     }
 };
 
-module.exports = { requireSignIn, registerController, loginController, updateController };
+const updateProfilePic = async (req, res) => {
+    try {
+        const { profilePic, email } = req.body;
+        //find user
+        const user = await userModel.findOne({ email })
+        if (!user) {
+            return res.status(400).send({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        console.log("User Profile : ", user.profilePic)
+
+        //updated user
+        const updatedUserProfile = await userModel.findOneAndUpdate({ email }, {
+            profilePic: profilePic || user.profilePic,
+        }, { new: true });
+
+        res.status(200).send({
+            success: true,
+            message: "Profile Picture Uploaded",
+            updatedUserProfile
+        });
+
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: "Error in profile picture api",
+            error: error.message,
+        });
+    }
+}
+
+module.exports = { requireSignIn, registerController, loginController, updateController, updateProfilePic };

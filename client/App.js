@@ -1,6 +1,6 @@
 
 import React, { useContext } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthContext, AuthProvider } from './context/authContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -20,6 +20,9 @@ import SetQuiz from './screens/quiz/setQuiz';
 import Quizz from './screens/quiz/quizz';
 import Explore from './screens/explore';
 import ChatHome from './screens/chat/ChatHome';
+import Settings from './screens/settings';
+import ProfileSettings from './components/profileSettings';
+
 
 const App = () => {
 
@@ -37,13 +40,17 @@ const App = () => {
 					<Stack.Navigator initialRouteName="Home" >
 						<Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
 						<Stack.Screen name="Explore" component={Explore} options={{ title: 'Explore' }} />
-						<Stack.Screen name="Profile" component={Profile} options={{ title: username }} />
+						<Stack.Screen name="Profile" component={Profile} options={() => ({
+							title: username,
+							headerRight: () => (<ProfileSettings />),
+						})} />
 						<Stack.Screen name="ChatBot" component={ChatBot} options={{ title: 'EduAi' }} />
 						<Stack.Screen name="ChatHome" component={ChatHome} options={{ title: username }} />
 						<Stack.Screen name="PostTemp" component={PostTemp} options={{ title: 'Explore' }} />
 						<Stack.Screen name="SetQuiz" component={SetQuiz} options={{ title: 'Create a Quiz' }} />
 						<Stack.Screen name="Quizz" component={Quizz} options={{ title: 'Quiz' }} />
 						<Stack.Screen name="Post" component={Post} options={{ title: 'Create a Post' }} />
+						<Stack.Screen name="Settings" component={Settings} options={{ title: 'Settings' }} />
 					</Stack.Navigator>
 				) : (
 					<Stack.Navigator initialRouteName="Launch" screenOptions={{ headerShown: false }}>

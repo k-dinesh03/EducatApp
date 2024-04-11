@@ -3,7 +3,8 @@ const {
     requireSignIn,
     registerController,
     loginController,
-    updateController
+    updateController,
+    updateProfilePic
 } = require('../controllers/userController');
 
 
@@ -17,6 +18,9 @@ router.post('/register', registerController);
 
 //Login || post
 router.post('/login', loginController);
+
+//update profile picture
+router.put('/profile-pic', requireSignIn, updateProfilePic);
 
 //Update || put
 router.put('/update-user', requireSignIn, updateController);

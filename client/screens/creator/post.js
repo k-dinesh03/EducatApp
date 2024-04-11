@@ -249,7 +249,7 @@ const Post = ({ route }) => {
                     const name = filename.split('.').slice(0, -1).join('.');
                     filename = name + Date.now() + extension;
 
-                    const storageRef = storage.ref().child(`images/${filename}`);
+                    const storageRef = storage.ref().child(`posts/${filename}`);
                     await storageRef.put(blob);
                     return storageRef.getDownloadURL();
                 }));

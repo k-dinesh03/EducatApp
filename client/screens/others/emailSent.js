@@ -70,11 +70,6 @@ const EmailSent = () => {
     const handleContinue = () => {
         if (continueEnabled) {
             navigation.navigate('SignIn');
-
-            navigation.reset({
-                index: 0,
-                routes: [{ name: 'Home' }],
-            });
         }
     };
 
