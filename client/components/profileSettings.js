@@ -14,7 +14,7 @@ const ProfileSettings = () => {
                 <Entypo name="dots-three-vertical" size={21} color="black" style={{ marginRight: 5 }} />
             </TouchableOpacity>
 
-            <Modal visible={modalVisible} transparent animationType="fade">
+            <Modal visible={modalVisible} transparent animationType="fade" onRequestClose={()=> setModalVisible(false)}>
 
                 <BlurView className='h-full w-full self-center items-center justify-center px-5'>
 

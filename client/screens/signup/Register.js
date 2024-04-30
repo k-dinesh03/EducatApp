@@ -71,7 +71,6 @@ function Register() {
 						'Content-Type': 'application/json',
 					},
 				});
-				console.log(data);
 
 				// for verification mail and folder creation
 				await firebase.auth().createUserWithEmailAndPassword(email, password)

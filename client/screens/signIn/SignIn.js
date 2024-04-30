@@ -57,7 +57,17 @@ function SignIn() {
             navigation.navigate('Home');
         }
         catch (error) {
-            console.log(error.response.data.message);
+            ToastAndroid.showWithGravityAndOffset(
+                error.response.data.message,
+                3000,
+                ToastAndroid.BOTTOM,
+                25,
+                30,
+            );
+            setLoading(false);
+        }
+        finally {
+            setLoading(false);
         }
     };
 
@@ -68,7 +78,7 @@ function SignIn() {
     getLocalStorageData();
 
     const handleForgotPassword = () => {
-        navigation.navigate('ForgotPassword', { email: values.current.email });
+        navigation.navigate('ForgotPassword');
     };
 
     return (

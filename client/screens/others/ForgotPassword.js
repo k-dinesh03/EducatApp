@@ -6,7 +6,7 @@ import { firebase } from '../../config/config'
 import { useNavigation } from '@react-navigation/native'
 
 const ForgotPassword = ({ route }) => {
-    const [email, setEmail] = useState(route.params?.email || '');
+    const [email, setEmail] = useState('');
     const [errors, setErrors] = useState(null);
     const navigation = useNavigation();
 

@@ -324,21 +324,18 @@ const Post = ({ route }) => {
 
                 <Text className='font-medium self-center text-lg tracking-wider'>Share Your Ideas</Text>
 
-                {selectedOption === null && (
-                    <View>
+                {selectedOption === 'videos' || selectedOption === 'images' || selectedOption === 'videowithquiz' ? null :
+                    <View className='w-11/12 self-center h-60 flex items-center justify-center border-[1px] border-gray-400 rounded-md'>
 
-                        <View className='w-11/12 self-center h-60 flex items-center justify-center border-[1px] border-gray-400 rounded-md'>
-
-                            <Image
-                                style={{ width: '70%', height: '70%', objectFit: 'cover' }}
-                                source={require("../../assets/images/Educat-logo.png")}
-                            />
-
-                        </View>
-                        <PostModal setSelectedOption={setSelectedOption} />
+                        <Image
+                            style={{ width: '70%', height: '70%', objectFit: 'cover' }}
+                            source={require("../../assets/images/Educat-logo.png")}
+                        />
 
                     </View>
-                )}
+                }
+
+                {selectedOption === 'images' || selectedOption === 'videowithquiz' || selectedOption === 'videos' ? null : <PostModal setSelectedOption={setSelectedOption} />}
 
                 {selectedOption === 'images' &&
                     <View className='self-center' style={{ width: '97%' }}>

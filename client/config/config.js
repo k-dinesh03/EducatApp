@@ -6,11 +6,12 @@ import 'firebase/compat/storage'
 const firebaseConfig = {
     apiKey: "AIzaSyBHqNeJuRcPfdvwZpL1HRjP8-FkR52-sxY",
     authDomain: "educat-auth.firebaseapp.com",
+    databaseURL: "https://educat-auth-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "educat-auth",
     storageBucket: "educat-auth.appspot.com",
     messagingSenderId: "628725081553",
     appId: "1:628725081553:web:be5940fcc76c50fbea6cf0"
-};
+  };
 
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig)

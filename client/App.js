@@ -1,6 +1,6 @@
 
 import React, { useContext } from 'react';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthContext, AuthProvider } from './context/authContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -23,11 +23,10 @@ import ChatHome from './screens/chat/ChatHome';
 import Settings from './screens/settings';
 import ProfileSettings from './components/profileSettings';
 
-
 const App = () => {
 
 	//global state
-	const { state } = useContext(AuthContext);
+	const { state,setState } = useContext(AuthContext);
 	const authenticatedUser = state?.user && state?.token;
 	const username = state?.user?.username;
 
@@ -42,7 +41,7 @@ const App = () => {
 						<Stack.Screen name="Explore" component={Explore} options={{ title: 'Explore' }} />
 						<Stack.Screen name="Profile" component={Profile} options={() => ({
 							title: username,
-							headerRight: () => (<ProfileSettings />),
+							headerRight: () => (<ProfileSettings/>),
 						})} />
 						<Stack.Screen name="ChatBot" component={ChatBot} options={{ title: 'EduAi' }} />
 						<Stack.Screen name="ChatHome" component={ChatHome} options={{ title: username }} />
