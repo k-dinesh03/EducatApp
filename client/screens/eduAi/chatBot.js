@@ -1,135 +1,202 @@
-import { View, Text, Image, FlatList, TextInput, TouchableOpacity, ActivityIndicator, StyleSheet, StatusBar, SafeAreaView } from 'react-native';
-import React, { useState } from 'react';
-import { Ionicons } from '@expo/vector-icons'
-import axios from 'axios';
+import React, { useState, useRef, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, TextInput, Button, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { Clipboard } from 'expo-clipboard';
+import { FontAwesome } from '@expo/vector-icons';
+import * as Speech from 'expo-speech';
 
-import ChatBubble from './chatBubble';
+const GeminiChat = () => {
+    const [userMsg, setUserMsg] = useState('');
+    const [messages, setMessages] = useState([]);
+    const [sending, setSending] = useState(false);
+    const [isSpeaking, setIsSpeaking] = useState(false);
+    const scrollViewRef = useRef();
 
-const ChatBot = () => {
-    const [chat, setChat] = useState([]);
-    const [userInput, setUserInput] = useState("");
-    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        if (scrollViewRef.current) {
+            scrollViewRef.current.scrollToEnd({ animated: true });
+        }
+        loadMessages();
+    }, []);
 
+    useEffect(() => {
+        // Save messages whenever the messages state changes
+        saveMessages();
+    }, [messages]);
 
-    const key = 'AIzaSyDykZUu7HZbYHw916aRpnFEqQXJUerypR0';
-
-    const handelUserInput = async () => {
-        let updatedChat = [
-            ...chat,
-            {
-                role: "user",
-                parts: [{ text: userInput }],
-            },
-        ];
-        setLoading(true);
-
+    const loadMessages = async () => {
         try {
-            const response = await axios.post(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${key}`,
-                { contents: updatedChat }
-            );
-
-            console.log("Gemini pro API Response: ", response.data);
-
-            const modelResponse = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-
-            if (modelResponse) {
-                const updatedchatWithModel = [
-                    ...updatedChat,
-                    {
-                        role: "model",
-                        parts: [{ text: modelResponse }],
-                    },
-                ];
-
-                setChat(updatedchatWithModel);
-                setUserInput("");
+            const savedMessages = await AsyncStorage.getItem('chatMessages');
+            if (savedMessages !== null) {
+                setMessages(JSON.parse(savedMessages));
             }
-        }
-        catch (error) {
-            console.error("Error calling Gemini Pro API:", error);
-            console.error("Error responding:", error.response);
-            alert("An error occurred. Please try again");
-        }
-        finally {
-            setLoading(false);
+        } catch (error) {
+            console.error('Error loading chat messages:', error);
         }
     };
 
+    const saveMessages = async () => {
+        try {
+            await AsyncStorage.setItem('chatMessages', JSON.stringify(messages));
+        } catch (error) {
+            console.error('Error saving chat messages:', error);
+        }
+    };
 
-    const renderChatItem = ({ item }) => {
-        return (
-            <ChatBubble
-                role={item.role}
-                text={item.parts[0].text}
-            />
-        );
-    }
+    const handleSendMessage = async () => {
+        if (userMsg.trim() === '' || sending) return;
+
+        setSending(true);
+
+        setMessages((prevMessages) => [...prevMessages, { text: userMsg, sender: 'user' }]);
+
+        setUserMsg('');
+        try {
+            const geminiResponse = await fetchGeminiResponse(userMsg);
+
+            setMessages((prevMessages) => [...prevMessages, { text: geminiResponse, sender: 'gemini' }]);
+
+            // Read the response text aloud if speaking is enabled
+            if (isSpeaking) {
+                Speech.speak(geminiResponse, { language: 'en' });
+            }
+        } catch (error) {
+            console.error('Error receiving Gemini response:', error);
+            setMessages((prevMessages) => [...prevMessages, { text: 'An error occurred while processing your request.', sender: 'gemini' }]);
+        }
+
+        setSending(false);
+    };
+
+    const fetchGeminiResponse = async (userMsg) => {
+        try {
+            const response = await fetch('https://chat-server-k330.onrender.com/gemini', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userMsg, conversationHistory: [] }),
+            });
+            const data = await response.json();
+            return data.content;
+        } catch (error) {
+            throw new Error('Error calling Gemini API:', error);
+        }
+    };
+
+    const copyToClipboard = (text) => {
+        Clipboard.setString(text);
+    };
+
+    const toggleSpeech = () => {
+        setIsSpeaking(!isSpeaking);
+    };
 
     return (
-        <SafeAreaView className='w-screen h-full flex self-center' style={{ width: '97%' }}>
-
-            <StatusBar backgroundColor='transparent' barStyle={'dark-content'} />
-
-            <View className='w-full h-full py-2'>
-
-                {loading && <ActivityIndicator style={{ marginTop: 10 }} color="rgb(16 185 129)" />}
-
-                <FlatList
-                    data={chat}
-                    renderItem={renderChatItem}
-                    keyExtractor={(item, index) => index.toString()}
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
-                />
-
-                <View className='flex-row px-1 items-center justify-around h-10 w-full'>
-                    <TextInput
-                        style={styles.inputContainer}
-                        placeholder='Type your message...'
-                        placeholderTextColor="#aaa"
-                        value={userInput}
-                        onChangeText={setUserInput}
-                    />
-                    <TouchableOpacity
-                        onPress={handelUserInput}
-                        disabled={loading || userInput.trim() === ''}
-                        className='bg-white h-10 w-10 items-center justify-center rounded-full border-[0.6px]'
+        <View style={styles.container}>
+            <ScrollView
+                ref={scrollViewRef}
+                contentContainerStyle={styles.scrollView}
+            >
+                {messages.map((message, index) => (
+                    <View
+                        key={index}
+                        style={[
+                            styles.messageContainer,
+                            { alignSelf: message.sender === 'user' ? 'flex-end' : 'flex-start' },
+                        ]}
                     >
-                        <Ionicons name='send' color="green" size={21} />
-                    </TouchableOpacity>
-                </View>
+                        <View
+                            style={[
+                                styles.messageBubble,
+                                { backgroundColor: message.sender === 'user' ? '#007AFF' : '#bbb' },
+                            ]}
+                        >
+                            <Text style={styles.messageText}>{message.text}</Text>
+                            {message.sender === 'gemini' && (
+                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
+                                    <TouchableOpacity onPress={() => copyToClipboard(message.text)}>
+                                        <FontAwesome name="copy" size={20} color="#fff" />
+                                    </TouchableOpacity>
 
+                                    <TouchableOpacity onPress={toggleSpeech} style={styles.speakerButton}>
+                                        <FontAwesome name={isSpeaking ? "volume-up" : "volume-off"} size={24} color="#007AFF" />
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                        </View>
+                    </View>
+                ))}
+            </ScrollView>
+            <View style={styles.inputContainer}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Type your message here"
+                    value={userMsg}
+                    onChangeText={setUserMsg}
+                />
+                <Button
+                    title="Send"
+                    onPress={handleSendMessage}
+                    color="#007AFF"
+                    disabled={userMsg.trim() === '' || sending}
+                />
             </View>
-
-        </SafeAreaView>
+            {sending && <ActivityIndicator style={styles.loader} />}
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#f0f0f0',
+        padding: 10,
+    },
+    scrollView: {
+        flexGrow: 1,
+        justifyContent: 'flex-end',
+    },
+    messageContainer: {
+        marginBottom: 10,
+        maxWidth: '95%',
+    },
+    messageBubble: {
+        borderRadius: 10,
+        padding: 10,
+        maxWidth: '80%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    messageText: {
+        color: '#fff',
+        paddingBottom:20
+    },
     inputContainer: {
-        borderColor: "#000",
-        backgroundColor: "#fff",
-        borderWidth: 0.6,
-        borderRadius: 25,
-        width: "87%",
-        height: "100%",
-        paddingHorizontal: 10
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 10,
     },
-    logo: {
-        width: 45,
-        height: 45,
-        shadowRadius: 100,
+    input: {
+        flex: 1,
+        height: 40,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 20,
+        paddingHorizontal: 10,
+        marginRight: 10,
     },
-    button: {
-        paddingHorizontal: 5,
-        paddingVertical: 10,
-        borderRadius: 25,
+    loader: {
+        alignSelf: 'center',
+        marginTop: 4,
+        color: '#000',
     },
-    buttonText: {
-        color: "#fff",
-        textAlign: "center",
-    }
-})
+    speakerButton: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+    },
+});
 
-
-export default ChatBot
+export default GeminiChat;
