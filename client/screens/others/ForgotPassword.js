@@ -33,7 +33,7 @@ const ForgotPassword = ({ route }) => {
                 .then(() => {
                     ToastAndroid.showWithGravityAndOffset(
                         'Password reset email sent successfully',
-                        3000,
+                        2500,
                         ToastAndroid.BOTTOM,
                         25,
                         30,

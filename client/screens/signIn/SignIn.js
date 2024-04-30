@@ -43,11 +43,11 @@ function SignIn() {
             setLoading(false);
 
             setState(data);
-            await AsyncStorage.setItem('@auth', JSON.stringify(data));
+            await AsyncStorage.setItem('Educat', JSON.stringify(data));
 
             ToastAndroid.showWithGravityAndOffset(
                 data && data.message,
-                3000,
+                2500,
                 ToastAndroid.BOTTOM,
                 25,
                 30,
@@ -59,7 +59,7 @@ function SignIn() {
         catch (error) {
             ToastAndroid.showWithGravityAndOffset(
                 error.response.data.message,
-                3000,
+                2500,
                 ToastAndroid.BOTTOM,
                 25,
                 30,
@@ -70,12 +70,6 @@ function SignIn() {
             setLoading(false);
         }
     };
-
-    //Temp function to check local storage data
-    const getLocalStorageData = async () => {
-        await AsyncStorage.getItem('@auth');
-    }
-    getLocalStorageData();
 
     const handleForgotPassword = () => {
         navigation.navigate('ForgotPassword');

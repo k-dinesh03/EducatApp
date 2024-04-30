@@ -127,7 +127,7 @@ const Post = ({ route }) => {
         setImages(updatedImages);
         ToastAndroid.showWithGravityAndOffset(
             'Image have been removed',
-            3000,
+            2500,
             ToastAndroid.BOTTOM,
             25,
             30,
@@ -270,7 +270,7 @@ const Post = ({ route }) => {
 
                 ToastAndroid.showWithGravityAndOffset(
                     data?.message,
-                    3000,
+                    2500,
                     ToastAndroid.BOTTOM,
                     25,
                     30,

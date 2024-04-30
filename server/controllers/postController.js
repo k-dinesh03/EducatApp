@@ -151,6 +151,26 @@ const deletePostController = async (req, res) => {
     }
 }
 
+//delete quiz post
+const deleteQuizController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await quizModel.findByIdAndDelete({ _id: id });
+        res.status(200).send({
+            success: true,
+            message: "Quiz deleted successfully!",
+        });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            success: false,
+            message: "Error in delete quiz api",
+            error
+        });
+    }
+}
+
 //update post
 const updatePostController = async (req, res) => {
     try {
@@ -193,5 +213,6 @@ module.exports = {
     getAllPostsController,
     getUsersPostsController,
     deletePostController,
-    updatePostController
+    updatePostController,
+    deleteQuizController
 };

@@ -5,6 +5,7 @@ const {
     getAllPostsController,
     getUsersPostsController,
     deletePostController,
+    deleteQuizController,
     updatePostController,
     createQuizPostController,
     getAllQuizController
@@ -30,6 +31,9 @@ router.get('/get-user-posts', requireSignIn, getUsersPostsController);
 
 //delete post
 router.delete('/delete-post/:id', requireSignIn, deletePostController);
+
+//delete quiz post
+router.delete('/quiz/delete-post/:id', requireSignIn, deleteQuizController);
 
 // update post
 router.put('/update-post/:id', requireSignIn, updatePostController);

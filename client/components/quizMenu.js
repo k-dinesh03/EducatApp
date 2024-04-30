@@ -120,7 +120,7 @@ const QuizModal = ({
 
         ToastAndroid.showWithGravityAndOffset(
           "Quiz Added Successfully!",
-          3000,
+          2500,
           ToastAndroid.BOTTOM,
           25,
           30
@@ -153,7 +153,7 @@ const QuizModal = ({
 
         ToastAndroid.showWithGravityAndOffset(
           data?.message,
-          3000,
+          2500,
           ToastAndroid.BOTTOM,
           25,
           30
@@ -314,9 +314,8 @@ const QuizModal = ({
 
               <View className="items-center space-y-1">
                 <TouchableOpacity
-                  className={`h-[45px] w-[45px] items-center justify-center border-[1px] ${
-                    isQuizAdded ? "border-emerald-600" : "border-slate-400"
-                  } rounded-md`}
+                  className={`h-[45px] w-[45px] items-center justify-center border-[1px] ${isQuizAdded ? "border-emerald-600" : "border-slate-400"
+                    } rounded-md`}
                   onPress={() => {
                     setCategoriesQuiz(!categoriesQuiz), setUrlFieldQuiz(false);
                   }}
@@ -381,9 +380,8 @@ const QuizModal = ({
             {isQuizAdded && (
               <View className="space-y-8">
                 <View
-                  className={`w-4/5 ${
-                    isHeader ? "py-2" : ""
-                  } px-2 py-[6px] self-center border-y-[1px] border-slate-400 flex justify-between`}
+                  className={`w-4/5 ${isHeader ? "py-2" : ""
+                    } px-2 py-[6px] self-center border-y-[1px] border-slate-400 flex justify-between`}
                 >
                   <TouchableOpacity
                     className="flex flex-row items-center py-1 justify-between transition-opacity duration-300"
@@ -424,9 +422,8 @@ const QuizModal = ({
                 </View>
 
                 <View
-                  className={`w-11/12 ${
-                    isDescription ? "py-2" : ""
-                  } px-2 py-[6px] self-center border-y-[1px] border-slate-400 flex justify-between`}
+                  className={`w-11/12 ${isDescription ? "py-2" : ""
+                    } px-2 py-[6px] self-center border-y-[1px] border-slate-400 flex justify-between`}
                 >
                   <TouchableOpacity
                     className="flex flex-row py-1 items-center justify-between transition-opacity duration-300"

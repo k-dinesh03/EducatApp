@@ -18,7 +18,7 @@ const EditModal = ({ modalVisible, setModalVisible, post }) => {
             setLoading(false);
             ToastAndroid.showWithGravityAndOffset(
                 data?.message,
-                3000,
+                2500,
                 ToastAndroid.BOTTOM,
                 25,
                 30,

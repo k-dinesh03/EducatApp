@@ -56,7 +56,7 @@ const EmailSent = () => {
             });
             ToastAndroid.showWithGravityAndOffset(
                 'Verification mail resent successfully',
-                3000,
+                2500,
                 ToastAndroid.BOTTOM,
                 25,
                 30,
