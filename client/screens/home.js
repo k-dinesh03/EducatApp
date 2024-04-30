@@ -88,19 +88,7 @@ const Home = () => {
                     </TouchableOpacity>
                 </View>
 
-                <View className='w-11/12 self-center flex-row items-center justify-between mt-3'>
-                    <Text className='text-xl font-bold tracking-wider'>My Learning</Text>
-                    <TouchableOpacity>
-                        <Text>See All</Text>
-                    </TouchableOpacity>
-                </View>
 
-                <View className='w-11/12 self-center flex-row items-center justify-between mt-3'>
-                    <Text className='text-xl font-bold tracking-wider'>Suggested For You</Text>
-                    <TouchableOpacity>
-                        <Text>See All</Text>
-                    </TouchableOpacity>
-                </View>
 
             </ScrollView>
 
