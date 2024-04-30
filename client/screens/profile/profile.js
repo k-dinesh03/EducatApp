@@ -14,12 +14,12 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
-import MenuBtn from "../components/menuBtn";
-import BottomSheetNav from "../components/bottomSheetNav";
+import MenuBtn from "../../components/menuBtn";
+import BottomSheetNav from "../../components/bottomSheetNav";
 
-import { AuthContext } from "../context/authContext";
+import { AuthContext } from "../../context/authContext";
 import axios from "axios";
-import { firebase } from "../config/config";
+import { firebase } from "../../config/config";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
@@ -197,6 +197,7 @@ const Profile = () => {
 
 	return (
 		<SafeAreaView className="w-screen h-full flex bg-white">
+
 			<StatusBar
 				backgroundColor="transparent"
 				barStyle="dark-content"
@@ -204,21 +205,22 @@ const Profile = () => {
 			/>
 
 			<ScrollView
-				className="h-full self-center space-y-5 -z-10"
-				style={{ width: "97%" }}
+				className="h-full self-center space-y-6 -z-10"
+				style={{ width: "95%" }}
 				showsVerticalScrollIndicator={false}
 			>
-				<View className="relative mb-12">
+				<View className="relative mb-16 mt-2">
+
 					<View className="w-3/5 h-10 self-center border-x-[1px] border-t-[1px] border-slate-400 absolute top-20 rounded-t-sm" />
 
-					<View className="items-center absolute top-32 left-4 w-1/3">
+					<View className="items-center absolute top-32 left-[14px] w-1/3">
 						<Text className="font-medium text-lg">0</Text>
 						<Text className="font-semibold text-xl tracking-wide">
 							Explorers
 						</Text>
 					</View>
 
-					<View className="items-center absolute top-32 right-4 w-1/3">
+					<View className="items-center absolute top-32 right-[14px] w-1/3">
 						<Text className="font-medium text-lg">{user?.score}</Text>
 						<Text className="font-semibold text-xl tracking-wider">Scores</Text>
 					</View>
@@ -229,7 +231,7 @@ const Profile = () => {
 							!profileImgUrl ? (
 							<Image
 								style={{ width: "80%", height: "80%", borderRadius: 100 }}
-								source={require("../assets/images/user.jpg")}
+								source={require("../../assets/images/user.jpg")}
 							/>
 						) : (
 							<View className="w-full h-full">
@@ -253,6 +255,7 @@ const Profile = () => {
 							<FontAwesome name="edit" color="white" size={20} />
 						</TouchableOpacity>
 					</View>
+
 				</View>
 
 				<View className="w-full flex-row justify-around">
@@ -286,11 +289,12 @@ const Profile = () => {
 				</View>
 
 				<View className="w-full flex-col border-[1px] border-slate-400 rounded-md">
+
 					<View className="w-11/12 py-4 flex-row items-center space-x-2">
 						<View className="mx-4">
 							<AntDesign name="github" size={27} />
 						</View>
-						<Text ellipsizeMode="tail">Github link</Text>
+						<Text numberOfLines={1} ellipsizeMode="tail" className='mr-10'>Github link</Text>
 					</View>
 
 					<View className="w-10/12 self-end border-b-[1px] border-slate-400" />
@@ -299,7 +303,7 @@ const Profile = () => {
 						<View className="mx-4">
 							<AntDesign name="youtube" size={28} color="red" />
 						</View>
-						<Text ellipsizeMode="tail">YouTube link</Text>
+						<Text numberOfLines={1} ellipsizeMode="tail" className='mr-10'>YouTube link</Text>
 					</View>
 
 					<View className="w-10/12 self-end border-b-[1px] border-slate-400" />
@@ -308,9 +312,17 @@ const Profile = () => {
 						<View className="mx-4">
 							<Ionicons name="logo-linkedin" size={27} color="#0077b5" />
 						</View>
-						<Text ellipsizeMode="tail">LinkedIn link</Text>
+						<Text numberOfLines={1} ellipsizeMode="tail" className='mr-10'>LinkedIn link</Text>
 					</View>
+
 				</View>
+
+				<TouchableOpacity
+					onPress={() => navigation.navigate('ResetPassword')}
+					className="py-2 flex items-center rounded bg-emerald-400"
+				>
+					<Text className="text-white text-lg">Change Password</Text>
+				</TouchableOpacity>
 
 				<TouchableOpacity
 					className="py-2 flex items-center rounded"
@@ -321,6 +333,7 @@ const Profile = () => {
 				</TouchableOpacity>
 
 				{/* <View className='space-y-8'>
+				
                     <View className='flex-row w-3/5 justify-between'>
                         <Text>Name : </Text>
                         <TextInput value={username} onChangeText={(text) => setUsername(text)} className='w-32 h-8 bg-white' />
@@ -333,13 +346,16 @@ const Profile = () => {
                     <TouchableOpacity className='bg-green-500 py-2 flex items-center' onPress={handleUpdate}>
                         <Text className='text-white text-lg'>{loading ? <ActivityIndicator /> : 'Update'}</Text>
                     </TouchableOpacity>
+
                 </View>*/}
+
 			</ScrollView>
 
 			<MenuBtn handleOpen={() => bottomSheetRef.current?.snapToIndex(0)} />
 
 			{/* Bottom Sheet navigation */}
 			<BottomSheetNav bottomSheetRef={bottomSheetRef} />
+
 		</SafeAreaView>
 	);
 };

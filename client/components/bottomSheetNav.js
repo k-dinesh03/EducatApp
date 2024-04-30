@@ -100,8 +100,8 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
 					</View>
 
 					<View className="flex items-center w-1/3 py-2">
-						<TouchableOpacity className="rounded-full h-[50px] w-[50px] flex items-center justify-center bg-white border-[1px] border-gray-400">
-							<AntDesign name="laptop" size={26} color="gray" />
+						<TouchableOpacity className="rounded-full h-[50px] w-[50px] flex items-center justify-center bg-white border-[1px] border-gray-400" onPress={() => navigation.navigate('Meetings')}>
+							<SimpleLineIcons name="clock" size={26} color="gray" />
 						</TouchableOpacity>
 
 						<Text className="font-medium tracking-wider">Meetings</Text>

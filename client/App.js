@@ -14,7 +14,7 @@ import Launch from './screens/others/Launch'
 import SignIn from './screens/signIn/SignIn'
 import ForgotPassword from './screens/others/ForgotPassword'
 import Home from './screens/home';
-import Profile from './screens/profile';
+import Profile from './screens/profile/profile';
 import PostTemp from './components/postTemp';
 import SetQuiz from './screens/quiz/setQuiz';
 import Quizz from './screens/quiz/quizz';
@@ -22,11 +22,13 @@ import Explore from './screens/explore';
 import ChatHome from './screens/chat/ChatHome';
 import Settings from './screens/settings';
 import ProfileSettings from './components/profileSettings';
+import ResetPassword from './screens/profile/resetPassword';
+import Meetings from './screens/meet/Meetings';
 
 const App = () => {
 
 	//global state
-	const { state,setState } = useContext(AuthContext);
+	const { state, setState } = useContext(AuthContext);
 	const authenticatedUser = state?.user && state?.token;
 	const username = state?.user?.username;
 
@@ -39,9 +41,10 @@ const App = () => {
 					<Stack.Navigator initialRouteName="Home" >
 						<Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
 						<Stack.Screen name="Explore" component={Explore} options={{ title: 'Explore' }} />
+						<Stack.Screen name="ResetPassword" component={ResetPassword} options={{ title: 'Change Password' }} />
 						<Stack.Screen name="Profile" component={Profile} options={() => ({
 							title: username,
-							headerRight: () => (<ProfileSettings/>),
+							headerRight: () => (<ProfileSettings />),
 						})} />
 						<Stack.Screen name="ChatBot" component={ChatBot} options={{ title: 'EduAi' }} />
 						<Stack.Screen name="ChatHome" component={ChatHome} options={{ title: username }} />
@@ -50,6 +53,7 @@ const App = () => {
 						<Stack.Screen name="Quizz" component={Quizz} options={{ title: 'Quiz' }} />
 						<Stack.Screen name="Post" component={Post} options={{ title: 'Create a Post' }} />
 						<Stack.Screen name="Settings" component={Settings} options={{ title: 'Settings' }} />
+						<Stack.Screen name="Meetings" component={Meetings} options={{ title: 'Meetings' }} />
 					</Stack.Navigator>
 				) : (
 					<Stack.Navigator initialRouteName="Launch" screenOptions={{ headerShown: false }}>
