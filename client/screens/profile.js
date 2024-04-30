@@ -61,7 +61,7 @@ const Profile = () => {
 
 				// Update AsyncStorage with the latest user data
 				await AsyncStorage.setItem(
-					"@auth",
+					"Educat",
 					JSON.stringify({ ...state, user: updatedUser })
 				);
 
@@ -172,7 +172,7 @@ const Profile = () => {
 				const updatedUser = response?.data.updatedUser;
 				setState({ ...state, user: updatedUser });
 				await AsyncStorage.setItem(
-					"@auth",
+					"Educat",
 					JSON.stringify({ ...state, user: updatedUser })
 				);
 			}

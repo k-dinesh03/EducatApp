@@ -17,7 +17,7 @@ const AuthProvider = ({ children }) => {
     //initial local storage data
     useEffect(() => {
         const loadLocalStorageData = async () => {
-            let data = await AsyncStorage.getItem('@auth');
+            let data = await AsyncStorage.getItem('Educat');
             let loginData = JSON.parse(data);
             setState({ ...state, user: loginData?.user, token: loginData?.token });
         };
