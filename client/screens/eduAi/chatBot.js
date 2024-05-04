@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, TextInput, Button, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, TouchableWithoutFeedback, StatusBar } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
-import { FontAwesome } from '@expo/vector-icons';
+import { Feather, FontAwesome } from '@expo/vector-icons';
 import * as Speech from 'expo-speech';
 
 const ChatBot = () => {
@@ -97,9 +97,16 @@ const ChatBot = () => {
 
 	return (
 		<View style={styles.container}>
+			<StatusBar
+				backgroundColor="transparent"
+				barStyle="dark-content"
+				translucent={true}
+			/>
+			{sending && <ActivityIndicator style={styles.loader} color="#000" />}
 			<ScrollView
 				ref={scrollViewRef}
 				contentContainerStyle={styles.scrollView}
+				showsVerticalScrollIndicator={false}
 			>
 				{messages.map((message, index) => (
 					<View
@@ -112,18 +119,19 @@ const ChatBot = () => {
 						<View
 							style={[
 								styles.messageBubble,
-								{ backgroundColor: message.sender === 'user' ? '#007AFF' : '#000' },
-								{ paddingBottom: message.sender === 'gemini' ? 30 : 10, },
+								{ backgroundColor: message.sender === 'user' ? '#2070F0' : '#B95CF4' },
+								{ paddingBottom: message.sender === 'gemini' ? null : 0, },
 							]}
+							className={`${message.sender === 'user' ? 'rounded-tl-lg rounded-b-lg' : 'rounded-tr-lg rounded-b-lg'}`}
 						>
 							<Text style={styles.messageText}>{message.text}</Text>
 							{message.sender === 'gemini' && (
 								<View style={styles.iconContainer}>
 									<TouchableOpacity onPress={() => copyToClipboard(message.text)}>
-										<FontAwesome name="copy" size={20} color="#fff" style={styles.icon} />
+										<Feather name="clipboard" size={20} color="#fff" style={styles.icon} />
 									</TouchableOpacity>
 									<TouchableOpacity onPress={() => toggleSpeech(index)}>
-										<FontAwesome name={speakingMessageIndex === index ? "volume-up" : "volume-off"} size={24} color="#fff" style={styles.icon} />
+										<FontAwesome name="volume-up" size={24} color="#fff" style={styles.icon} />
 									</TouchableOpacity>
 								</View>
 							)}
@@ -142,12 +150,11 @@ const ChatBot = () => {
 					onPress={handleSendMessage}
 					disabled={userMsg.trim() === '' || sending}
 				>
-					<View style={{ backgroundColor: 'green', paddingHorizontal: 12, borderRadius: 50, paddingVertical: 12 }}>
-						<FontAwesome name="send" size={20} color="#fff" />
+					<View className='h-12 w-12 rounded-full bg-emerald-500 flex-row items-center justify-center pr-1'>
+						<FontAwesome name="send" size={21} color="#fff" />
 					</View>
 				</TouchableWithoutFeedback>
 			</View>
-			{sending && <ActivityIndicator style={styles.loader} color="#000" />}
 		</View>
 	);
 };
@@ -156,31 +163,31 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#fff',
-		padding: 10,
+		paddingHorizontal: 10,
 	},
 	scrollView: {
 		flexGrow: 1,
 		justifyContent: 'flex-end',
 	},
 	messageContainer: {
-		marginBottom: 10,
+		marginTop: 10,
 		maxWidth: '95%',
 	},
 	messageBubble: {
-		borderRadius: 10,
-		padding: 10,
+		paddingHorizontal: 10,
+		paddingVertical: 6,
 		maxWidth: '80%',
-		flexDirection: 'row',
+		flexDirection: 'col',
 		justifyContent: 'space-between',
-		alignItems: 'center',
 	},
 	messageText: {
 		color: '#fff',
+		marginBottom: 8
 	},
 	inputContainer: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		marginTop: 10,
+		marginVertical: 4,
 	},
 	input: {
 		flex: 1,
@@ -193,19 +200,12 @@ const styles = StyleSheet.create({
 	},
 	loader: {
 		alignSelf: 'center',
-		marginTop: 4,
+		marginTop: 3,
 	},
 	iconContainer: {
 		flexDirection: 'row',
-		left: 10,
-		position: 'absolute',
-		left: 0,
-		bottom: 0,
-		width: '100%',
-		gap: 10,
-	},
-	icon: {
-		marginLeft: 10,
+		gap: 15,
+		alignItems: 'center'
 	},
 });
 

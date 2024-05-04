@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Clipboard, ToastAndroid } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Clipboard, ToastAndroid, StatusBar } from 'react-native';
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -25,6 +25,7 @@ const ChatBubble = ({ role, text }) => {
 
     return (
         <View>
+
             <View
                 style={[
                     styles.chatItem,
@@ -41,7 +42,7 @@ const ChatBubble = ({ role, text }) => {
 const styles = StyleSheet.create({
     chatItem: {
         marginBottom: 10,
-        paddingHorizontal: 10,
+        paddingHorizontal: 8,
         paddingVertical: 6,
         maxWidth: "99%",
         position: "relative",
