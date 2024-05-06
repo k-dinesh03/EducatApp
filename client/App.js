@@ -24,6 +24,7 @@ import Settings from './screens/settings';
 import ProfileSettings from './components/profileSettings';
 import ResetPassword from './screens/profile/resetPassword';
 import Meetings from './screens/meet/Meetings';
+import TopCategory from './screens/topCategory/category'
 
 const App = () => {
 
@@ -54,6 +55,7 @@ const App = () => {
 						<Stack.Screen name="Post" component={Post} options={{ title: 'Create a Post' }} />
 						<Stack.Screen name="Settings" component={Settings} options={{ title: 'Settings' }} />
 						<Stack.Screen name="Meetings" component={Meetings} options={{ title: 'Meetings' }} />
+						<Stack.Screen name="TopCategory" component={TopCategory} options={{ title: 'Categories' }} />
 					</Stack.Navigator>
 				) : (
 					<Stack.Navigator initialRouteName="Launch" screenOptions={{ headerShown: false }}>

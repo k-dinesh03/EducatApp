@@ -30,7 +30,7 @@ const Home = () => {
                 <View className='flex-row justify-around'>
 
                     <View className='w-24 justify-center items-center space-y-1'>
-                        <TouchableOpacity className='h-12 w-12 rounded-full items-center justify-center pb-1 bg-yellow-400'>
+                        <TouchableOpacity className='h-12 w-12 rounded-full items-center justify-center pb-1 bg-yellow-400' onPress={() => navigation.navigate('TopCategory')}>
                             <MaterialIcons name='category' color='#fff' size={32} />
                         </TouchableOpacity>
                         <Text>Category</Text>

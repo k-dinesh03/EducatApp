@@ -20,7 +20,6 @@ const ChatBot = () => {
 	}, []);
 
 	useEffect(() => {
-		// Save messages whenever the messages state changes
 		saveMessages();
 	}, [messages]);
 
@@ -131,7 +130,7 @@ const ChatBot = () => {
 										<Feather name="clipboard" size={20} color="#fff" style={styles.icon} />
 									</TouchableOpacity>
 									<TouchableOpacity onPress={() => toggleSpeech(index)}>
-										<FontAwesome name="volume-up" size={24} color="#fff" style={styles.icon} />
+										<Feather name={speakingMessageIndex ? "volume-x" : "volume-2"} size={24} color="#fff" style={styles.icon} />
 									</TouchableOpacity>
 								</View>
 							)}

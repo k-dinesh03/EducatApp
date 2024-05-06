@@ -22,6 +22,9 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
 	const snapPointsOthers = useMemo(() => ["14%", "25%", "36%"], []);
 	const snapPointsHome = useMemo(() => ["13%", "22%", "32%"], []);
 
+	const snapPointsExpOthers = useMemo(() => ["14%", "25%"], []);
+	const snapPointsExpHome = useMemo(() => ["13%", "22%"], []);
+
 	const renderBackdrop = useCallback((props) => {
 		return (
 			<BottomSheetBackdrop
@@ -34,7 +37,7 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
 
 	return (
 		<BottomSheet
-			snapPoints={route.name === "Home" ? snapPointsHome : snapPointsOthers}
+			snapPoints={userType ? (route.name === "Home" ? snapPointsExpHome : snapPointsExpOthers) : (route.name === "Home" ? snapPointsHome : snapPointsOthers)}
 			ref={bottomSheetRef}
 			index={-1}
 			enablePanDownToClose={true}
@@ -65,7 +68,7 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
 						<Text className="font-medium tracking-wider">Explore</Text>
 					</View>
 
-					<View className="flex items-center w-1/3 py-2">
+					{userType ? null : <View className="flex items-center w-1/3 py-2">
 						<TouchableOpacity
 							onPress={() => navigation.navigate("Post")}
 							className="rounded-full h-[50px] w-[50px] flex items-center justify-center bg-white border-[1px] border-gray-400"
@@ -74,7 +77,7 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
 						</TouchableOpacity>
 
 						<Text className="font-medium tracking-wider">Post</Text>
-					</View>
+					</View>}
 
 					<View className="flex items-center w-1/3 py-2">
 						<TouchableOpacity
@@ -91,13 +94,13 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
 						<Text className="font-medium tracking-wider">Messages</Text>
 					</View>
 
-					<View className="flex items-center w-1/3 py-2">
+					{userType ? null : <View className="flex items-center w-1/3 py-2">
 						<TouchableOpacity className="rounded-full h-[50px] w-[50px] flex items-center justify-center bg-white border-[1px] border-gray-400">
 							<SimpleLineIcons name="cloud-download" size={26} color="gray" />
 						</TouchableOpacity>
 
 						<Text className="font-medium tracking-wider">Saved</Text>
-					</View>
+					</View>}
 
 					<View className="flex items-center w-1/3 py-2">
 						<TouchableOpacity className="rounded-full h-[50px] w-[50px] flex items-center justify-center bg-white border-[1px] border-gray-400" onPress={() => navigation.navigate('Meetings')}>
@@ -107,13 +110,13 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
 						<Text className="font-medium tracking-wider">Meetings</Text>
 					</View>
 
-					<View className="flex items-center w-1/3 py-2">
+					{userType ? null : <View className="flex items-center w-1/3 py-2">
 						<TouchableOpacity className="rounded-full h-[50px] w-[50px] flex items-center justify-center bg-white border-[1px] border-gray-400">
 							<Ionicons name="qr-code-outline" size={26} color="gray" />
 						</TouchableOpacity>
 
 						<Text className="font-medium tracking-wider">Contest</Text>
-					</View>
+					</View>}
 
 					<View className="flex items-center w-1/3 py-2">
 						<TouchableOpacity
