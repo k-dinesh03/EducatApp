@@ -37,7 +37,7 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
 
 	return (
 		<BottomSheet
-			snapPoints={userType ? (route.name === "Home" ? snapPointsExpHome : snapPointsExpOthers) : (route.name === "Home" ? snapPointsHome : snapPointsOthers)}
+			snapPoints={userType ? (route.name === "Home" ? snapPointsHome : snapPointsOthers) : (route.name === "Home" ? snapPointsExpHome : snapPointsExpOthers)}
 			ref={bottomSheetRef}
 			index={-1}
 			enablePanDownToClose={true}
@@ -68,7 +68,7 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
 						<Text className="font-medium tracking-wider">Explore</Text>
 					</View>
 
-					{userType ? null : <View className="flex items-center w-1/3 py-2">
+					{userType ? <View className="flex items-center w-1/3 py-2">
 						<TouchableOpacity
 							onPress={() => navigation.navigate("Post")}
 							className="rounded-full h-[50px] w-[50px] flex items-center justify-center bg-white border-[1px] border-gray-400"
@@ -77,11 +77,11 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
 						</TouchableOpacity>
 
 						<Text className="font-medium tracking-wider">Post</Text>
-					</View>}
+					</View> : null}
 
 					<View className="flex items-center w-1/3 py-2">
 						<TouchableOpacity
-							onPress={() => navigation.navigate("ChatHome")}
+							onPress={() => navigation.navigate("ChatProfile")}
 							className="rounded-full h-[50px] w-[50px] flex items-center pl-[2px] pt-[2px] justify-center bg-white border-[1px] border-gray-400"
 						>
 							<Ionicons
@@ -94,13 +94,13 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
 						<Text className="font-medium tracking-wider">Messages</Text>
 					</View>
 
-					{userType ? null : <View className="flex items-center w-1/3 py-2">
+					{userType ? <View className="flex items-center w-1/3 py-2">
 						<TouchableOpacity className="rounded-full h-[50px] w-[50px] flex items-center justify-center bg-white border-[1px] border-gray-400">
 							<SimpleLineIcons name="cloud-download" size={26} color="gray" />
 						</TouchableOpacity>
 
 						<Text className="font-medium tracking-wider">Saved</Text>
-					</View>}
+					</View> : null}
 
 					<View className="flex items-center w-1/3 py-2">
 						<TouchableOpacity className="rounded-full h-[50px] w-[50px] flex items-center justify-center bg-white border-[1px] border-gray-400" onPress={() => navigation.navigate('Meetings')}>
@@ -110,13 +110,13 @@ const BottomSheetNav = ({ bottomSheetRef }) => {
 						<Text className="font-medium tracking-wider">Meetings</Text>
 					</View>
 
-					{userType ? null : <View className="flex items-center w-1/3 py-2">
+					{userType ? <View className="flex items-center w-1/3 py-2">
 						<TouchableOpacity className="rounded-full h-[50px] w-[50px] flex items-center justify-center bg-white border-[1px] border-gray-400">
 							<Ionicons name="qr-code-outline" size={26} color="gray" />
 						</TouchableOpacity>
 
 						<Text className="font-medium tracking-wider">Contest</Text>
-					</View>}
+					</View> : null}
 
 					<View className="flex items-center w-1/3 py-2">
 						<TouchableOpacity

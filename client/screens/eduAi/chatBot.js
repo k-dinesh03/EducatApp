@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, TextInput, Button, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, TouchableWithoutFeedback, StatusBar } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { Feather, FontAwesome } from '@expo/vector-icons';
@@ -16,34 +15,9 @@ const ChatBot = () => {
 		if (scrollViewRef.current) {
 			scrollViewRef.current.scrollToEnd({ animated: true });
 		}
-		loadMessages();
-	}, []);
-
-	useEffect(() => {
-		saveMessages();
 	}, [messages]);
 
-	const loadMessages = async () => {
-		try {
-			const savedMessages = await AsyncStorage.getItem('chatMessages');
-			if (savedMessages !== null) {
-				setMessages(JSON.parse(savedMessages));
-			}
-		} catch (error) {
-			console.error('Error loading chat messages:', error);
-		}
-	};
-
-	const saveMessages = async () => {
-		try {
-			await AsyncStorage.setItem('chatMessages', JSON.stringify(messages));
-		} catch (error) {
-			console.error('Error saving chat messages:', error);
-		}
-	};
-
 	const handleSendMessage = async () => {
-
 		if (userMsg.trim() === '' || sending) return;
 
 		setSending(true);

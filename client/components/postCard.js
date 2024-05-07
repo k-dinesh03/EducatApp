@@ -506,7 +506,8 @@ const PostCard = ({ allData }) => {
 											</View>
 										)}
 									</View>
-								)}
+								)
+							}
 
 							{post?.postType === "quiz" && (
 								<View className="w-full h-10 my-1 items-center justify-center">
@@ -530,7 +531,8 @@ const PostCard = ({ allData }) => {
 								post?.postType === "videowithquiz") &&
 								(post?.images.length < 4
 									? pagination_one(activeSlide, post?.images.length)
-									: pagination_two(activeSlide, post?.images.length))}
+									: pagination_two(activeSlide, post?.images.length))
+							}
 
 							<View className="space-x-4 flex flex-row items-center pl-[8px] pr-[5px] my-2">
 								<TouchableOpacity onPress={() => toggleSave(postId)}>
@@ -561,7 +563,9 @@ const PostCard = ({ allData }) => {
 								>
 									{post?.title}
 								</Text>
+
 							</View>
+
 						</View>
 					);
 				})}

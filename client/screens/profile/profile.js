@@ -32,6 +32,7 @@ const Profile = () => {
 	//global state
 	const { state, setState } = useContext(AuthContext);
 	const { user } = state;
+	const userType = state?.user?.userType === "creator";
 
 	//local state
 	const [username, setUsername] = useState(user?.username);
@@ -213,12 +214,21 @@ const Profile = () => {
 
 					<View className="w-3/5 h-10 self-center border-x-[1px] border-t-[1px] border-slate-400 absolute top-20 rounded-t-sm" />
 
-					<View className="items-center absolute top-32 left-[14px] w-1/3">
-						<Text className="font-medium text-lg">0</Text>
-						<Text className="font-semibold text-xl tracking-wide">
-							Explorers
-						</Text>
-					</View>
+					{userType ? (
+						<View className="items-center absolute top-32 left-[14px] w-1/3">
+							<Text className="font-medium text-lg">0</Text>
+							<Text className="font-semibold text-xl tracking-wide">
+								Explorers
+							</Text>
+						</View>
+					) : (
+						<View className="items-center absolute top-32 left-[14px] w-1/3">
+							<Text className="font-medium text-lg">0</Text>
+							<Text className="font-semibold text-xl tracking-wide">
+								LeaderBoard
+							</Text>
+						</View>
+					)}
 
 					<View className="items-center absolute top-32 right-[14px] w-1/3">
 						<Text className="font-medium text-lg">{user?.score}</Text>
@@ -254,6 +264,7 @@ const Profile = () => {
 						>
 							<FontAwesome name="edit" color="white" size={20} />
 						</TouchableOpacity>
+
 					</View>
 
 				</View>
@@ -263,7 +274,7 @@ const Profile = () => {
 						<TouchableOpacity className="h-12 w-12 border-[1px] border-slate-500 items-center justify-center rounded-md">
 							<Ionicons name="folder-outline" size={26} color="black" />
 						</TouchableOpacity>
-						<Text className="font-medium tracking-wide">Posts</Text>
+						<Text className="font-medium tracking-wide">{userType ? 'Posts' : 'Saved'}</Text>
 					</View>
 
 					<View className="items-center space-y-1">

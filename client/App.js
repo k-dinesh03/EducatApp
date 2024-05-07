@@ -19,12 +19,19 @@ import PostTemp from './components/postTemp';
 import SetQuiz from './screens/quiz/setQuiz';
 import Quizz from './screens/quiz/quizz';
 import Explore from './screens/explore';
-import ChatHome from './screens/chat/ChatHome';
+import ChatProfile from './screens/chat/ChatProfile';
+import ChatMain from './screens/chat/ChatMain';
 import Settings from './screens/settings';
 import ProfileSettings from './components/profileSettings';
 import ResetPassword from './screens/profile/resetPassword';
 import Meetings from './screens/meet/Meetings';
 import TopCategory from './screens/topCategory/category'
+import LeaderBoard from './screens/leaderboard/LeaderBoard';
+import SubscriptionScreen from './screens/subcription/SubscriptionScreen';
+import ClassesScreen from './screens/classess/ClassesScreen';
+import ClassDetailsScreen from './screens/classess/ClassDetailsScreen';
+import LiveCoursesScreen from './screens/Live/LiveCoursesScreen';
+import Cource from './screens/Live/Cource';
 
 const App = () => {
 
@@ -48,7 +55,8 @@ const App = () => {
 							headerRight: () => (<ProfileSettings />),
 						})} />
 						<Stack.Screen name="ChatBot" component={ChatBot} options={{ title: 'EduAi' }} />
-						<Stack.Screen name="ChatHome" component={ChatHome} options={{ title: username }} />
+						<Stack.Screen name="ChatProfile" component={ChatProfile} options={{ title: username }} />
+						<Stack.Screen name="ChatMain" component={ChatMain} />
 						<Stack.Screen name="PostTemp" component={PostTemp} options={{ title: 'Explore' }} />
 						<Stack.Screen name="SetQuiz" component={SetQuiz} options={{ title: 'Create a Quiz' }} />
 						<Stack.Screen name="Quizz" component={Quizz} options={{ title: 'Quiz' }} />
@@ -56,6 +64,12 @@ const App = () => {
 						<Stack.Screen name="Settings" component={Settings} options={{ title: 'Settings' }} />
 						<Stack.Screen name="Meetings" component={Meetings} options={{ title: 'Meetings' }} />
 						<Stack.Screen name="TopCategory" component={TopCategory} options={{ title: 'Categories' }} />
+						<Stack.Screen name="LeaderBoard" component={LeaderBoard} options={{ title: 'LeaderBoard' }} />
+						<Stack.Screen name="Sbucriptions" component={SubscriptionScreen} options={{ title: 'Subcriptions' }} />
+						<Stack.Screen name="ClassesScreen" component={ClassesScreen} options={{ title: 'Classes' }} />
+						<Stack.Screen name="ClassDetails" component={ClassDetailsScreen} options={{ title: 'Class Details' }} />
+						<Stack.Screen name="LiveCourses" component={LiveCoursesScreen} options={{ title: 'Live' }} />
+						<Stack.Screen name="Cource" component={Cource} options={{ title: 'Live' }} />
 					</Stack.Navigator>
 				) : (
 					<Stack.Navigator initialRouteName="Launch" screenOptions={{ headerShown: false }}>

@@ -20,7 +20,7 @@ router.post('/register', registerController);
 router.post('/login', loginController);
 
 //update profile picture
-router.put('/profile-pic', requireSignIn, updateProfilePic);
+router.put('/profile-pic', updateProfilePic);
 
 //Update || put
 router.put('/update-user', requireSignIn, updateController);

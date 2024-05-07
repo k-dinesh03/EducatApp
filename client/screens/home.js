@@ -21,10 +21,8 @@ const Home = () => {
                 translucent={true}
             />
 
-            <ScrollView
-                className='h-full w-full self-center -z-10 space-y-7'
-                showsVerticalScrollIndicator={false}
-            >
+            <View className='h-full w-full self-center -z-10 space-y-7'>
+
                 <Header />
 
                 <View className='flex-row justify-around'>
@@ -37,14 +35,14 @@ const Home = () => {
                     </View>
 
                     <View className='w-24 justify-center items-center space-y-1'>
-                        <TouchableOpacity className='h-12 w-12 rounded-full items-center justify-center bg-purple-400'>
+                        <TouchableOpacity onPress={() => navigation.navigate('Sbucriptions')} className='h-12 w-12 rounded-full items-center justify-center bg-purple-400'>
                             <Ionicons name='storefront-outline' color='#fff' size={28} />
                         </TouchableOpacity>
                         <Text>Subcriptions</Text>
                     </View>
 
                     <View className='w-24 justify-center items-center space-y-1'>
-                        <TouchableOpacity className='h-12 w-12 rounded-full items-center justify-center bg-green-400'>
+                        <TouchableOpacity className='h-12 w-12 rounded-full items-center justify-center bg-green-400' onPress={() => navigation.navigate("LeaderBoard")}>
                             <SimpleLineIcons name='trophy' color='#fff' size={25} />
                         </TouchableOpacity>
                         <Text>LeaderBoard</Text>
@@ -55,14 +53,14 @@ const Home = () => {
                 <View className='flex-row justify-around'>
 
                     <View className='w-24 justify-center items-center space-y-1'>
-                        <TouchableOpacity className='h-12 w-12 rounded-full items-center justify-center bg-orange-300'>
+                        <TouchableOpacity className='h-12 w-12 rounded-full items-center justify-center bg-orange-300' onPress={() => navigation.navigate('ClassesScreen')}>
                             <Octicons name='video' color='#fff' size={26} />
                         </TouchableOpacity>
                         <Text>Classess</Text>
                     </View>
 
                     <View className='w-24 justify-center items-center space-y-1'>
-                        <TouchableOpacity className='h-12 w-12 rounded-full items-center justify-center bg-red-400'>
+                        <TouchableOpacity className='h-12 w-12 rounded-full items-center justify-center bg-red-400' onPress={() => navigation.navigate('LiveCourses')}>
                             <MaterialIcons name='video-collection' color='#fff' size={25} />
                         </TouchableOpacity>
                         <Text>Live Course</Text>
@@ -84,13 +82,13 @@ const Home = () => {
                 <View className='w-11/12 self-center flex-row items-center justify-between mt-3'>
                     <Text className='text-xl font-bold tracking-wider'>Explore New</Text>
                     <TouchableOpacity onPress={() => navigation.navigate("Explore")}>
-                        <Text>See All</Text>
+                        <Text>View All</Text>
                     </TouchableOpacity>
                 </View>
 
 
 
-            </ScrollView>
+            </View>
 
             <MenuBtn handleOpen={() => bottomSheetRef.current?.snapToIndex(0)} />
 
