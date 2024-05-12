@@ -32,7 +32,7 @@ const Meetings = () => {
                     const numItems = Math.floor(Math.random() * 3 + 1);
                     for (let j = 0; j < numItems; j++) {
                         items[strTime].push({
-                            name: 'Item for ' + strTime + ' #' + j,
+                            name: 'Meeting with Explorer ' + strTime,
                             height: Math.max(50, Math.floor(Math.random() * 150)),
                             day: strTime
                         });
@@ -52,7 +52,7 @@ const Meetings = () => {
         return (
             <TouchableOpacity className='bg-red-500 mr-5 mt-10'>
                 <View className='shadow-lg shadow-black flex-1 bg-white h-12'>
-                    <View className='flex-row justify-between items-center bg-yellow-200'>
+                    <View className='flex-row justify-between items-center'>
                         <Text>
                             {name}
                         </Text>
